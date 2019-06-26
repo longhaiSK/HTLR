@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 class Fit 
 {
-  protected:
+  private:
 
   // data
   const int p, K, C, n;
@@ -240,7 +240,7 @@ class Fit
     }
   }
 
-  void restore_oldvalues ()
+  void restore_oldvalues()
   {
     lv = cpvec(lv_old);
     predprob = cpvec(predprob_old);
@@ -258,7 +258,7 @@ class Fit
     }
   }
   
-  void updatestepsizes ()
+  void updatestepsizes()
   {
     for (int uj = 0; uj < nuvar; uj++) 
     {
@@ -528,5 +528,44 @@ class Fit
       }
     }
   }
+
+  List OutputR()
+  {
+    auto prior_param = List::create
+    (
+      Named("ptype") = ptype,
+      Named("alpha") = alpha,
+      Named("s") = s,
+      Named("eta") = eta,
+      Named("sigmab0") = sigmab0
+    ); 
+
+    auto mc_param = List::create
+    (
+      Named("iters.rmc") = iters_rmc,
+      Named("iters.h") = iters_h,
+      Named("thin") = thin,
+      Named("leap.L") = leap_L,
+      Named("leap.L.h") = leap_L_h,
+      Named("leap.step") = leap_step,
+      Named("hmc.sgmcut") = hmc_sgmcut,
+      Named("DDNloglike") = DDNloglike
+    );
+
+    return List::create
+    (
+      Named("p") = p, 
+      Named("n") = n,
+      Named("prior") = prior_param,
+      Named("mc.param") = mc_param,
+      Named("mcdeltas") = mcdeltas,
+      Named("mclogw") = mclogw,
+      Named("mcsigmasbt") = mcsigmasbt,
+      Named("mcvardeltas") = mcvardeltas,
+      Named("mcloglike") = mcloglike,
+      Named("mcuvar") = mcuvar,
+      Named("mchmcrej") = mchmcrej
+    );
+  } 
 
 };
