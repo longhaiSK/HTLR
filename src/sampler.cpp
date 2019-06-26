@@ -31,7 +31,7 @@ class SamplerSgmNeg : public SamplerSgm
       : SamplerSgm(p, vardeltas, K, alpha, log_aw)   
   {}
 
-  void eval_logf(const double x, double &logf, double &dlogf)
+  void eval_logf(const double x, double &logf, double &dlogf) override
   {
     logf = -(K / 2.0 - 1.0) * x;
     dlogf = -(K / 2.0 - 1.0);
@@ -54,7 +54,7 @@ class SamplerSgmGhs : public SamplerSgm
       : SamplerSgm(p, vardeltas, K, alpha, log_aw)   
   {}
 
-  void eval_logf(const double x, double &logf, double &dlogf)
+  void eval_logf(const double x, double &logf, double &dlogf) override
   {
     logf  = - (K  - 1.0) / 2.0 * x ;
     dlogf = - (K  - 1.0) / 2.0 ;
@@ -85,7 +85,7 @@ class SamplerLogw : public SampleTarget
   {
   }
 
-  void eval_logf(const double x, double &logf, double &dlogf)
+  void eval_logf(const double x, double &logf, double &dlogf) override
   {
     double w = exp(x);
     double sdu = (x - s) / eta;
