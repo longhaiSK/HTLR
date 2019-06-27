@@ -91,29 +91,24 @@ htlr_fit <- function (
     ######################## call C to do Gibbs sampling #################
     ## markov chain storage 
 
-    fithtlr <- .C("htlr_fit", 
+    fithtlr <- HtlrFit(
         ## data
-        p = as.integer (p), K = as.integer (K), n = as.integer (n), 
-        X = X_addint, ymat = ymat, ybase = ybase,  
+        p = as.integer(p), K = as.integer(K), n = as.integer(n),
+        X = X_addint, ymat = ymat, ybase = ybase,
         ## prior
-        ptype=ptype[1], alpha = alpha, s = s, eta = eta,  sigmab0 = sigmab0, 
+        ptype = ptype, alpha = alpha, s = s, eta = eta,  sigmab0 = sigmab0,
         ## sampling
-        iters_rmc = as.integer (iters_rmc), thin = as.integer (thin), 
-        leap_L = as.integer (leap_L), 
-        iters_h = as.integer (iters_h), leap_L_h = as.integer (leap_L_h), 
-        leap_step = leap_step, hmc_sgmcut = hmc_sgmcut, 
+        iters_rmc = as.integer(iters_rmc), iters_h = as.integer (iters_h), 
+        thin = as.integer(thin), leap_L = as.integer(leap_L), leap_L_h = as.integer (leap_L_h),
+        leap_step = leap_step, hmc_sgmcut = hmc_sgmcut,
         DDNloglike = DDNloglike,
         ## fit result
-        mcdeltas = array (deltas, dim = c(p + 1, C - 1, iters_rmc + 1)), 
-        mclogw =  rep (logw, iters_rmc + 1), 
-        mcsigmasbt = matrix (sigmasbt, p+1, iters_rmc + 1),
-        mcvardeltas = matrix (0, p+1, iters_rmc + 1), 
-        mcloglike = rep (0, iters_rmc + 1), 
-        mcuvar = rep (0, iters_rmc + 1),
-        mchmcrej = rep (0, iters_rmc + 1),
+        mcdeltas = array(deltas, dim = c(C - 1, p + 1, iters_rmc + 1)),
+        mclogw =  rep(logw, iters_rmc + 1),
+        mcsigmasbt = matrix(sigmasbt, p+1, iters_rmc + 1),
         ## other control
-        silence = as.integer (silence), looklf = as.integer(0)) 
-    ## adding data preprocessing information
+        silence = as.integer(silence), looklf = 0L)
+    # adding data preprocessing information
     fithtlr <- c (fithtlr, list( fsel = fsel, nuj = nuj, sdj = sdj, y = y_tr) )
         
     ################## prediction for test cases #########################
