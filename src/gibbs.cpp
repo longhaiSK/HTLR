@@ -556,6 +556,7 @@ class Fit
     (
       Named("p") = p, 
       Named("n") = n,
+      Named("K") = K,
       Named("prior") = prior_param,
       Named("mc.param") = mc_param,
       Named("mcdeltas") = mcdeltas,
