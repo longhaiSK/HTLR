@@ -9,6 +9,16 @@ using namespace std;
 // the piecewise linear function above logf upperhulls, and
 // the piecewise linear function below logf lowerhulls
 
+void sample_disc(const int n, int *rn, const int k, double *lw);
+void sample_elin(const int n, double *rn, const double lower, const double upper,
+                 double dlogf[1], double tol_dlogf_is0[1]);
+void logint_elin(double logf[1], double dlogf[1], double t[1],
+                 double lower[1], double upper[1], double lw[1],
+                 double tol_dlogf_is0[1]);
+double interc(double t1[1], double t2[1],
+              double logf1[1], double logf2[1], double dlogf1[1], double dlogf2[1],
+              double tol_ddlogf_is0[1]);
+
 // An interface of sampling target, to be extended by users. 
 class SampleTarget 
 { 
