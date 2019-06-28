@@ -3,7 +3,7 @@
 
 #include "RcppArmadillo.h"
 
-arma::mat cpvec(const arma::mat A);
+arma::mat cpvec(const arma::mat &A);
 arma::vec col_sum(const arma::mat &A);
 double log_sum_exp(const arma::vec &a);
 arma::vec log_sum_exp(const arma::mat &A);
