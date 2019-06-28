@@ -1,12 +1,14 @@
 #ifndef ARS_H
 #define ARS_H 
 
+// An interface of sampling target, to be extended by users.
 class SampleTarget 
 { 
   public: 
   virtual void eval_logf(const double x, double &logf, double &dlogf); 
 };
 
+// Main ARS class
 class ARS
 {
   private:
@@ -18,12 +20,16 @@ class ARS
   const double ini_tpoint; // initial tangent point
   const bool verbose;      // flag whether to print ARS information
 
+  /* optional User Settings */
+
   const int max_nhull; // maximum number of pieces of linear hulls
   double stepout = 10; // size of stepout in initializing linear hulls
 
   // the smallest difference of derivatives that can be thought of as the same
   // so that we don't need to insert one more hull
   double tol_dlogf_is0, tol_ddlogf_is0;
+
+  /* global working vectors used to represent linear hulls */
   
   double 
     *tpoints,                       // tangent points 
@@ -37,12 +43,14 @@ class ARS
 
   double newx, newlogf, newdlogf; // a new tangent point to be inserted
   int h;                          // index of the hull where newx is from
+  //int newh; // index of new inserted hull // UNUSED
 
   // the sampling target object which provides function for evaluating logf and dlogf  
   SampleTarget target;
 
   void update_hulls(const int h, const double newx, const double logfv, const double dlogfv);
   double eval_upperhull(const int h, const double newx);
+  double eval_lowerhull(const int h, const double newx);
   void Prepare();
 
   public:
