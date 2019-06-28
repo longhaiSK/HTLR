@@ -1,6 +1,8 @@
 #ifndef ARS_H
 #define ARS_H 
 
+#include <Rcpp.h>
+
 // An interface of sampling target, to be extended by users.
 class SampleTarget 
 { 
@@ -14,7 +16,6 @@ class ARS
   private:
 
   const int n; // number of samples
-  double *rn;  // sampling output
   
   const double lb, ub;     // lower and upper bounds of logf
   //const double ini_tpoint; // initial tangent point
@@ -23,7 +24,7 @@ class ARS
   /* optional User Settings */
 
   const int max_nhull; // maximum number of pieces of linear hulls
-  double stepout = 10; // size of stepout in initializing linear hulls
+  double stepout; // size of stepout in initializing linear hulls
 
   // the smallest difference of derivatives that can be thought of as the same
   // so that we don't need to insert one more hull
@@ -43,7 +44,6 @@ class ARS
 
   double newx, newlogf, newdlogf; // a new tangent point to be inserted
   int h;                          // index of the hull where newx is from
-  //int newh; // index of new inserted hull // UNUSED
 
   // the sampling target object which provides function for evaluating logf and dlogf  
   SampleTarget target;
@@ -56,11 +56,11 @@ class ARS
   public:
 
   ARS(int n, SampleTarget target, double ini_tpoint,
-      double lb = -INFINITY, double ub = +INFINITY,
+      double lb = R_NegInf, double ub = R_PosInf,
       bool verbose = false, int max_nhull = 1000,
       double tol_dlogf_is0 = 1E-5, double tol_ddlogf_is0 = 1E-5, double stepout = 10);
 
-  double* Sampling(); 
+  Rcpp::NumericVector Sample(); 
 
 };
 
