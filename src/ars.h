@@ -17,7 +17,7 @@ class ARS
   double *rn;  // sampling output
   
   const double lb, ub;     // lower and upper bounds of logf
-  const double ini_tpoint; // initial tangent point
+  //const double ini_tpoint; // initial tangent point
   const bool verbose;      // flag whether to print ARS information
 
   /* optional User Settings */

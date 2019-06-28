@@ -222,7 +222,7 @@ ARS::ARS(int n, SampleTarget target, double ini_tpoint,
     double lb/*= -INFINITY*/, double ub/*= +INFINITY*/,   
     bool verbose/*=false*/, int max_nhull/*=1000*/, double stepout/*=10*/,
     double tol_dlogf_is0/*= 1E-5*/, double tol_ddlogf_is0/*= 1E-5*/)
-    : n(n), lb(lb), ub(ub), ini_tpoint(ini_tpoint), 
+    : n(n), lb(lb), ub(ub), 
     verbose(verbose), max_nhull(max_nhull), stepout(stepout), 
     tol_dlogf_is0(tol_dlogf_is0), tol_ddlogf_is0(tol_ddlogf_is0), target(target)  
 {
