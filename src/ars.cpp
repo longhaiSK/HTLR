@@ -1,7 +1,3 @@
-#include <cmath>
-#include <R.h>
-#include <Rmath.h>
-#include <stdio.h>
 #include "ars.h"
 
 // NOTE: in this program, I call a piece of linear function as 'hull', and
@@ -19,8 +15,6 @@ double interc(double t1[1], double t2[1],
               double logf1[1], double logf2[1], double dlogf1[1], double dlogf2[1],
               double tol_ddlogf_is0[1]);
 
- 
- 
 void SampleTarget::eval_logf(const double x, double &logf, double &dlogf) {}; 
 
 // this function updates the envolop and squeezing functions.
@@ -38,7 +32,7 @@ void ARS::update_hulls(const int h, const double newx, const double logfv, const
   {
     lh = h; rh = ritehulls[h];
     // if logfv is -infinity, only update the rightest hull rightbound and lw
-    if ((rh == max_nhull) & (logfv == -INFINITY))
+    if ((rh == max_nhull) & (logfv == R_NegInf))
     {
       if (upperbounds[h] != newx)
       {
@@ -55,7 +49,7 @@ void ARS::update_hulls(const int h, const double newx, const double logfv, const
   {
     lh = lefthulls[h]; rh = h;
     // if logfv is -infinity, only update the leftest hull leftbound and lw
-    if ((lh == -1) & (logfv == -INFINITY))
+    if ((lh == -1) & (logfv == R_NegInf))
     {
       if (lowerbounds[h] != newx)
       {
@@ -81,7 +75,7 @@ void ARS::update_hulls(const int h, const double newx, const double logfv, const
   if (lh == -1) // nh will be the new leftest hull
   {
     lowerbounds [nh] = lowerbounds [h];
-    slopes_leftsq [nh] = + INFINITY;
+    slopes_leftsq [nh] = R_PosInf;
   }
   else
   {
@@ -94,7 +88,7 @@ void ARS::update_hulls(const int h, const double newx, const double logfv, const
   if (rh == max_nhull)
   {
     upperbounds[nh] = upperbounds[h]; // upperbound
-    slopes_ritesq[nh] = -INFINITY;
+    slopes_ritesq[nh] = R_NegInf;
   }
   else
   {
@@ -157,7 +151,7 @@ void ARS::Prepare()
 {
   // if lb is finite, bound the first hull at left
   // or insert a hull tangent at lb if logf at lb is finite too
-  if (std::isfinite (lb))
+  if (R_FINITE(lb))
   {
     h = 0;
     newx = lb;
@@ -173,14 +167,14 @@ void ARS::Prepare()
     {
       if (no_hulls == max_nhull)
       {
-        printf("Error in Rejection Sampling:\n");
-        printf("'max_nhull' is set too small, or your log-PDF NOT concave.\n");
-        exit (1);
+        Rcpp::stop(
+            "Error in Rejection Sampling:\n"
+            "'max_nhull' is set too small, or your log-PDF NOT concave.\n");
       }
       target.eval_logf(newx, newlogf, newdlogf);
       update_hulls (h, newx, newlogf, newdlogf);
       // finding a new leftbound quite expanding
-      if (newlogf == - INFINITY) break;
+      if (newlogf == R_NegInf) break;
       newx -= stepout;
       h = no_hulls - 1;
     }
@@ -189,7 +183,7 @@ void ARS::Prepare()
 
   // if ub is finite, bound the first hull at the right
   // or insert a hull tangent at ub if logf at ub is finite too
-  if (std::isfinite (ub))
+  if (R_FINITE(ub))
   {
     h = 0;
     newx = ub;
@@ -204,13 +198,13 @@ void ARS::Prepare()
     {
       if (no_hulls == max_nhull)
       {
-        printf("Error in Rejection Sampling:\n");
-        printf("'max_nhull' is set too small, or your log-PDF NOT concave\n");
-        exit(1);
+        Rcpp::stop(
+            "Error in Rejection Sampling:\n"
+            "'max_nhull' is set too small, or your log-PDF NOT concave.\n");
       }
       target.eval_logf(newx, newlogf, newdlogf);
       update_hulls (h, newx, newlogf, newdlogf);
-      if (!std::isfinite(newlogf)) break;
+      if (!R_FINITE(newlogf)) break;
       newx += stepout;
       h = no_hulls - 1;
     }
@@ -222,8 +216,7 @@ ARS::ARS(int n, SampleTarget target, double ini_tpoint,
     double lb/*= -INFINITY*/, double ub/*= +INFINITY*/,   
     bool verbose/*=false*/, int max_nhull/*=1000*/, double stepout/*=10*/,
     double tol_dlogf_is0/*= 1E-5*/, double tol_ddlogf_is0/*= 1E-5*/)
-    : n(n), lb(lb), ub(ub), 
-    verbose(verbose), max_nhull(max_nhull), stepout(stepout), 
+    : n(n), lb(lb), ub(ub), verbose(verbose), max_nhull(max_nhull), stepout(stepout), 
     tol_dlogf_is0(tol_dlogf_is0), tol_ddlogf_is0(tol_ddlogf_is0), target(target)  
 {
   // construct the first hull
@@ -232,17 +225,17 @@ ARS::ARS(int n, SampleTarget target, double ini_tpoint,
   this->tpoints = new double[max_nhull] {0};
   this->tpoints[0] = ini_tpoint; // the tangent point
   this->target.eval_logf(tpoints[0], logfvs[0], dlogfvs[0]);
-  if (!std::isfinite(logfvs[0]))
+  if (!R_FINITE(logfvs[0]))
   {
-    printf("Error in Rejection Sampling:\n");
-    printf("'max_nhull' is set too small, or your log-PDF NOT concave.\n");
-    exit(1);
+    Rcpp::stop(
+        "Error in adaptive rejection sampling:\n"
+        "the first tangent point doesn't have positive probability.\n");
   }
 
   this->lowerbounds = new double[max_nhull]{0};
   this->upperbounds = new double[max_nhull]{0};
-  lowerbounds[0] = fmax(lb, -INFINITY); // lower bound of the hull
-  upperbounds[0] = fmin(ub, +INFINITY); // upper bound of the hull
+  lowerbounds[0] = fmax(lb, R_NegInf); // lower bound of the hull
+  upperbounds[0] = fmin(ub, R_PosInf); // upper bound of the hull
 
   this->lefthulls = new int[max_nhull]{0};
   this->ritehulls = new int[max_nhull]{0};
@@ -251,16 +244,16 @@ ARS::ARS(int n, SampleTarget target, double ini_tpoint,
 
   this->slopes_leftsq = new double[max_nhull]{0};
   this->slopes_ritesq = new double[max_nhull]{0};
-  slopes_leftsq[0] = +INFINITY; // slope of left squeezing arc
-  slopes_ritesq[0] = -INFINITY; // slope of right sequeezing arc
+  slopes_leftsq[0] = R_PosInf; // slope of left squeezing arc
+  slopes_ritesq[0] = R_NegInf; // slope of right sequeezing arc
 
   this->lws = new double[max_nhull]{0};
-  lws[0] = INFINITY; // compute log weights, updating lws[0]
+  lws[0] = R_PosInf; // compute log weights, updating lws[0]
   this->no_hulls = 1;
 }
 
 // Do adaptive rejection sampling
-double *ARS::Sampling()
+Rcpp::NumericVector ARS::Sample()
 {
   Prepare();
   // define parameters used while sampling
@@ -269,7 +262,8 @@ double *ARS::Sampling()
       upperhullv, // value of upper hull at newx
       lowerhullv, // value of lower (squeezing) hull at newx
       u,          // a random number used to determine whether to accept
-      logacceptv; // if logacceptv is smaller than logf, newx  accepted ;
+      logacceptv; // if logacceptv is smaller than logf, newx accepted
+  Rcpp::NumericVector output (n); // sampling output
 
   for (int i = 0; i < n; i++)
   {
@@ -289,7 +283,7 @@ double *ARS::Sampling()
       //check acceptance with squeezing function
       if (logacceptv <= lowerhullv)
       {
-        rn[i] = newx;
+        output[i] = newx;
         rejected = false;
       }
       else
@@ -300,21 +294,24 @@ double *ARS::Sampling()
         update_hulls(h, newx, newlogf, newdlogf);
         if (logacceptv <= newlogf)
         {
-          rn[i] = newx;
+          output[i] = newx;
           rejected = false;
         }
         else
           no_rejs++;
       }
     }
+    if (i % 256 == 0) R_CheckUserInterrupt();
   }
   if (verbose)
   {
     double rate_rej = (no_rejs + 0.0) / (no_rejs + n + 0.0); // return rejection rate
-    printf("no of hulls = %d, rejection rate = %4.2f\n", no_hulls, rate_rej);
+    Rprintf("no of hulls = %d, rejection rate = %4.2f\n", no_hulls, rate_rej);
   }
-  return rn;
+  return output;
 }
+
+
 
 // find maximum value in double vector a with length n
 double fmaxm(const int n, const double *a)
@@ -374,7 +371,7 @@ void sample_elin
   // checking linear function type and fault
   if (fabs (dlogf[0]) <= tol_dlogf_is0 [0])
   {
-     if (!(std::isfinite (lower) & std::isfinite (upper)) )
+     if (!(R_FINITE(lower) & R_FINITE(upper)) )
      {
        isfault = true;
      }
@@ -386,7 +383,7 @@ void sample_elin
 
   if (dlogf[0] >  tol_dlogf_is0 [0])
   {
-    if (!std::isfinite(upper))
+    if (!R_FINITE(upper))
     {
       isfault = true;
     }
@@ -398,7 +395,7 @@ void sample_elin
 
   if (dlogf[0] < -tol_dlogf_is0 [0])
   {
-    if(!std::isfinite(lower))
+    if(!R_FINITE(lower))
     {
       isfault = true;
     }
@@ -410,11 +407,11 @@ void sample_elin
 
   if (isfault)
   {
-    printf("Error: in C function 'sample_elin':\n");
-    printf("the exp linear function integrates to NAN/INFINITY\n");
-    printf("(dlogf = %4.2f, lowerbound = %4.2f, upperbound = %4.2f)\n",
-           dlogf[0], lower, upper);
-    exit(1);
+    REprintf("(dlogf = %4.2f, lowerbound = %4.2f, upperbound = %4.2f)\n",
+             dlogf[0], lower, upper);
+    Rcpp::stop(
+        "Error: in C function 'sample_elin':\n"
+        "the exp linear function integrates to NAN/INFINITY\n");
   }
 
   double dx = upper - lower;
@@ -422,7 +419,7 @@ void sample_elin
   for (int j = 0; j < n; j++)
   {
     GetRNGstate();
-    y = runif(0, 1);
+    y = R::runif(0, 1);
     PutRNGstate();
 
     //converting uniform random number
