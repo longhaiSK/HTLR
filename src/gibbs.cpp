@@ -196,7 +196,7 @@ void Fit::StartSampling()
           {
             auto spl = SamplerLogw(p, vardeltas, K, alpha, s, eta);
             auto ars = ARS(1, spl, logw);
-            logw = ars.Sampling()[0];
+            logw = ars.Sample()[0];
           }
         }
       }
@@ -212,7 +212,7 @@ void Fit::StartSampling()
           spl.set_idx(idx);
           auto ars = ARS(1, spl, log(vardeltas[idx] / K));
           //convert xi to sigma_j
-          sigmasbt[idx] = exp(ars.Sampling()[0]);
+          sigmasbt[idx] = exp(ars.Sample()[0]);
         }
         //PutRNGstate();
       }
@@ -228,7 +228,7 @@ void Fit::StartSampling()
           spl.set_idx(idx);
           ARS ars = ARS(1, spl, log(vardeltas[idx] / K));
           //convert xi to sigma_j
-          sigmasbt[idx] = exp(ars.Sampling()[0]);
+          sigmasbt[idx] = exp(ars.Sample()[0]);
         }
         //PutRNGstate();
       }
