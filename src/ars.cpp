@@ -38,7 +38,7 @@ void ARS::update_hulls(const int h, const double newx, const double logfv, const
   {
     lh = h; rh = ritehulls[h];
     // if logfv is -infinity, only update the rightest hull rightbound and lw
-    if (rh == max_nhull & logfv == -INFINITY)
+    if ((rh == max_nhull) & (logfv == -INFINITY))
     {
       if (upperbounds[h] != newx)
       {
@@ -55,7 +55,7 @@ void ARS::update_hulls(const int h, const double newx, const double logfv, const
   {
     lh = lefthulls[h]; rh = h;
     // if logfv is -infinity, only update the leftest hull leftbound and lw
-    if (lh == -1 & logfv == -INFINITY)
+    if ((lh == -1) & (logfv == -INFINITY))
     {
       if (lowerbounds[h] != newx)
       {
