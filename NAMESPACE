@@ -1,11 +1,11 @@
 # Default NAMESPACE created by R
 # Remove the previous line if you edit this file
-useDynLib("HTLR")
+useDynLib(HTLR, .registration=TRUE)
 # Export all names
-#exportPattern("^[[:alpha:]]+")
-exportPattern("htlr")
-export("probs_attrue_bplr", "evaluate_pred","gendata_fam",
-       "deltas_bc", "lasso_fitpred","plot_fscore","loocv_fss", "comp_sdb")
+exportPattern("^[[:alpha:]]+")
+#exportPattern("htlr")
+#export("probs_attrue_bplr", "evaluate_pred","gendata_fam",
+#       "deltas_bc", "lasso_fitpred","plot_fscore","loocv_fss", "comp_sdb")
 
 # Import all packages listed as Imports or Depends
 import(glmnet, BCBCSF, abind)
