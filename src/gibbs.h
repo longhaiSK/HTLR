@@ -18,7 +18,7 @@ class Fit
   const double alpha, s, eta, sigmab0;
 
   // sampling
-  const int iters_rmc, thin, leap_L, iters_h, leap_L_h; 
+  const int iters_rmc, iters_h, thin, leap_L, leap_L_h; 
   const double leap_step, hmc_sgmcut; 
   arma::vec DDNloglike;
 
