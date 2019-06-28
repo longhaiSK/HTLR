@@ -1,5 +1,4 @@
-#include "RcppArmadillo.h"
-//using namespace arma;
+#include "utils.h"
 
 arma::mat cpvec(const arma::mat &A)
 {
