@@ -25,7 +25,7 @@ class SamplerSgmNeg : public SamplerSgm
   public:
 
   SamplerSgmNeg(int p, arma::vec vardeltas, int K, double alpha, double log_aw);
-  void eval_logf(const double x, double &logf, double &dlogf);
+  void eval_logf(const double x, double &logf, double &dlogf) override; 
 };
 
 class SamplerSgmGhs : public SamplerSgm
@@ -33,7 +33,7 @@ class SamplerSgmGhs : public SamplerSgm
   public:
 
   SamplerSgmGhs(int p, arma::vec vardeltas, int K, double alpha, double log_aw);
-  void eval_logf(const double x, double &logf, double &dlogf);
+  void eval_logf(const double x, double &logf, double &dlogf) override;
 };
 
 class SamplerLogw : public SampleTarget
@@ -49,7 +49,7 @@ class SamplerLogw : public SampleTarget
   SamplerLogw(int p, arma::vec vardeltas, int K,
               double nu, double s, double eta);
 
-  void eval_logf(const double x, double &logf, double &dlogf);
+  void eval_logf(const double x, double &logf, double &dlogf) override;
 };
 
 #endif

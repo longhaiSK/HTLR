@@ -2,6 +2,8 @@
 #define GIBBS_H 
 
 #include "RcppArmadillo.h"
+#include "utils.h"
+#include "sampler.h"
 
 class Fit 
 {
@@ -45,8 +47,8 @@ class Fit
       vardeltas, vardeltas_old,
       stepsizes, sigmasbt; 
   double loglike, loglike_old, sgmsqcut;
-
-  void whichupdate(double cut);
+ 
+  void whichupdate(double cut);  
   void updatepredprob();
   void detach_fixlv();
   void updateDNloglike();
@@ -60,6 +62,7 @@ class Fit
   void restore_oldvalues();
   void updatestepsizes();
 
+
   public:
 
   Fit(int p, int K, int n,
@@ -70,9 +73,9 @@ class Fit
       double hmc_sgmcut, arma::vec DDNloglike,
       arma::cube mcdeltas, arma::vec mclogw, arma::mat mcsigmasbt,
       int silence, int looklf);
-  
+
   void StartSampling();
-  Rcpp::List OutputR();
+  Rcpp::List OutputR(); 
 
 };
 
