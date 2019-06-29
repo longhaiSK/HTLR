@@ -15,7 +15,10 @@ double interc(double t1[1], double t2[1],
               double logf1[1], double logf2[1], double dlogf1[1], double dlogf2[1],
               double tol_ddlogf_is0[1]);
 
-void SampleTarget::eval_logf(const double x, double &logf, double &dlogf) {}; 
+// void SampleTarget::eval_logf(const double x, double &logf, double &dlogf) 
+// {
+//   Rcpp::Rcerr << "Sould not appear. Check with your implementation of descendant class.\n";
+// }; 
 
 // this function updates the envolop and squeezing functions.
 // newx --- new point to be inserted
@@ -155,25 +158,27 @@ void ARS::Prepare()
   {
     h = 0;
     newx = lb;
-    target.eval_logf(newx, newlogf, newdlogf);
+    target->eval_logf(newx, newlogf, newdlogf);
     update_hulls(h, newx, newlogf, newdlogf);
   }
-  //expanding at the left until reaching a bound or integral to finite
+  // expanding at the left until reaching a bound or integral to finite
   else
   {
     h = 0;
     newx = tpoints[0] - stepout;
     do
     {
+      Rcpp::Rcerr << no_hulls << " " << newlogf << "\n";
       if (no_hulls == max_nhull)
       {
+        //Rcpp::Rcerr << no_hulls << " " << max_nhull << "\n";
         Rcpp::stop(
-            "Error in Rejection Sampling:\n"
+            "Error in Rejection Sampling: (finite lb)\n"
             "'max_nhull' is set too small, or your log-PDF NOT concave.\n");
       }
-      target.eval_logf(newx, newlogf, newdlogf);
+      target->eval_logf(newx, newlogf, newdlogf);
       update_hulls (h, newx, newlogf, newdlogf);
-      // finding a new leftbound quite expanding
+      // finding a new leftbound, quit expanding
       if (newlogf == R_NegInf) break;
       newx -= stepout;
       h = no_hulls - 1;
@@ -187,7 +192,7 @@ void ARS::Prepare()
   {
     h = 0;
     newx = ub;
-    target.eval_logf(newx, newlogf, newdlogf);
+    target->eval_logf(newx, newlogf, newdlogf);
     update_hulls (h, newx, newlogf, newdlogf);
   }
   else // expanding at the right until reaching a bound or integral to finite
@@ -198,11 +203,12 @@ void ARS::Prepare()
     {
       if (no_hulls == max_nhull)
       {
+        //Rcpp::Rcerr << no_hulls << " " << max_nhull << "\n";
         Rcpp::stop(
-            "Error in Rejection Sampling:\n"
+            "Error in Rejection Sampling: (finite ub)\n"
             "'max_nhull' is set too small, or your log-PDF NOT concave.\n");
       }
-      target.eval_logf(newx, newlogf, newdlogf);
+      target->eval_logf(newx, newlogf, newdlogf);
       update_hulls (h, newx, newlogf, newdlogf);
       if (!R_FINITE(newlogf)) break;
       newx += stepout;
@@ -212,7 +218,7 @@ void ARS::Prepare()
   }
 }
 
-ARS::ARS(int n, SampleTarget target, double ini_tpoint, 
+ARS::ARS(int n, SampleTarget *target, double ini_tpoint, 
     double lb/*= -INFINITY*/, double ub/*= +INFINITY*/,   
     bool verbose/*=false*/, int max_nhull/*=1000*/, double stepout/*=10*/,
     double tol_dlogf_is0/*= 1E-5*/, double tol_ddlogf_is0/*= 1E-5*/)
@@ -224,7 +230,7 @@ ARS::ARS(int n, SampleTarget target, double ini_tpoint,
   this->dlogfvs = new double[max_nhull] {0};
   this->tpoints = new double[max_nhull] {0};
   this->tpoints[0] = ini_tpoint; // the tangent point
-  this->target.eval_logf(tpoints[0], logfvs[0], dlogfvs[0]);
+  this->target->eval_logf(tpoints[0], logfvs[0], dlogfvs[0]);
   if (!R_FINITE(logfvs[0]))
   {
     Rcpp::stop(
@@ -290,7 +296,7 @@ Rcpp::NumericVector ARS::Sample()
       {
         // check acceptance with logf
         // eval logf at newx and insert a new hull
-        target.eval_logf(newx, newlogf, newdlogf);
+        target->eval_logf(newx, newlogf, newdlogf);
         update_hulls(h, newx, newlogf, newdlogf);
         if (logacceptv <= newlogf)
         {

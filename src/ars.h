@@ -7,7 +7,7 @@
 class SampleTarget 
 { 
   public: 
-  virtual void eval_logf(const double x, double &logf, double &dlogf); 
+  virtual void eval_logf(const double x, double &logf, double &dlogf) = 0; 
 };
 
 // Main ARS class
@@ -46,7 +46,7 @@ class ARS
   int h;                          // index of the hull where newx is from
 
   // the sampling target object which provides function for evaluating logf and dlogf  
-  SampleTarget target;
+  SampleTarget *target;
 
   void update_hulls(const int h, const double newx, const double logfv, const double dlogfv);
   double eval_upperhull(const int h, const double newx);
@@ -55,7 +55,7 @@ class ARS
 
   public:
 
-  ARS(int n, SampleTarget target, double ini_tpoint,
+  ARS(int n, SampleTarget *target, double ini_tpoint,
       double lb = R_NegInf, double ub = R_PosInf,
       bool verbose = false, int max_nhull = 1000,
       double tol_dlogf_is0 = 1E-5, double tol_ddlogf_is0 = 1E-5, double stepout = 10);
