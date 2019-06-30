@@ -1,7 +1,7 @@
 #include "ars.h"
 
 // [[Rcpp::export]]
-Rcpp::NumericVector sample_tnorm_ars(
+Rcpp::NumericVector sample_trunc_norm(
     const int n, const double lb, const double ub, const bool verbose = false)
 {
   class TruncNormTarget : public SampleTarget
@@ -97,3 +97,37 @@ Rcpp::NumericVector sample_post_ichi(
   return sampler.Sample(); 
 }
 
+// [[Rcpp::export]]
+Rcpp::NumericVector sample_trunc_beta(
+    const int n, const double alpha, const double beta, 
+    const double lb = 0, const double ub = 1, const bool verbose = false)
+{
+  class TruncBetaTarget : public SampleTarget
+  {
+    private: 
+    
+    const double alpha_, beta_;
+
+    public:
+
+    TruncBetaTarget(double alpha, double beta) : alpha_(alpha), beta_(beta)
+    {
+    }
+
+    void eval_logf(const double x, double &logf, double &dlogf) override
+    {
+      logf = alpha_ * x - (alpha_ + beta_) * log(1 + exp(x));
+      dlogf = alpha_ - (alpha_ + beta_) / (1 + exp(-x));
+    }
+  };
+
+  // Do adaptive rejection sampling here
+  double m = (lb + ub) / 2.0;
+  auto target = TruncBetaTarget(alpha, beta);
+  auto sampler = ARS(n, &target,
+                     log(m) - log(1 - m),
+                     log(lb) - log(1 - lb),
+                     log(ub) - log(1 - ub), 
+                     verbose);
+  return 1 / (1 + exp(-sampler.Sample()));
+}
