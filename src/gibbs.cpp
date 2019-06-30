@@ -194,9 +194,9 @@ void Fit::StartSampling()
           }
           else
           {
-            auto spl = SamplerLogw(p, vardeltas, K, alpha, s, eta);
-            auto ars = ARS(1, spl, logw);
-            logw = ars.Sample()[0];
+            auto target = SamplerLogw(p, vardeltas, K, alpha, s, eta);
+            auto spl = ARS(1, &target, logw);
+            logw = spl.Sample()[0];
           }
         }
       }
@@ -204,15 +204,15 @@ void Fit::StartSampling()
       if (ptype.compare("ghs") == 0)
       {
         //GetRNGstate();
-        auto spl = SamplerSgmGhs(p, vardeltas, K, alpha, log_aw);
+        auto target = SamplerSgmGhs(p, vardeltas, K, alpha, log_aw);
         for (int idx = 0; idx < p; idx++)
         {
           // performa ars on log(sigma_j), which is still saved in sigma_j
           //if (log(vardeltas[j]) > -20)
-          spl.set_idx(idx);
-          auto ars = ARS(1, spl, log(vardeltas[idx] / K));
+          target.set_idx(idx);
+          auto spl = ARS(1, &target, log(vardeltas[idx] / K));
           //convert xi to sigma_j
-          sigmasbt[idx] = exp(ars.Sample()[0]);
+          sigmasbt[idx] = exp(spl.Sample()[0]);
         }
         //PutRNGstate();
       }
@@ -220,15 +220,15 @@ void Fit::StartSampling()
       if (ptype.compare("neg") == 0)
       {
         //GetRNGstate();
-        SamplerSgm spl = SamplerSgmNeg(p, vardeltas, K, alpha, log_aw);
+        auto target = SamplerSgmNeg(p, vardeltas, K, alpha, log_aw);
         for (int idx = 0; idx < p; idx++)
         {
           // performa ars on log(sigma_j), which is still saved in sigma_j
           //if (log(vardeltas[j]) > -20)
-          spl.set_idx(idx);
-          ARS ars = ARS(1, spl, log(vardeltas[idx] / K));
+          target.set_idx(idx);
+          ARS spl = ARS(1, &target, log(vardeltas[idx] / K));
           //convert xi to sigma_j
-          sigmasbt[idx] = exp(ars.Sample()[0]);
+          sigmasbt[idx] = exp(spl.Sample()[0]);
         }
         //PutRNGstate();
       }
