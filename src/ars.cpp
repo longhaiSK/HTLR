@@ -5,20 +5,15 @@
 // the piecewise linear function below logf lowerhulls
 
 // Header of helper functions
-void sample_disc(const int n, int *rn, const int k, double *lw);
-void sample_elin(const int n, double *rn, const double lower, const double upper,
-                 double dlogf[1], double tol_dlogf_is0[1]);
-void logint_elin(double logf[1], double dlogf[1], double t[1],
-                 double lower[1], double upper[1], double lw[1],
-                 double tol_dlogf_is0[1]);
-double interc(double t1[1], double t2[1],
-              double logf1[1], double logf2[1], double dlogf1[1], double dlogf2[1],
-              double tol_ddlogf_is0[1]);
-
-// void SampleTarget::eval_logf(const double x, double &logf, double &dlogf) 
-// {
-//   Rcpp::Rcerr << "Sould not appear. Check with your implementation of descendant class.\n";
-// }; 
+int sample_disc(const int k, const double *lw);
+double sample_elin(const double lower, const double upper,
+                   const double dlogf, const double tol_dlogf_is0);
+double logint_elin(const double logf, const double dlogf, const double t,
+                   const double lower, const double upper, const double tol_dlogf_is0);
+double interc(const double t1, const double t2,
+              const double logf1, const double logf2,
+              const double dlogf1, const double dlogf2,
+              const double tol_ddlogf_is0);
 
 // this function updates the envolop and squeezing functions.
 // newx --- new point to be inserted
@@ -40,10 +35,8 @@ void ARS::update_hulls(const int h, const double newx, const double logfv, const
       if (upperbounds[h] != newx)
       {
         upperbounds[h] = newx;
-        logint_elin(
-          &logfvs[h], &dlogfvs[h],
-          &tpoints[h], &lowerbounds[h],
-          &upperbounds[h], &lws[h], &tol_dlogf_is0);
+        lws[h] = logint_elin(logfvs[h], dlogfvs[h], tpoints[h],
+                             lowerbounds[h], upperbounds[h], tol_dlogf_is0);
       }
       return;
     }
@@ -57,10 +50,8 @@ void ARS::update_hulls(const int h, const double newx, const double logfv, const
       if (lowerbounds[h] != newx)
       {
         lowerbounds[h] = newx;
-        logint_elin(
-          &logfvs[h], &dlogfvs[h],
-          &tpoints[h], &lowerbounds[h],
-          &upperbounds[h], &lws[h], &tol_dlogf_is0);
+        lws[h] = logint_elin(logfvs[h], dlogfvs[h], tpoints[h],
+                             lowerbounds[h], upperbounds[h], tol_dlogf_is0);
       }
       return;
     }
@@ -77,59 +68,53 @@ void ARS::update_hulls(const int h, const double newx, const double logfv, const
 
   if (lh == -1) // nh will be the new leftest hull
   {
-    lowerbounds [nh] = lowerbounds [h];
-    slopes_leftsq [nh] = R_PosInf;
+    lowerbounds[nh] = lowerbounds[h];
+    slopes_leftsq[nh] = R_PosInf;
   }
   else
   {
-    lowerbounds[nh] = interc(&tpoints[lh], &tpoints[nh],
-      &logfvs[lh], &logfvs[nh], &dlogfvs[lh], &dlogfvs[nh],
-      &tol_ddlogf_is0); // lowerbound
+    lowerbounds[nh] = interc(
+        tpoints[lh], tpoints[nh], logfvs[lh], logfvs[nh],
+        dlogfvs[lh], dlogfvs[nh], tol_ddlogf_is0);
     slopes_leftsq[nh] = (logfvs[nh] - logfvs[lh]) /
                         (tpoints[nh] - tpoints[lh]);
   }
   if (rh == max_nhull)
   {
-    upperbounds[nh] = upperbounds[h]; // upperbound
+    upperbounds[nh] = upperbounds[h];
     slopes_ritesq[nh] = R_NegInf;
   }
   else
   {
-    upperbounds[nh] = interc(&tpoints[nh], &tpoints[rh],
-      &logfvs[nh], &logfvs[rh], &dlogfvs[nh], &dlogfvs[rh],
-      &tol_ddlogf_is0); // upperbound
-    slopes_ritesq [nh] = (logfvs[nh] - logfvs[rh]) /
+    upperbounds[nh] =
+        interc(tpoints[nh], tpoints[rh], logfvs[nh], logfvs[rh],
+               dlogfvs[nh], dlogfvs[rh], tol_ddlogf_is0);
+    slopes_ritesq[nh] = (logfvs[nh] - logfvs[rh]) /
                         (tpoints[nh] - tpoints[rh]);
   }
 
-  logint_elin(
-        &logfvs[nh], &dlogfvs[nh],
-        &tpoints[nh], &lowerbounds[nh],
-        &upperbounds[nh], &lws[nh], &tol_dlogf_is0);
+  lws[nh] = logint_elin(logfvs[nh], dlogfvs[nh], tpoints[nh],
+                        lowerbounds[nh], upperbounds[nh], tol_dlogf_is0);
 
   // update left hull of new null
   if (lh != -1)
   {
     upperbounds[lh] = lowerbounds[nh];
     ritehulls[lh] = nh;
-    slopes_ritesq[lh] = slopes_leftsq [nh];
-    logint_elin (
-        &logfvs[lh], &dlogfvs[lh],
-        &tpoints[lh], &lowerbounds[lh],
-        &upperbounds[lh], &lws[lh], &tol_dlogf_is0);
+    slopes_ritesq[lh] = slopes_leftsq[nh];
+    lws[lh] = logint_elin(logfvs[lh], dlogfvs[lh], tpoints[lh],
+                          lowerbounds[lh], upperbounds[lh], tol_dlogf_is0);
   }
 
   // update right hull of newh if it exists
   if (rh != max_nhull)
   {
-      lowerbounds[rh] = upperbounds[nh];
-      lefthulls[rh] = nh;
-      slopes_leftsq[rh] = slopes_ritesq [nh];
+    lowerbounds[rh] = upperbounds[nh];
+    lefthulls[rh] = nh;
+    slopes_leftsq[rh] = slopes_ritesq[nh];
 
-      logint_elin (
-        &logfvs[rh], &dlogfvs[rh],
-        &tpoints[rh], &lowerbounds[rh],
-        &upperbounds[rh], &lws[rh], &tol_dlogf_is0);
+    lws[rh] = logint_elin(logfvs[rh], dlogfvs[rh], tpoints[rh],
+                          lowerbounds[rh], upperbounds[rh], tol_dlogf_is0);
   }
 }
 
@@ -164,18 +149,16 @@ void ARS::Prepare()
   // expanding at the left until reaching a bound or integral to finite
   else
   {
-    h = 0;
     newx = tpoints[0] - stepout;
     do
     {
-      Rcpp::Rcerr << no_hulls << " " << newlogf << "\n";
       if (no_hulls == max_nhull)
       {
-        //Rcpp::Rcerr << no_hulls << " " << max_nhull << "\n";
         Rcpp::stop(
             "Error in Rejection Sampling: (finite lb)\n"
-            "'max_nhull' is set too small, or your log-PDF NOT concave.\n");
+            "'max_nhull' is set too small, or your log-PDF is NOT concave.\n");
       }
+      h = 0;
       target->eval_logf(newx, newlogf, newdlogf);
       update_hulls (h, newx, newlogf, newdlogf);
       // finding a new leftbound, quit expanding
@@ -206,7 +189,7 @@ void ARS::Prepare()
         //Rcpp::Rcerr << no_hulls << " " << max_nhull << "\n";
         Rcpp::stop(
             "Error in Rejection Sampling: (finite ub)\n"
-            "'max_nhull' is set too small, or your log-PDF NOT concave.\n");
+            "'max_nhull' is set too small, or your log-PDF is NOT concave.\n");
       }
       target->eval_logf(newx, newlogf, newdlogf);
       update_hulls (h, newx, newlogf, newdlogf);
@@ -238,8 +221,8 @@ ARS::ARS(int n, SampleTarget *target, double ini_tpoint,
         "the first tangent point doesn't have positive probability.\n");
   }
 
-  this->lowerbounds = new double[max_nhull]{0};
-  this->upperbounds = new double[max_nhull]{0};
+  this->lowerbounds = new double[max_nhull] {0};
+  this->upperbounds = new double[max_nhull] {0};
   lowerbounds[0] = fmax(lb, R_NegInf); // lower bound of the hull
   upperbounds[0] = fmin(ub, R_PosInf); // upper bound of the hull
 
@@ -248,12 +231,12 @@ ARS::ARS(int n, SampleTarget *target, double ini_tpoint,
   lefthulls[0] = -1;        // index of left hull
   ritehulls[0] = max_nhull; // index of right hull
 
-  this->slopes_leftsq = new double[max_nhull]{0};
-  this->slopes_ritesq = new double[max_nhull]{0};
+  this->slopes_leftsq = new double[max_nhull] {0};
+  this->slopes_ritesq = new double[max_nhull] {0};
   slopes_leftsq[0] = R_PosInf; // slope of left squeezing arc
   slopes_ritesq[0] = R_NegInf; // slope of right sequeezing arc
 
-  this->lws = new double[max_nhull]{0};
+  this->lws = new double[max_nhull] {0};
   lws[0] = R_PosInf; // compute log weights, updating lws[0]
   this->no_hulls = 1;
 }
@@ -277,9 +260,9 @@ Rcpp::NumericVector ARS::Sample()
     while (rejected)
     {
       // draw a new point and a unif random number
-      sample_disc(one, &h, no_hulls, lws);
-      sample_elin(one, &newx, lowerbounds[h], upperbounds[h],
-                  &dlogfvs[h], &tol_dlogf_is0);
+      h = sample_disc(no_hulls, lws);
+      newx = sample_elin(lowerbounds[h], upperbounds[h],
+                         dlogfvs[h], tol_dlogf_is0);
       upperhullv = eval_upperhull(h, newx);
       GetRNGstate();
       u = unif_rand();
@@ -307,137 +290,112 @@ Rcpp::NumericVector ARS::Sample()
           no_rejs++;
       }
     }
-    if (i % 256 == 0) R_CheckUserInterrupt();
   }
   if (verbose)
   {
-    double rate_rej = (no_rejs + 0.0) / (no_rejs + n + 0.0); // return rejection rate
-    Rprintf("no of hulls = %d, rejection rate = %4.2f\n", no_hulls, rate_rej);
+    double rej_rate = (no_rejs + 0.0) / (no_rejs + n + 0.0);
+    Rprintf("Sampling complete. Number of hulls: %d, Rejection rate: %4.2f\n",
+            no_hulls, rej_rate);
   }
   return output;
 }
 
-
-
-// find maximum value in double vector a with length n
+// find maximum value in double array a with length n
 double fmaxm(const int n, const double *a)
 {
   double ma = a[0];
   if (n > 1)
   {
     for (int i = 1; i < n; i++)
-    {
       ma = fmax(a[i], ma);
-    }
   }
   return ma;
 }
 
-// n --- number of random numbers
 // k --- number of discrete values
 // lw --- log of probabilities
-// rn --- vector of random numbers returned
-void sample_disc (const int n, int *rn, const int k, double *lw)
+int sample_disc(const int k, const double *lw)
 {
   // constructing probabilities from log probabilities
   double max_lw = fmaxm(k, lw);
   double cw[k];
   cw[0] = exp(lw[0] - max_lw);
-  for (int i = 1; i < k; i++) 
-    cw[i] = cw [i-1] + exp(lw [i] - max_lw);
+  for (int i = 1; i < k; i++)
+    cw[i] = cw[i - 1] + exp(lw[i] - max_lw);
 
-  for (int j = 0; j < n; j++)
+  GetRNGstate();
+  double u = unif_rand() * cw[k - 1];
+  PutRNGstate();
+  // convert u into a discrete value
+  int i = 0;
+  while (i < k)
   {
-    GetRNGstate();
-    double u = unif_rand() * cw[k - 1];
-    PutRNGstate();
-    // convert u into a discrete value
-    for (int i = 0; i < k; i++)
-    {
-      if (u <= cw[i])
-      {
-        rn[j] = i;
-        break;
-      }
-    }
+    if (u <= cw[i])
+      break;
+    i++;
   }
+  return i;
 }
 
-// this function samples from: exp (a[0]*x) I (x in [lb, upper[0]])
-// n is number of random numbers required, rn will store random numbers
-void sample_elin
-   (const int n, double *rn, const double lower, const double upper,
-    double dlogf[1], double tol_dlogf_is0[1])
+// this function samples one point from: exp (a[0]*x) I (x in [lb, upper[0]])
+double sample_elin(const double lower, const double upper,
+                   const double dlogf, const double tol_dlogf_is0)
 {
   // set smallest value for derivative that can be thought of as 0
-  double y;
-  int type_lin; 
+  int type_lin = -1; 
   bool isfault = false;
 
   // checking linear function type and fault
-  if (fabs (dlogf[0]) <= tol_dlogf_is0 [0])
+  if (fabs(dlogf) <= tol_dlogf_is0)
   {
-     if (!(R_FINITE(lower) & R_FINITE(upper)) )
-     {
-       isfault = true;
-     }
-     else
-     {
-       type_lin = 0;
-     }
+    if (!(R_FINITE(lower) & R_FINITE(upper)))
+      isfault = true;
+    else
+      type_lin = 0; // slope is zero
   }
 
-  if (dlogf[0] >  tol_dlogf_is0 [0])
+  if (dlogf > tol_dlogf_is0)
   {
     if (!R_FINITE(upper))
-    {
       isfault = true;
-    }
     else
-    {
-      type_lin = 1;
-    }
+      type_lin = 1; // slope is postive
   }
 
-  if (dlogf[0] < -tol_dlogf_is0 [0])
+  if (dlogf < -tol_dlogf_is0)
   {
-    if(!R_FINITE(lower))
-    {
+    if (!R_FINITE(lower))
       isfault = true;
-    }
     else
-    {
-      type_lin = -1;
-    }
+      type_lin = 2; //slope is negative
   }
 
   if (isfault)
   {
     REprintf("(dlogf = %4.2f, lowerbound = %4.2f, upperbound = %4.2f)\n",
-             dlogf[0], lower, upper);
+             dlogf, lower, upper);
     Rcpp::stop(
         "Error: in C function 'sample_elin':\n"
         "the exp linear function integrates to NAN/INFINITY\n");
   }
 
   double dx = upper - lower;
+  GetRNGstate();
+  double y = R::runif(0, 1);
+  PutRNGstate();
 
-  for (int j = 0; j < n; j++)
-  {
-    GetRNGstate();
-    y = R::runif(0, 1);
-    PutRNGstate();
+  double output;
 
-    //converting uniform random number
-    if (type_lin == 0)  // slope is 0
-      rn[j] = lower + y * dx;
+  if (type_lin == 0)       
+    output = lower + y * dx;
+  else if (type_lin == 1)  
+    output = upper + log((1 - y) * exp(-dlogf * dx) + y) / dlogf;
+  else if (type_lin == 2)  
+    output = lower + log(1 - y + y * exp(dlogf * dx)) / dlogf;
+  else
+    Rcpp::stop("Error: in C function 'sample_elin': unexpected type_lin value\n");
 
-    if (type_lin == 1)  // slope is postive
-      rn[j] = upper + log((1 - y) * exp(-dlogf[0] * dx) + y) / dlogf[0];
-
-    if (type_lin == -1) //slope is negative
-      rn[j] = lower + log(1 - y + y * exp(dlogf[0] * dx)) / dlogf[0];
-  }
+  return output;
 }
 
 // this function evaluates the log of integral of exp linear hull
@@ -445,55 +403,42 @@ void sample_elin
 // dlogf --- value of derive of linear hull
 // t --- tangent point where logf is calculated
 // lower and upper --- lower and upper bounds of linear hull
-// lw --- saved returned log integral
-void logint_elin(double logf[1], double dlogf[1], double t[1],
-                 double lower[1], double upper[1], double lw[1],
-                 double tol_dlogf_is0[1])
+double logint_elin(const double logf, const double dlogf, const double t,
+                   const double lower, const double upper, const double tol_dlogf_is0)
 {
-  double dx, abs_dlogf;
-  int sgn_dlogf;
+  double output;
 
-  dx = upper [0] - lower [0];
-  abs_dlogf = fabs (dlogf[0]);
+  double dx = upper - lower;
+  double abs_dlogf = fabs(dlogf);
 
-
-  if (abs_dlogf <= tol_dlogf_is0 [0]) // slope is 0
+  if (abs_dlogf <= tol_dlogf_is0) // slope is 0
   {
-    lw[0] = logf[0] + log (dx);
-    return;
-  }
-
-  if (dlogf[0] > tol_dlogf_is0 [0]) sgn_dlogf = 1; else sgn_dlogf = -1;
-
-  if (sgn_dlogf == 1) // slope is positive
-  {
-    lw[0] = logf[0] + dlogf[0] * (upper[0] - t[0]) - log (abs_dlogf)  +
-            log (1 - exp (- abs_dlogf * dx) );
-    return;
-  }
-
-  if (sgn_dlogf == -1) //slope is negative
-  {
-    lw[0] = logf[0] + dlogf[0] * (lower[0] - t[0]) - log (abs_dlogf)  +
-            log (1 - exp (- abs_dlogf * dx) );
-    return;
-  }
-}
-
-// this function finds interception points between t1 and t2
-double interc(
-    double t1[1], double t2[1],
-    double logf1[1], double logf2[1], double dlogf1[1], double dlogf2[1],
-    double tol_ddlogf_is0[1])
-{
-  if (fabs(dlogf1[0] - dlogf2[0]) > tol_ddlogf_is0[0])
-  {
-    return (
-        (logf2[0] - logf1[0] - dlogf2[0] * t2[0] + dlogf1[0] * t1[0]) /
-        (dlogf1[0] - dlogf2[0]));
+    output = logf + log(dx);
   }
   else
   {
-    return ((t1[0] + t2[0]) / 2.0);
+    if (dlogf > tol_dlogf_is0) // slope is positive
+    {
+      output = logf + dlogf * (upper - t) - log(abs_dlogf) +
+               log(1 - exp(-abs_dlogf * dx));
+    }
+    else //slope is negative
+    {
+      output = logf + dlogf * (lower - t) - log(abs_dlogf) +
+               log(1 - exp(-abs_dlogf * dx));
+    }
   }
+  return output;
+}
+
+// this function finds interception points between t1 and t2
+double interc(const double t1, const double t2,
+              const double logf1, const double logf2,
+              const double dlogf1, const double dlogf2,
+              const double tol_ddlogf_is0)
+{
+  if (fabs(dlogf1 - dlogf2) > tol_ddlogf_is0)
+    return ((logf2 - logf1 - dlogf2 * t2 + dlogf1 * t1) / (dlogf1 - dlogf2));
+  else
+    return ((t1 + t2) / 2.0);
 }
