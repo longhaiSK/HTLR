@@ -57,8 +57,8 @@ class ARS
 
   ARS(int n, SampleTarget *target, double ini_tpoint,
       double lb = R_NegInf, double ub = R_PosInf,
-      bool verbose = false, int max_nhull = 1000,
-      double tol_dlogf_is0 = 1E-5, double tol_ddlogf_is0 = 1E-5, double stepout = 10);
+      bool verbose = false, int max_nhull = 1000, double stepout = 10,
+      double tol_dlogf_is0 = 1E-5, double tol_ddlogf_is0 = 1E-5);
 
   Rcpp::NumericVector Sample(); 
 
