@@ -7,6 +7,11 @@ arma::mat cpvec(const arma::mat &A)
 
 arma::vec col_sum(const arma::mat &A)
 {
+  return arma::sum(A, 0);
+}
+
+arma::vec row_sum(const arma::mat &A)
+{
   return arma::sum(A, 1);
 }
 
@@ -17,13 +22,13 @@ double log_sum_exp(const arma::vec &a)
 }
 
 arma::vec log_sum_exp(const arma::mat &A)
-{  
+{
   arma::colvec m = arma::max(A, 1);
   return 
     arma::log(
-      col_sum(
+      row_sum(
         arma::exp(
-          A.each_row() - m
+          A.each_col() - m
         )
       )
     ) + m;
@@ -31,5 +36,5 @@ arma::vec log_sum_exp(const arma::mat &A)
 
 arma::mat find_normlv(const arma::mat &lv)
 {  
-  return lv - log_sum_exp(lv);
+  return lv.each_col() - log_sum_exp(lv);
 }
