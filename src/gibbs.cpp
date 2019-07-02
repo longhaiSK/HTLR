@@ -2,14 +2,14 @@
 #include "gibbs.h"
 
 Fit::Fit(int p, int K, int n,
-         arma::mat X, arma::mat ymat, arma::vec ybase,
+         arma::mat &X, arma::mat &ymat, arma::vec &ybase,
          std::string ptype, double alpha, double s, double eta, double sigmab0,
          int iters_rmc, int iters_h, int thin,
          int leap_L, int leap_L_h, double leap_step,
-         double hmc_sgmcut, arma::vec DDNloglike,
-         arma::cube mcdeltas, arma::vec mclogw, arma::mat mcsigmasbt,
+         double hmc_sgmcut, arma::vec &DDNloglike,
+         arma::cube &mcdeltas, arma::vec &mclogw, arma::mat &mcsigmasbt,
          int silence, int looklf)
-    : p(p), K(K), C(K + 1), n(n), X(X), ymat(ymat), ybase(ybase),
+    : p(p), K(K), C(K + 1), n(n), X(X.t()), ymat(ymat), ybase(ybase),
       ptype(ptype), alpha(alpha), s(s), eta(eta), sigmab0(sigmab0),
       iters_rmc(iters_rmc), iters_h(iters_h), thin(thin),
       leap_L(leap_L), leap_L_h(leap_L_h), leap_step(leap_step),
@@ -19,13 +19,13 @@ Fit::Fit(int p, int K, int n,
   this->nvar = p + 1;
   this->nuvar = 0;
   this->nfvar = 0;
-  this->ids_update = new int[nvar]{0};
-  this->ids_fix = new int[nvar]{0};
+  this->ids_update = arma::uvec(nvar, arma::fill::zeros); 
+  this->ids_fix = arma::uvec(nvar, arma::fill::zeros);
 
   this->mcdeltas = mcdeltas;
   this->mclogw = mclogw;
   this->mcsigmasbt = mcsigmasbt;
-  this->mcvardeltas = arma::mat(iters_rmc + 1, nvar, arma::fill::zeros);
+  this->mcvardeltas = arma::mat(nvar, iters_rmc + 1, arma::fill::zeros);
   this->mcloglike = arma::vec(iters_rmc + 1, arma::fill::zeros);
   this->mcuvar = arma::vec(iters_rmc + 1, arma::fill::zeros);
   this->mchmcrej = arma::vec(iters_rmc + 1, arma::fill::zeros);
@@ -63,16 +63,21 @@ void Fit::StartSampling()
   /*********************** getting initial values ************************/
   deltas = mcdeltas.slice(0);
   double logw = mclogw(0);
-  sigmasbt = mcsigmasbt.row(0);
+  sigmasbt = mcsigmasbt.col(0);
 
   // compute some initial values
   whichupdate(-1);  // set to update all
   updatepredprob(); // lv is computed here
+  Rcpp::Rcerr << "here2.2\n";
   updateloglike();
+  Rcpp::Rcerr << "here2.3\n";
   updateDNlogprior();
+  Rcpp::Rcerr << "here2.4\n";
   updatevardeltas();
-  mcloglike(0) = loglike;
-  mcvardeltas.row(0) = vardeltas;
+  Rcpp::Rcerr << "here2.5\n";
+  mcloglike[0] = loglike;
+  mcvardeltas.col(0) = vardeltas;
+  Rcpp::Rcerr << "here3\n";
 
   /************************ start gibbs sampling **************************/
   for (int i_mc = 0; i_mc < iters_h + iters_rmc; i_mc++)
@@ -103,19 +108,28 @@ void Fit::StartSampling()
     {
       /*********************** HMC Metropolis Update ********************/
       // initialize HMC
+      Rcpp::Rcerr << "here3.1\n";
       whichupdate(sgmsqcut);
       no_uvar += nuvar;
+      Rcpp::Rcerr << "here3.2\n";
 
       gen_momt();
       updatestepsizes();
+      Rcpp::Rcerr << "here3.3\n";
       detach_fixlv();
+      Rcpp::Rcerr << "here3.4\n";
       cache_oldvalues();
+      Rcpp::Rcerr << "here3.5\n";
       double nenergy_old = comp_nenergy();
+      Rcpp::Rcerr << "here3.6\n";
 
       // start trajectory
       updateDNlogprior();
+      Rcpp::Rcerr << "here3.7\n";
       updateDNloglike(); // recompute derivatives of log likelihood
+      Rcpp::Rcerr << "here3.8\n";
       updateDNlogpost(); // recompute derivatives of log prior
+      Rcpp::Rcerr << "here3.9\n";
       for (int i_trj = 0; i_trj < L; i_trj++)
       {
         for (int uj = 0; uj < nuvar; uj++)
@@ -127,11 +141,16 @@ void Fit::StartSampling()
             deltas(k, j) += stepsizes(j) * momt(k, j);
           }
         }
+        Rcpp::Rcerr << "here4\n";
         // compute derivative of minus log joint distribution
         updatepredprob();
+        Rcpp::Rcerr << "here4.1\n";
         updateDNlogprior();
+        Rcpp::Rcerr << "here4.2\n";
         updateDNloglike();
+        Rcpp::Rcerr << "here4.3\n";
         updateDNlogpost();
+        Rcpp::Rcerr << "here4.4\n";
         // move momonton with new derivatives
         for (int uj = 0; uj < nuvar; uj++)
         {
@@ -141,6 +160,7 @@ void Fit::StartSampling()
             momt(k, j) -= stepsizes(j) / 2 * DNlogpost(k, j);
           }
         }
+        Rcpp::Rcerr << "here4.5\n";
       }
 
       bool isfault = false;
@@ -241,8 +261,8 @@ void Fit::StartSampling()
     if (i_rmc >= 0)
     {
       mcdeltas.slice(i_rmc + 1) = deltas;
-      mcsigmasbt.row(i_rmc + 1) = sigmasbt;
-      mcvardeltas.row(i_rmc + 1) = vardeltas;
+      mcsigmasbt.col(i_rmc + 1) = sigmasbt;
+      mcvardeltas.col(i_rmc + 1) = vardeltas;
       mclogw(i_rmc + 1) = logw;
       mcloglike(i_rmc + 1) = loglike;
       mcuvar(i_rmc + 1) = no_uvar;
@@ -316,20 +336,10 @@ void Fit::whichupdate(double cut)
 // this function updates lv and predprob
 void Fit::updatepredprob()
 {
-  // add fixed part
-  lv.tail_cols(K) = lv_fix.tail_cols(K);
-  // add updated part
-  for (int uj = 0; uj < nuvar; uj++) 
-  {
-    int j = ids_update[uj];
-    for (int k = 0; k < K; k++) 
-    {
-      for (int i = 0; i < n; i++)
-      {
-        lv(i, k+1) +=  deltas(k, j) * X(j, i);
-      }
-    }
-  }
+  arma::mat tmp1 = deltas.cols(ids_update);
+  arma::mat tmp2 = X.rows(ids_update);
+  arma::mat tmp3 = tmp1 * tmp2; // updated part
+  lv.tail_cols(K) = lv_fix.tail_cols(K) + tmp3.t();
   normlv = find_normlv(lv);
   predprob = arma::exp(normlv);
 }
@@ -400,6 +410,7 @@ void Fit::updateloglike()
 // this function update SUMdeltas and DNlogprior
 void Fit::updateDNlogprior()
 {
+  //arma::mat tmp1 = deltas.cols(ids_update);
   for (int uj = 0; uj < nuvar; uj++) 
   {
     int j = ids_update[uj];
@@ -408,9 +419,9 @@ void Fit::updateDNlogprior()
     for (int k = 0; k < K; k++) 
     {
       SUMdeltas[j] += deltas(k, j);
-    }
-    for (int k = 0; k < K; k++)
-    {    
+    //}
+    //for (int k = 0; k < K; k++)
+    //{    
       DNlogprior(k, j) = deltas(k, j) - SUMdeltas[j]/C;
     }
   }
