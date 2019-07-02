@@ -32,7 +32,7 @@ class Fit
 
   // internal
   int nvar, nuvar, nfvar;
-  int *ids_update, *ids_fix;
+  arma::uvec ids_update, ids_fix;
 
   arma::mat 
       lv, lv_old, lv_fix, normlv,
@@ -66,12 +66,12 @@ class Fit
   public:
 
   Fit(int p, int K, int n,
-      arma::mat X, arma::mat ymat, arma::vec ybase,
+      arma::mat &X, arma::mat &ymat, arma::vec &ybase,
       std::string ptype, double alpha, double s, double eta, double sigmab0,
       int iters_rmc, int iters_h, int thin, 
       int leap_L, int leap_L_h, double leap_step,
-      double hmc_sgmcut, arma::vec DDNloglike,
-      arma::cube mcdeltas, arma::vec mclogw, arma::mat mcsigmasbt,
+      double hmc_sgmcut, arma::vec &DDNloglike,
+      arma::cube &mcdeltas, arma::vec &mclogw, arma::mat &mcsigmasbt,
       int silence, int looklf);
 
   void StartSampling();
