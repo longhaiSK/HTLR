@@ -48,14 +48,14 @@ class Fit
       stepsizes, sigmasbt; 
   double loglike, loglike_old, sgmsqcut;
  
-  void whichupdate(double cut);  
-  void updatepredprob();
-  void detach_fixlv();
-  void updateDNloglike();
-  void updateloglike();
-  void updateDNlogprior();
-  void updateDNlogpost();
-  void updatevardeltas();
+  void WhichUpdate(double cut);  
+  void UpdatePredProb();
+  void DetachFixlv();
+  void UpdateDNlogLike();
+  void UpdateLogLike();
+  void UpdateDNlogPrior();
+  void UpdateDNlogPost();
+  void UpdateVarDeltas();
   double comp_nenergy();
   void gen_momt();
   void cache_oldvalues();

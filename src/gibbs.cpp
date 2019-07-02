@@ -66,14 +66,14 @@ void Fit::StartSampling()
   sigmasbt = mcsigmasbt.col(0);
 
   // compute some initial values
-  whichupdate(-1);  // set to update all
-  updatepredprob(); // lv is computed here
+  WhichUpdate(-1);  // set to update all
+  UpdatePredProb(); // lv is computed here
   Rcpp::Rcerr << "here2.2\n";
-  updateloglike();
+  UpdateLogLike();
   Rcpp::Rcerr << "here2.3\n";
-  updateDNlogprior();
+  UpdateDNlogPrior();
   Rcpp::Rcerr << "here2.4\n";
-  updatevardeltas();
+  UpdateVarDeltas();
   Rcpp::Rcerr << "here2.5\n";
   mcloglike[0] = loglike;
   mcvardeltas.col(0) = vardeltas;
@@ -109,14 +109,14 @@ void Fit::StartSampling()
       /*********************** HMC Metropolis Update ********************/
       // initialize HMC
       Rcpp::Rcerr << "here3.1\n";
-      whichupdate(sgmsqcut);
+      WhichUpdate(sgmsqcut);
       no_uvar += nuvar;
       Rcpp::Rcerr << "here3.2\n";
 
       gen_momt();
       updatestepsizes();
       Rcpp::Rcerr << "here3.3\n";
-      detach_fixlv();
+      DetachFixlv();
       Rcpp::Rcerr << "here3.4\n";
       cache_oldvalues();
       Rcpp::Rcerr << "here3.5\n";
@@ -124,11 +124,11 @@ void Fit::StartSampling()
       Rcpp::Rcerr << "here3.6\n";
 
       // start trajectory
-      updateDNlogprior();
+      UpdateDNlogPrior();
       Rcpp::Rcerr << "here3.7\n";
-      updateDNloglike(); // recompute derivatives of log likelihood
+      UpdateDNlogLike(); // recompute derivatives of log likelihood
       Rcpp::Rcerr << "here3.8\n";
-      updateDNlogpost(); // recompute derivatives of log prior
+      UpdateDNlogPost(); // recompute derivatives of log prior
       Rcpp::Rcerr << "here3.9\n";
       for (int i_trj = 0; i_trj < L; i_trj++)
       {
@@ -143,13 +143,13 @@ void Fit::StartSampling()
         }
         Rcpp::Rcerr << "here4\n";
         // compute derivative of minus log joint distribution
-        updatepredprob();
+        UpdatePredProb();
         Rcpp::Rcerr << "here4.1\n";
-        updateDNlogprior();
+        UpdateDNlogPrior();
         Rcpp::Rcerr << "here4.2\n";
-        updateDNloglike();
+        UpdateDNlogLike();
         Rcpp::Rcerr << "here4.3\n";
-        updateDNlogpost();
+        UpdateDNlogPost();
         Rcpp::Rcerr << "here4.4\n";
         // move momonton with new derivatives
         for (int uj = 0; uj < nuvar; uj++)
@@ -180,8 +180,8 @@ void Fit::StartSampling()
       }
 
       // decide whether to accept it
-      updateloglike();
-      updatevardeltas();
+      UpdateLogLike();
+      UpdateVarDeltas();
       double nenergy = comp_nenergy();
 
       GetRNGstate();
@@ -320,7 +320,7 @@ Rcpp::List Fit::OutputR()
   }
 
 // this function determines which features to be updated 
-void Fit::whichupdate(double cut)
+void Fit::WhichUpdate(double cut)
 {
   nuvar = 0;
   nfvar = 0;
@@ -334,7 +334,7 @@ void Fit::whichupdate(double cut)
 }
 
 // this function updates lv and predprob
-void Fit::updatepredprob()
+void Fit::UpdatePredProb()
 {
   arma::mat tmp1 = deltas.cols(ids_update);
   arma::mat tmp2 = X.rows(ids_update);
@@ -344,7 +344,7 @@ void Fit::updatepredprob()
   predprob = arma::exp(normlv);
 }
 
-void Fit::detach_fixlv()
+void Fit::DetachFixlv()
 {
   if (nuvar <= nvar / 2)
   {
@@ -381,7 +381,7 @@ void Fit::detach_fixlv()
 }
 
 // this function computes derivatives of negative log like
-void Fit::updateDNloglike()
+void Fit::UpdateDNlogLike()
 {
   for (int uj = 0; uj < nuvar; uj++) 
   {
@@ -398,7 +398,7 @@ void Fit::updateDNloglike()
 }
 
 // this function computes log likelihood given normlv
-void Fit::updateloglike()
+void Fit::UpdateLogLike()
 {
   loglike = 0;
   for (int i = 0; i < n; i++) 
@@ -408,7 +408,7 @@ void Fit::updateloglike()
 }
   
 // this function update SUMdeltas and DNlogprior
-void Fit::updateDNlogprior()
+void Fit::UpdateDNlogPrior()
 {
   //arma::mat tmp1 = deltas.cols(ids_update);
   for (int uj = 0; uj < nuvar; uj++) 
@@ -427,7 +427,7 @@ void Fit::updateDNlogprior()
   }
 }
 
-void Fit::updateDNlogpost()
+void Fit::UpdateDNlogPost()
 {       
   for (int uj = 0; uj < nuvar; uj++) 
   {
@@ -440,7 +440,7 @@ void Fit::updateDNlogpost()
 }
 
 // this function updates SUMsqdeltas, vardeltas
-void Fit::updatevardeltas()
+void Fit::UpdateVarDeltas()
 {
   for (int uj = 0; uj < nuvar; uj++) 
   {
