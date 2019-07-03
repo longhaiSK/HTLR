@@ -10,43 +10,43 @@ class Fit
   private:
 
   // data
-  const int p, K, C, n;
-  arma::mat X; arma::mat ymat; arma::vec ybase;
+  const int p_, K_, C_, n_;
+  arma::mat X_; arma::mat ymat_; arma::vec ybase_;
 
   // prior
-  std::string ptype; 
-  const double alpha, s, eta, sigmab0;
+  std::string ptype_; 
+  const double alpha_, s_, eta_, sigmab0_;
 
   // sampling
-  const int iters_rmc, iters_h, thin, leap_L, leap_L_h; 
-  const double leap_step, hmc_sgmcut; 
-  arma::vec DDNloglike;
+  const int iters_rmc_, iters_h_, thin_, leap_L_, leap_L_h_; 
+  const double leap_step_, hmc_sgmcut_; 
+  arma::vec DDNloglike_;
 
   // fit result
-  arma::cube mcdeltas;
-  arma::mat mcsigmasbt, mcvardeltas;
-  arma::vec mclogw, mcloglike, mcuvar, mchmcrej;
+  arma::cube mc_deltas_;
+  arma::mat mc_sigmasbt_, mc_var_deltas_;
+  arma::vec mc_logw_, mc_loglike_, mc_uvar_, mc_hmcrej_;
 
   // other control or result
-  const int silence, looklf;
+  const int silence_, looklf_;
 
   // internal
-  int nvar, nuvar, nfvar;
-  arma::uvec ids_update, ids_fix;
+  int nvar_, nuvar_, nfvar_;
+  arma::uvec ids_update_, ids_fix_;
 
   arma::mat 
-      lv, lv_old, lv_fix, normlv,
-      predprob, predprob_old,
-      DNloglike, DNloglike_old, 
-      deltas, deltas_old, momt,
-      DNlogprior, DNlogprior_old, DNlogpost;  
+      lv_, lv_old_, lv_fix_, norm_lv_,
+      pred_prob_, pred_prob_old_,
+      DNloglike_, DNloglike_old_, 
+      deltas_, deltas_old_, momt_,
+      DNlogprior_, DNlogprior_old_, DNlogpost_;  
   
   arma::vec 
-      SUMsqdeltas, SUMsqdeltas_old,
-      SUMdeltas, SUMdeltas_old,
-      vardeltas, vardeltas_old,
-      stepsizes, sigmasbt; 
-  double loglike, loglike_old, sgmsqcut;
+      sumsq_deltas_, sumsq_deltas_old_,
+      sum_deltas_, sum_deltas_old_,
+      var_deltas_, var_deltas_old_,
+      step_sizes_, sigmasbt_; 
+  double loglike_, loglike_old_, sgmsq_cut_;
  
   void WhichUpdate(double cut);  
   void UpdatePredProb();
