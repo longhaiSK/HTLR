@@ -11,7 +11,7 @@ class Fit
 
   // data
   const int p_, K_, C_, n_;
-  arma::mat X_; arma::mat ymat_; arma::vec ybase_;
+  arma::mat X_; arma::mat ymat_; arma::uvec ybase_;
 
   // prior
   std::string ptype_; 
@@ -31,7 +31,9 @@ class Fit
   const int silence_, looklf_;
 
   // internal
-  int nvar_, nuvar_, nfvar_;
+  const int nvar_;
+  double logw_;
+  int nuvar_, nfvar_;
   arma::uvec ids_update_, ids_fix_;
 
   arma::mat 
@@ -56,22 +58,22 @@ class Fit
   void UpdateDNlogPrior();
   void UpdateDNlogPost();
   void UpdateVarDeltas();
-  double comp_nenergy();
-  void gen_momt();
-  void cache_oldvalues();
-  void restore_oldvalues();
-  void updatestepsizes();
+  double CompNegEnergy();
+  void GenMomt();
+  void CacheOldValues();
+  void RestoreOldValues();
+  void UpdateStepSizes();
 
 
   public:
 
   Fit(int p, int K, int n,
-      arma::mat &X, arma::mat &ymat, arma::vec &ybase,
+      arma::mat &X, arma::mat &ymat, arma::uvec &ybase,
       std::string ptype, double alpha, double s, double eta, double sigmab0,
       int iters_rmc, int iters_h, int thin, 
       int leap_L, int leap_L_h, double leap_step,
       double hmc_sgmcut, arma::vec &DDNloglike,
-      arma::cube &mcdeltas, arma::vec &mclogw, arma::mat &mcsigmasbt,
+      arma::mat &deltas, double logw, arma::vec &sigmasbt,
       int silence, int looklf);
 
   void StartSampling();

@@ -10,106 +10,94 @@ htlr_fit <- function (
     initial_state = "lasso", alpha.rda = 0.2, silence = TRUE, ## initial state
     predburn = NULL, predthin = 1) ## prediction
 {
-	## checking prior types
-	if (!any (ptype == c("t", "ghs", "neg"))) 
-	{
-	  stop ("\"ptype\" NOT in (\"t\", \"ghs\", \"neg\")")
-    }
-    ## checking arguments
-    if (iters_rmc <= 0||iters_h < 0||leap_L <=0 ||leap_L_h <= 0 || thin <= 0)
-    {
-      stop ("MC iterations and Leapfrog lengths must be nonnegative.")
-    }
+  stopifnot(ptype %in% c("t", "ghs", "neg"), length (y_tr) == nrow (X_tr),
+            iters_rmc > 0, iters_h > 0, leap_L > 0, leap_L_h > 0, thin > 0)
 
-    if (length (y_tr) != nrow (X_tr) ) stop ("'y' and 'X' mismatch")
+  ###################### data preprocessing ######################
+  if (min(y_tr) == 0)
+    y_tr <- y_tr + 1
+  
+  ybase <- as.integer(y_tr - 1)
+  ymat <- model.matrix( ~ factor(y_tr) - 1)[, -1]
+  C <- length(unique(ybase))
+  K <- C - 1
+  ## feature selection
+  X <- X_tr[, fsel, drop = FALSE]
+  p <- length(fsel)
+  n <- nrow(X)
+  ## standardize selected features
+  nuj <- rep(0, length(fsel))
+  sdj <- rep(1, length(fsel))
+  if (stdzx == TRUE & !is.numeric(initial_state))
+  {
+    nuj <- apply(X, 2, median)
+    sdj <- apply(X, 2, sd)
+    X <- sweep(X, 2, nuj, "-")
+    X <- sweep(X, 2, sdj, "/")
+  }
+  ## add intercept
+  X_addint <- cbind(1, X)
+  ## stepsize for HMC from data
+  DDNloglike <- 1 / 4 * colSums(X_addint ^ 2)
 
-########## preprocess data (feature selection and standardization) ############
-    if (min (y_tr) == 0) y_tr <- y_tr + 1
+  #################### Markov chain state initialization ####################
+  ## starting from a given deltas
+  if (is.list(initial_state)) # use the last iteration of markov chain
+  {
+    no_mcspl <- length(initial_state$mclogw)
+    deltas <- matrix(initial_state$mcdeltas[, , no_mcspl], nrow = p + 1)
+    sigmasbt <- initial_state$mcsigmasbt[, no_mcspl]
+    logw <- initial_state$mclogw[no_mcspl]
+  }
+  else if (is.numeric(initial_state))
+  {
+    deltas <- matrix(initial_state, nrow = p + 1)
+    logw <- s
+  }
+  else if (initial_state == "lasso")
+  {
+    deltas <- lasso_fitpred(X_tr = X, y_tr = y_tr)
+    logw <- s
+  }
+  else if (initial_state == "bcbcsfrda")
+  {
+    deltas <- bcbcsf_deltas(X, y_tr, alpha = alpha.rda)
+    logw <- s
+  }
+  else if (initial_state == "random")
+  {
+    deltas <- matrix(rnorm((p + 1) * K) * 2, p + 1, K)
+    logw <- s
+  }
+  if (nrow (deltas) != p + 1 || ncol (deltas) != K)
+    stop("Initial `deltas' Mismatch Data")
+  
+  if (!exists("sigmasbt"))
+  {
+    vardeltas <- comp_vardeltas(deltas)[-1]
+    sigmasbt <- c(sigmab0, spl_sgm_ig (alpha, K, exp(logw), vardeltas))
+  }
     
-    ybase <- as.integer(y_tr - 1) 
-    ymat <- model.matrix (~factor(y_tr) - 1)[,-1]
-    C <- length (unique (ybase))
-    K <- C - 1
-    ## feature selection
-    X <- X_tr [, fsel, drop = FALSE] 
-    p <- length (fsel)
-    n <- nrow (X)
-    ## standardize selected features
-    nuj <- rep (0, length (fsel))
-    sdj <- rep (1, length (fsel))
-    if (stdzx == TRUE & !is.numeric (initial_state)) 
-    {
-      nuj <- apply (X, 2, median)
-      sdj <- apply (X, 2, sd)
-      X <- sweep (X, 2, nuj, "-")
-      X <- sweep (X, 2, sdj, "/")
-    }
-    ## add intercept
-    X_addint <- cbind (1, X) 
-    ## stepsize for HMC from data
-    DDNloglike <- 1/4 * colSums (X_addint^2)
+  #################### Do Gibbs sampling ####################
 
-    ########################## initial Markov chain state ################
-    ## starting from a given deltas
-    if (is.list (initial_state) ) ## use the last iteration of markov chain
-    {
-        no_mcspl <- length (initial_state$mclogw)
-        deltas <- matrix (initial_state$mcdeltas [,,no_mcspl], nrow = p + 1)
-        sigmasbt <- initial_state$mcsigmasbt [, no_mcspl]
-        logw <- initial_state$mclogw [no_mcspl]
-    } 
-    else if (is.numeric (initial_state))
-    {
-      deltas <- matrix(initial_state, nrow = p + 1)
-      logw <- s
-    } 
-    else if (initial_state == "lasso")
-    {
-    		deltas <- lasso_fitpred (X_tr = X, y_tr = y_tr)
-    		logw <- s
-    } 
-    else if (initial_state == "bcbcsfrda") 
-    {
-        deltas <- bcbcsf_deltas (X,y_tr, alpha = alpha.rda) 
-        logw <- s
-    } 
-    else if (initial_state == "random")
-    {
-        deltas <- matrix (rnorm ((p+1)*K) * 2, p+1, K)
-        logw <- s
-    }
-    if (nrow (deltas) != p + 1 || ncol (deltas) != K)
-    stop ("Initial `deltas' Mismatch Data")
-    
-    if (!exists ("sigmasbt"))
-    {
-        vardeltas <- comp_vardeltas(deltas) [-1]
-        sigmasbt <- c(sigmab0, spl_sgm_ig (alpha, K, exp(logw), vardeltas) )
-    }
-    
-
-    ######################## call C to do Gibbs sampling #################
-    ## markov chain storage 
-
-    fithtlr <- HtlrFit(
-        ## data
-        p = as.integer(p), K = as.integer(K), n = as.integer(n),
-        X = X_addint, ymat = ymat, ybase = ybase,
-        ## prior
-        ptype = ptype, alpha = alpha, s = s, eta = eta,  sigmab0 = sigmab0,
-        ## sampling
-        iters_rmc = as.integer(iters_rmc), iters_h = as.integer (iters_h), 
-        thin = as.integer(thin), leap_L = as.integer(leap_L), leap_L_h = as.integer (leap_L_h),
-        leap_step = leap_step, hmc_sgmcut = hmc_sgmcut,
-        DDNloglike = DDNloglike,
-        ## fit result
-        mcdeltas = array(deltas, dim = c(C - 1, p + 1, iters_rmc + 1)),
-        mclogw =  rep(logw, iters_rmc + 1),
-        mcsigmasbt = matrix(sigmasbt, p+1, iters_rmc + 1),
-        ## other control
-        silence = as.integer(silence), looklf = 0L)
-    # adding data preprocessing information
-    fithtlr <- c (fithtlr, list( fsel = fsel, nuj = nuj, sdj = sdj, y = y_tr) )
+  fithtlr <- HtlrFit(
+      ## data
+      p = as.integer(p), K = as.integer(K), n = as.integer(n),
+      X = as.matrix(X_addint), ymat = as.matrix(ymat), ybase = as.vector(ybase),
+      ## prior
+      ptype = ptype, alpha = alpha, s = s, eta = eta, sigmab0 = sigmab0,
+      ## sampling
+      iters_rmc = as.integer(iters_rmc), iters_h = as.integer(iters_h), 
+      thin = as.integer(thin), leap_L = as.integer(leap_L), leap_L_h = as.integer(leap_L_h),
+      leap_step = leap_step, hmc_sgmcut = hmc_sgmcut, DDNloglike = as.vector(DDNloglike),
+      ## fit result
+      deltas = deltas,
+      logw = logw,
+      sigmasbt = sigmasbt,
+      ## other control
+      silence = as.integer(silence), looklf = 0L)
+  # adding data preprocessing information
+  fithtlr <- c (fithtlr, list( fsel = fsel, nuj = nuj, sdj = sdj, y = y_tr) )
         
     ################## prediction for test cases #########################
     if (!is.null (X_ts))
