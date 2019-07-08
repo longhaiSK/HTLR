@@ -587,8 +587,8 @@ void Fit::GenMomt()
 // var_deltas: nvar 
 void Fit::CacheOldValues()
 {
-  lv_old_ = cpvec(lv_);
-  pred_prob_old_ = cpvec(pred_prob_);
+  lv_old_ = copy(lv_);
+  pred_prob_old_ = copy(pred_prob_);
   loglike_old_ = loglike_;
 
   for (int j : GetIdsUpdate())
@@ -607,8 +607,8 @@ void Fit::CacheOldValues()
 // var_deltas: nvar 
 void Fit::RestoreOldValues()
 {
-  lv_ = cpvec(lv_old_);
-  pred_prob_ = cpvec(pred_prob_old_);
+  lv_ = copy(lv_old_);
+  pred_prob_ = copy(pred_prob_old_);
   loglike_ = loglike_old_;
 
   for (int j : GetIdsUpdate())

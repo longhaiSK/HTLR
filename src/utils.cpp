@@ -1,6 +1,6 @@
 #include "utils.h"
 
-arma::mat cpvec(const arma::mat &A)
+arma::mat copy(const arma::mat &A)
 {
   return A(arma::span::all, arma::span::all);
 }
