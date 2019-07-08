@@ -5,6 +5,11 @@ arma::mat copy(const arma::mat &A)
   return A(arma::span::all, arma::span::all);
 }
 
+arma::vec copy(const arma::vec &a)
+{
+  return a(arma::span::all);
+}
+
 arma::vec col_sum(const arma::mat &A)
 {
   return arma::sum(A, 0);
