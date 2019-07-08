@@ -51,6 +51,8 @@ class Fit
   double loglike_, loglike_old_, sgmsq_cut_;
  
   void WhichUpdate(double cut);  
+  arma::uvec GetIdsUpdate();
+  arma::uvec GetIdsFix();
   void UpdatePredProb();
   void DetachFixlv();
   void UpdateDNlogLike();

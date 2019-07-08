@@ -16,9 +16,6 @@ Fit::Fit(int p, int K, int n,
       hmc_sgmcut_(hmc_sgmcut), DDNloglike_(DDNloglike_),
       silence_(silence), looklf_(looklf), nvar_(p + 1), logw_(logw)
 {
-  nuvar_ = 0;
-  nfvar_ = 0;
-
   ids_update_ = arma::uvec(nvar_, arma::fill::zeros);
   ids_fix_ = arma::uvec(nvar_, arma::fill::zeros);
 
@@ -46,7 +43,7 @@ Fit::Fit(int p, int K, int n,
   pred_prob_old_ = arma::mat(n, C_, arma::fill::zeros);
 
   DNloglike_ = arma::mat(nvar_, K, arma::fill::zeros);
-  DNloglike_old_ = arma::mat(nvar_, K, arma::fill::zeros);
+  //DNloglike_old_ = arma::mat(nvar_, K, arma::fill::zeros);
   deltas_old_ = arma::mat(nvar_, K, arma::fill::zeros);
   momt_ = arma::mat(nvar_, K, arma::fill::zeros);
   DNlogprior_ = arma::mat(nvar_, K, arma::fill::zeros);
@@ -146,9 +143,9 @@ void Fit::StartSampling()
 
       for (int i_trj = 0; i_trj < L; i_trj++)
       {
-        for (int uj = 0; uj < nuvar_; uj++)
+        for (int j : GetIdsUpdate())
         {
-          int j = ids_update_[uj];
+          //int j = ids_update_[uj];
           for (int k = 0; k < K_; k++)
           {
             //Rprintf("momt1: %f\t step: %f\t post: %f\n",
@@ -171,9 +168,9 @@ void Fit::StartSampling()
         UpdateDNlogPost();
         if (debug) Rcpp::Rcerr << "here4.4\n";
         // move momonton with new derivatives
-        for (int uj = 0; uj < nuvar_; uj++)
+        for (int j : GetIdsUpdate())
         {
-          int j = ids_update_[uj];
+          //int j = ids_update_[uj];
           for (int k = 0; k < K_; k++)
           {
             momt_(j, k) -= step_sizes_(j) / 2 * DNlogpost_(j, k);
@@ -183,9 +180,9 @@ void Fit::StartSampling()
       }
 
       bool isfault = false;
-      for (int uj = 0; uj < nuvar_; uj++)
+      for (int j : GetIdsUpdate())
       {
-        int j = ids_update_[uj];
+        //int j = ids_update_[uj];
         for (int k = 0; k < K_; k++)
         {
           if (fabs(deltas_(j, k)) > 20)
@@ -345,22 +342,31 @@ void Fit::WhichUpdate(double cut)
 {
   nuvar_ = 0;
   nfvar_ = 0;
+  // TODO: C++ 11 for loop
   for (int j = 0; j < nvar_; j++)
   {
-    //Rprintf("%f ", sigmasbt_[j]);
-    if (sigmasbt_[j] > cut)
-      ids_update_[nuvar_++] = j;
+    if (sigmasbt_(j) > cut)
+      ids_update_(nuvar_++) = j;
     else
-      ids_fix_[nfvar_++] = j;
+      ids_fix_(nfvar_++) = j;
   }
   //Rprintf("whichupdate:\n");
   //Rprintf("nuvar:%d\t nfvar:%d\n", nuvar_, nfvar_);
   //Rprintf("ids_update:\n");
   //Rcpp::Rcout << ids_update_;
-  //deltas_ = deltas_.rows(ids_update_); 
-  //X_ = X_.cols(ids_update_); 
 
-  //sigmasbt_ = sigmasbt_
+}
+
+// Get int vector ids_update of length nuvar. 
+arma::uvec Fit::GetIdsUpdate()
+{
+  return ids_update_.head(nuvar_);
+}
+
+// Get int vector ids_fix of length nfvar.
+arma::uvec Fit::GetIdsFix()
+{
+  return ids_fix_.head(nfvar_);
 }
 
 // X: n * nvar
@@ -374,11 +380,8 @@ void Fit::UpdatePredProb()
   //arma::mat updated_part = X_update * deltas_update;
   //lv_.tail_cols(K_) = lv_fix_.tail_cols(K_) + updated_part;
   lv_.tail_cols(K_) = lv_fix_.tail_cols(K_);
-  //Rprintf("updatepredprob:\n");
-  //Rcpp::Rcout << lv_fix_;
-  for (int uj = 0; uj < nuvar_; uj++)
+  for (int j : GetIdsUpdate())
   {
-    int j = ids_update_[uj];
     for (int k = 0; k < K_; k++)
     {
       for (int i = 0; i < n_; i++)
@@ -401,19 +404,16 @@ void Fit::DetachFixlv()
   if (nuvar_ <= nvar_ / 2)
   {
     //Rprintf("case1\n");
-    //lv_fix_ = cpvec(lv_);
     lv_fix_.tail_cols(K_) = lv_.tail_cols(K_); 
     //Rcpp::Rcout << lv_fix_.tail_cols(K_);
     // remove updated part
-    for (int uj = 0; uj < nuvar_; uj++)
+    for (int j : GetIdsUpdate())
     {
-      int j = ids_update_[uj];
       for (int k = 0; k < K_; k++)
       {
         for (int i = 0; i < n_; i++)
         {
           lv_fix_(i, k + 1) -= deltas_(j, k) * X_(i, j);
-          //Rprintf("%f\t", lv_fix_(i, k + 1));
         }
       }
     }
@@ -423,15 +423,14 @@ void Fit::DetachFixlv()
     //Rprintf("case2\n");
     lv_fix_.tail_cols(K_) = arma::mat(n_, K_, arma::fill::zeros);
     // add fixed part
-    for (int fj = 0; fj < nfvar_; fj++)
+    for (int j : GetIdsFix())
     {
-      int j = ids_fix_[fj];
+      //int j = ids_fix_[fj];
       for (int k = 0; k < K_; k++)
       {
         for (int i = 0; i < n_; i++)
         {
           lv_fix_(i, k + 1) += deltas_(j, k) * X_(i, j);
-          //Rprintf("%f\t", lv_fix_(i, k + 1));
         }
       }
     }
@@ -446,9 +445,9 @@ void Fit::DetachFixlv()
 // Modified: DNloglike
 void Fit::UpdateDNlogLike()
 {
-  for (int uj = 0; uj < nuvar_; uj++)
+  for (int j : GetIdsUpdate())
   {
-    int j = ids_update_[uj];
+    //int j = ids_update_[uj];
     for (int k = 0; k < K_; k++)
     {
       DNloglike_(j, k) = 0;
@@ -480,9 +479,9 @@ void Fit::UpdateLogLike()
 // Modified: sum_deltas, DNlogprior:  
 void Fit::UpdateDNlogPrior()
 {
-  for (int uj = 0; uj < nuvar_; uj++)
+  for (int j : GetIdsUpdate())
   {
-    int j = ids_update_[uj];
+    //int j = ids_update_[uj];
     //Rprintf("%d\n", j);
     //sum deltas for each feature
     //sum_deltas_[j] = 0;
@@ -514,9 +513,9 @@ void Fit::UpdateDNlogPrior()
 void Fit::UpdateDNlogPost()
 {
   //Rprintf("nuvar: %d\n", nuvar_);
-  for (int uj = 0; uj < nuvar_; uj++)
+  for (int j : GetIdsUpdate())
   {
-    int j = ids_update_[uj];
+    //nt j = ids_update_[uj];
     for (int k = 0; k < K_; k++)
     {
       DNlogpost_(j, k) = DNloglike_(j, k) + DNlogprior_(j, k) / sigmasbt_[j];
@@ -534,9 +533,9 @@ void Fit::UpdateDNlogPost()
 // Modified: sumsq_deltas, var_deltas  
 void Fit::UpdateVarDeltas()
 {
-  for (int uj = 0; uj < nuvar_; uj++)
+  for (int j : GetIdsUpdate())
   {
-    int j = ids_update_[uj];
+    //int j = ids_update_[uj];
     // prior deltas
     //sumsq_deltas_[j] = 0;
     double tmp = 0;
@@ -556,9 +555,9 @@ double Fit::CompNegEnergy()
 {
   double logprior = 0;
   double logprior_momt = 0;
-  for (int uj = 0; uj < nuvar_; uj++)
+  for (int j : GetIdsUpdate())
   {
-    int j = ids_update_[uj];
+    //int j = ids_update_[uj];
     logprior += var_deltas_[j] / sigmasbt_[j];
     for (int k = 0; k < K_; k++)
       logprior_momt += R_pow_di(momt_(j, k), 2);
@@ -571,9 +570,9 @@ double Fit::CompNegEnergy()
 // Modified: momt
 void Fit::GenMomt()
 {
-  for (int uj = 0; uj < nuvar_; uj++)
+  for (int j : GetIdsUpdate())
   {
-    int j = ids_update_[uj];
+    //int j = ids_update_[uj];
     for (int k = 0; k < K_; k++)
     {
       GetRNGstate();
@@ -592,9 +591,8 @@ void Fit::CacheOldValues()
   pred_prob_old_ = cpvec(pred_prob_);
   loglike_old_ = loglike_;
 
-  for (int uj = 0; uj < nuvar_; uj++)
+  for (int j : GetIdsUpdate())
   {
-    int j = ids_update_[uj];
     for (int k = 0; k < K_; k++)
     {
       deltas_old_(j, k) = deltas_(j, k);
@@ -613,9 +611,8 @@ void Fit::RestoreOldValues()
   pred_prob_ = cpvec(pred_prob_old_);
   loglike_ = loglike_old_;
 
-  for (int uj = 0; uj < nuvar_; uj++)
+  for (int j : GetIdsUpdate())
   {
-    int j = ids_update_[uj];
     for (int k = 0; k < K_; k++)
     {
       deltas_(j, k) = deltas_old_(j, k);
@@ -631,9 +628,8 @@ void Fit::RestoreOldValues()
 // Modified: step_sizes 
 void Fit::UpdateStepSizes()
 {
-  for (int uj = 0; uj < nuvar_; uj++)
+  for (int j : GetIdsUpdate())
   {
-    int j = ids_update_[uj];
     step_sizes_(j) = leap_step_;
     step_sizes_(j) /= sqrt(DDNloglike_(j) + K_ / sigmasbt_[j] / C_);
     //Rprintf("%f\t", step_sizes_(j));
