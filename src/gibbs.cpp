@@ -625,13 +625,10 @@ void Fit::RestoreOldValues()
 // step_sizes: nvar
 // DDNloglike_: nvar
 // sigmasbt: nvar
-// Modified: step_sizes 
+// Modified: step_sizes
 void Fit::UpdateStepSizes()
 {
-  for (int j : GetIdsUpdate())
-  {
-    step_sizes_(j) = leap_step_;
-    step_sizes_(j) /= sqrt(DDNloglike_(j) + K_ / sigmasbt_[j] / C_);
-    //Rprintf("%f\t", step_sizes_(j));
-  }
+  auto ids = GetIdsUpdate();
+  step_sizes_(ids) = leap_step_ /
+                     arma::sqrt(DDNloglike_(ids) + K_ / sigmasbt_(ids) / C_);
 }
