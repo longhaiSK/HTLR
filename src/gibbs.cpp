@@ -558,44 +558,24 @@ void Fit::GenMomt()
   }
 }
 
-// deltas: nvar * K
-// DNlogprior: nvar * K
-// var_deltas: nvar 
 void Fit::CacheOldValues()
 {
   lv_old_ = copy(lv_);
   pred_prob_old_ = copy(pred_prob_);
+  deltas_old_ = copy(deltas_);
+  DNlogprior_old_ = copy(DNlogprior_);
+  var_deltas_old_ = copy(var_deltas_);
   loglike_old_ = loglike_;
-
-  for (int j : GetIdsUpdate())
-  {
-    for (int k = 0; k < K_; k++)
-    {
-      deltas_old_(j, k) = deltas_(j, k);
-      DNlogprior_old_(j, k) = DNlogprior_(j, k);
-    }
-    var_deltas_old_(j) = var_deltas_(j);
-  }
 }
 
-// deltas: nvar * K
-// DNlogprior: nvar * K
-// var_deltas: nvar 
 void Fit::RestoreOldValues()
 {
   lv_ = copy(lv_old_);
   pred_prob_ = copy(pred_prob_old_);
+  deltas_ = copy(deltas_old_);
+  DNlogprior_ = copy(DNlogprior_old_);
+  var_deltas_ = copy(var_deltas_old_);
   loglike_ = loglike_old_;
-
-  for (int j : GetIdsUpdate())
-  {
-    for (int k = 0; k < K_; k++)
-    {
-      deltas_(j, k) = deltas_old_(j, k);
-      DNlogprior_(j, k) = DNlogprior_old_(j, k);
-    }
-    var_deltas_(j) = var_deltas_old_(j);
-  }
 }
 
 // step_sizes: nvar
