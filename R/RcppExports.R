@@ -13,11 +13,7 @@ sample_trunc_beta <- function(n, alpha, beta, lb = 0, ub = 1, verbose = FALSE) {
     .Call(`_HTLR_sample_trunc_beta`, n, alpha, beta, lb, ub, verbose)
 }
 
-HtlrFit <- function(p, K, n, X, ymat, ybase, ptype, alpha, s, eta, sigmab0, iters_rmc, iters_h, thin, leap_L, leap_L_h, leap_step, hmc_sgmcut, DDNloglike, mcdeltas, mclogw, mcsigmasbt, silence, looklf) {
-    .Call(`_HTLR_HtlrFit`, p, K, n, X, ymat, ybase, ptype, alpha, s, eta, sigmab0, iters_rmc, iters_h, thin, leap_L, leap_L_h, leap_step, hmc_sgmcut, DDNloglike, mcdeltas, mclogw, mcsigmasbt, silence, looklf)
-}
-
-rcpparma_hello <- function(p, K, n, X, ymat, ybase, ptype, alpha, s, eta, sigmab0, iters_rmc, iters_h, thin, leap_L, leap_L_h, leap_step, hmc_sgmcut, DDNloglike, mcdeltas, mclogw, mcsigmasbt, silence, looklf) {
-    invisible(.Call(`_HTLR_rcpparma_hello`, p, K, n, X, ymat, ybase, ptype, alpha, s, eta, sigmab0, iters_rmc, iters_h, thin, leap_L, leap_L_h, leap_step, hmc_sgmcut, DDNloglike, mcdeltas, mclogw, mcsigmasbt, silence, looklf))
+HtlrFit <- function(p, K, n, X, ymat, ybase, ptype, alpha, s, eta, sigmab0, iters_rmc, iters_h, thin, leap_L, leap_L_h, leap_step, hmc_sgmcut, DDNloglike, deltas, logw, sigmasbt, silence, looklf) {
+    .Call(`_HTLR_HtlrFit`, p, K, n, X, ymat, ybase, ptype, alpha, s, eta, sigmab0, iters_rmc, iters_h, thin, leap_L, leap_L_h, leap_step, hmc_sgmcut, DDNloglike, deltas, logw, sigmasbt, silence, looklf)
 }
 

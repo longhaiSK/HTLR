@@ -47,7 +47,6 @@ Fit::Fit(int p, int K, int n,
 
   DNloglike_ = arma::mat(nvar_, K, arma::fill::zeros);
   DNloglike_old_ = arma::mat(nvar_, K, arma::fill::zeros);
-  deltas_ = arma::mat(nvar_, K, arma::fill::zeros);
   deltas_old_ = arma::mat(nvar_, K, arma::fill::zeros);
   momt_ = arma::mat(nvar_, K, arma::fill::zeros);
   DNlogprior_ = arma::mat(nvar_, K, arma::fill::zeros);
@@ -61,7 +60,6 @@ Fit::Fit(int p, int K, int n,
   var_deltas_ = arma::vec(nvar_, arma::fill::zeros);
   var_deltas_old_ = arma::vec(nvar_, arma::fill::zeros);
   step_sizes_ = arma::vec(nvar_, arma::fill::zeros);
-  sigmasbt_ = arma::vec(nvar_, arma::fill::zeros);
 
   sgmsq_cut_ = hmc_sgmcut > 0 ? R_pow_di(hmc_sgmcut, 2) : hmc_sgmcut;
 }
@@ -69,25 +67,29 @@ Fit::Fit(int p, int K, int n,
 void Fit::StartSampling()
 {
   /*********************** getting initial values ************************/
-
+  bool debug = false;
   WhichUpdate(-1); // set to update all
 
   UpdatePredProb(); // lv is computed here
-  Rcpp::Rcerr << "here2.2\n";
+  if (debug) Rcpp::Rcerr << "here2.2\n";
+  
   UpdateLogLike();
-  Rcpp::Rcerr << "here2.3\n";
-  UpdateDNlogPrior();
-  Rcpp::Rcerr << "here2.4\n";
-  UpdateVarDeltas();
-  Rcpp::Rcerr << "here2.5\n";
   mc_loglike_[0] = loglike_;
+  //if (debug) Rcpp::Rcerr << "here2.3\n";
+
+  UpdateDNlogPrior();
+  if (debug) Rcpp::Rcerr << "here2.4\n";
+  
+  UpdateVarDeltas();
+  //if (debug) Rcpp::Rcerr << "here2.5\n";
+  
   mc_var_deltas_.col(0) = var_deltas_;
-  Rcpp::Rcerr << "here3\n";
+  if (debug) Rcpp::Rcerr << "here3\n";
 
   /************************ start gibbs sampling **************************/
   for (int i_mc = 0; i_mc < iters_h_ + iters_rmc_; i_mc++)
   {
-    int i_rmc = i_mc;
+    int i_rmc = i_mc - iters_h_;
     int L;
 
     if (i_mc < iters_h_ / 2.0)
@@ -112,29 +114,36 @@ void Fit::StartSampling()
     for (int i_thin = 0; i_thin < thin_; i_thin++)
     {
       /*********************** HMC Metropolis Update ********************/
+      
       // initialize HMC
-      Rcpp::Rcerr << "here3.1\n";
+
+      //if (debug) Rcpp::Rcerr << "here3.1\n";
       WhichUpdate(sgmsq_cut_);
+
       no_uvar += nuvar_;
-      Rcpp::Rcerr << "here3.2\n";
 
       GenMomt();
+
       UpdateStepSizes();
-      Rcpp::Rcerr << "here3.3\n";
+      //if (debug) Rcpp::Rcerr << "here3.3\n";
+
       DetachFixlv();
-      Rcpp::Rcerr << "here3.4\n";
+      //if (debug) Rcpp::Rcerr << "here3.4\n";
       CacheOldValues();
-      Rcpp::Rcerr << "here3.5\n";
+      //if (debug) Rcpp::Rcerr << "here3.5\n";
       double nenergy_old = CompNegEnergy();
-      Rcpp::Rcerr << "here3.6\n";
+      //if (debug) Rcpp::Rcerr << "here3.6\n";
 
       // start trajectory
       UpdateDNlogPrior();
-      Rcpp::Rcerr << "here3.7\n";
+      if (debug) Rcpp::Rcerr << "here3.7\n";
+
       UpdateDNlogLike(); // recompute derivatives of log likelihood
-      Rcpp::Rcerr << "here3.8\n";
+      if (debug) Rcpp::Rcerr << "here3.8\n";
+
       UpdateDNlogPost(); // recompute derivatives of log prior
-      Rcpp::Rcerr << "here3.9\n";
+      if (debug) Rcpp::Rcerr << "here3.9\n";
+
       for (int i_trj = 0; i_trj < L; i_trj++)
       {
         for (int uj = 0; uj < nuvar_; uj++)
@@ -142,30 +151,35 @@ void Fit::StartSampling()
           int j = ids_update_[uj];
           for (int k = 0; k < K_; k++)
           {
-            momt_(k, j) -= step_sizes_(j) / 2 * DNlogpost_(k, j);
-            deltas_(k, j) += step_sizes_(j) * momt_(k, j);
+            //Rprintf("momt1: %f\t step: %f\t post: %f\n",
+            //  momt_(j, k), step_sizes_(j), DNlogpost_(j, k));
+            momt_(j, k) -= step_sizes_(j) / 2 * DNlogpost_(j, k);
+            //Rprintf("delta1: %f\t momt2: %f\n", deltas_(j, k),  
+            //  momt_(j, k));
+            deltas_(j, k) += step_sizes_(j) * momt_(j, k);
+            //Rprintf("delta2: %f\n", deltas_(j, k));
           }
         }
-        Rcpp::Rcerr << "here4\n";
+        if (debug) Rcpp::Rcerr << "here4\n";
         // compute derivative of minus log joint distribution
         UpdatePredProb();
-        Rcpp::Rcerr << "here4.1\n";
+        if (debug) Rcpp::Rcerr << "here4.1\n";
         UpdateDNlogPrior();
-        Rcpp::Rcerr << "here4.2\n";
+        if (debug) Rcpp::Rcerr << "here4.2\n";
         UpdateDNlogLike();
-        Rcpp::Rcerr << "here4.3\n";
+        if (debug) Rcpp::Rcerr << "here4.3\n";
         UpdateDNlogPost();
-        Rcpp::Rcerr << "here4.4\n";
+        if (debug) Rcpp::Rcerr << "here4.4\n";
         // move momonton with new derivatives
         for (int uj = 0; uj < nuvar_; uj++)
         {
           int j = ids_update_[uj];
           for (int k = 0; k < K_; k++)
           {
-            momt_(k, j) -= step_sizes_(j) / 2 * DNlogpost_(k, j);
+            momt_(j, k) -= step_sizes_(j) / 2 * DNlogpost_(j, k);
           }
         }
-        Rcpp::Rcerr << "here4.5\n";
+        if (debug) Rcpp::Rcerr << "here4.5\n";
       }
 
       bool isfault = false;
@@ -174,9 +188,10 @@ void Fit::StartSampling()
         int j = ids_update_[uj];
         for (int k = 0; k < K_; k++)
         {
-          if (fabs(deltas_(k, j)) > 20)
+          if (fabs(deltas_(j, k)) > 20)
           {
             isfault = true;
+            Rprintf("fault\n");
             break;
           }
         }
@@ -188,9 +203,13 @@ void Fit::StartSampling()
       UpdateLogLike();
       UpdateVarDeltas();
       double nenergy = CompNegEnergy();
+      //Rprintf("%f\n", nenergy);
 
       GetRNGstate();
-      if (log(R::runif(0, 1)) > nenergy - nenergy_old || isfault)
+      double tmp1 = log(R::runif(0, 1));
+      double tmp2 = nenergy - nenergy_old; 
+      //Rprintf("nen: %f\t%f\n", tmp1, tmp2);
+      if (tmp1 > tmp2 || isfault)
       {
         RestoreOldValues();
         rej++;
@@ -198,8 +217,7 @@ void Fit::StartSampling()
       PutRNGstate();
 
       /*********************** Sigmas Update  ***********************/
-      double log_aw = logw_ + log(alpha_);
-
+      
       if (ptype_.compare("t") == 0)
       {
         for (int j = 1; j < nvar_; j++)
@@ -207,7 +225,7 @@ void Fit::StartSampling()
           GetRNGstate();
           double alpha_post = (alpha_ + K_) / 2;
           sigmasbt_[j] =
-              1.0 / R::rgamma(alpha_post, 1.0) * (alpha_ * exp(logw_) + var_deltas_(j)) / 2.0;
+              1.0 / R::rgamma(alpha_post, 1.0) * (alpha_ * exp(logw_) + var_deltas_[j]) / 2.0;
           PutRNGstate();
         }
         /********************** logw Update  **********************/
@@ -225,6 +243,8 @@ void Fit::StartSampling()
           }
         }
       }
+
+      double log_aw = logw_ + log(alpha_);
 
       if (ptype_.compare("ghs") == 0)
       {
@@ -278,9 +298,10 @@ void Fit::StartSampling()
     if (silence_ == 0)
     {
       Rprintf(
-          "Iter%4d: deviance=%5.3f, logw=%6.2f, nuvar=%3.0f, hmcrej=%4.2f\n",
+          "Iter%4d: deviance=%5.3f, logw=%6.2f, nuvar=%3.0f, hmcrej=%4.2f\n\n",
           i_rmc, -loglike_ / n_, logw_, no_uvar, rej);
     }
+    if (i_rmc % 256 == 0) R_CheckUserInterrupt();
   }
 }
 
@@ -301,7 +322,7 @@ Rcpp::List Fit::OutputR()
       Rcpp::Named("leap.L.h") = leap_L_h_,
       Rcpp::Named("leap.step") = leap_step_,
       Rcpp::Named("hmc.sgmcut") = hmc_sgmcut_,
-      Rcpp::Named("DDNloglike_") = DDNloglike_);
+      Rcpp::Named("DDNloglike") = DDNloglike_);
 
   return Rcpp::List::create(
       Rcpp::Named("p") = p_,
@@ -318,39 +339,71 @@ Rcpp::List Fit::OutputR()
       Rcpp::Named("mchmcrej") = mc_hmcrej_);
 }
 
-// this function determines which features to be updated
+// This function determines which features to be updated.
+// Modified: nuvar, nfvar, ids_update, ids_fix_  
 void Fit::WhichUpdate(double cut)
 {
   nuvar_ = 0;
   nfvar_ = 0;
   for (int j = 0; j < nvar_; j++)
   {
+    //Rprintf("%f ", sigmasbt_[j]);
     if (sigmasbt_[j] > cut)
       ids_update_[nuvar_++] = j;
     else
       ids_fix_[nfvar_++] = j;
   }
+  //Rprintf("whichupdate:\n");
+  //Rprintf("nuvar:%d\t nfvar:%d\n", nuvar_, nfvar_);
+  //Rprintf("ids_update:\n");
+  //Rcpp::Rcout << ids_update_;
+  //deltas_ = deltas_.rows(ids_update_); 
+  //X_ = X_.cols(ids_update_); 
+
+  //sigmasbt_ = sigmasbt_
 }
 
-// This function updates lv and pred_prob.
 // X: n * nvar
 // deltas: nvar * K
 // lv: n * (1 + K)
+// Modified: lv, norm_lv, pred_prob
 void Fit::UpdatePredProb()
 {
-  arma::mat deltas_update = deltas_.rows(ids_update_);
-  arma::mat X_update = X_.cols(ids_update_);
-  arma::mat updated_part = X_update * deltas_update;
-  lv_.tail_cols(K_) = lv_fix_.tail_cols(K_) + updated_part;
+  //arma::mat deltas_update = deltas_.rows(ids_update_);
+  //arma::mat X_update = X_.cols(ids_update_);
+  //arma::mat updated_part = X_update * deltas_update;
+  //lv_.tail_cols(K_) = lv_fix_.tail_cols(K_) + updated_part;
+  lv_.tail_cols(K_) = lv_fix_.tail_cols(K_);
+  //Rprintf("updatepredprob:\n");
+  //Rcpp::Rcout << lv_fix_;
+  for (int uj = 0; uj < nuvar_; uj++)
+  {
+    int j = ids_update_[uj];
+    for (int k = 0; k < K_; k++)
+    {
+      for (int i = 0; i < n_; i++)
+      {
+        lv_(i,k + 1) += deltas_(j, k) * X_(i,j);
+      }
+    }
+  }
   norm_lv_ = find_normlv(lv_);
   pred_prob_ = arma::exp(norm_lv_);
+
 }
 
+// lv: n * (1 + K)
+// deltas: nvar * K
+// X: n * nvar
+// Modified: lv_fix
 void Fit::DetachFixlv()
 {
   if (nuvar_ <= nvar_ / 2)
   {
-    lv_fix_ = cpvec(lv_);
+    //Rprintf("case1\n");
+    //lv_fix_ = cpvec(lv_);
+    lv_fix_.tail_cols(K_) = lv_.tail_cols(K_); 
+    //Rcpp::Rcout << lv_fix_.tail_cols(K_);
     // remove updated part
     for (int uj = 0; uj < nuvar_; uj++)
     {
@@ -359,13 +412,15 @@ void Fit::DetachFixlv()
       {
         for (int i = 0; i < n_; i++)
         {
-          lv_fix_(i, k + 1) -= deltas_(k, j) * X_(j, i);
+          lv_fix_(i, k + 1) -= deltas_(j, k) * X_(i, j);
+          //Rprintf("%f\t", lv_fix_(i, k + 1));
         }
       }
     }
   }
   else
   {
+    //Rprintf("case2\n");
     lv_fix_.tail_cols(K_) = arma::mat(n_, K_, arma::fill::zeros);
     // add fixed part
     for (int fj = 0; fj < nfvar_; fj++)
@@ -375,18 +430,20 @@ void Fit::DetachFixlv()
       {
         for (int i = 0; i < n_; i++)
         {
-          lv_fix_(i, k + 1) += deltas_(k, j) * X_(j, i);
+          lv_fix_(i, k + 1) += deltas_(j, k) * X_(i, j);
+          //Rprintf("%f\t", lv_fix_(i, k + 1));
         }
       }
     }
   }
+  //Rcpp::Rcout << lv_fix_;
 }
 
-// This function computes derivatives of negative log-likelihood.
-// DNloglike: K * nvar
-// X: nvar * n
+// DNloglike: var * K
+// const X: n * nvar
 // pred_prob: n * (1 + K)
-// ymat: n * K
+// const ymat: n * K
+// Modified: DNloglike
 void Fit::UpdateDNlogLike()
 {
   for (int uj = 0; uj < nuvar_; uj++)
@@ -394,16 +451,19 @@ void Fit::UpdateDNlogLike()
     int j = ids_update_[uj];
     for (int k = 0; k < K_; k++)
     {
-      DNloglike_(k, j) = 0;
+      DNloglike_(j, k) = 0;
       for (int i = 0; i < n_; i++)
       {
-        DNloglike_(k, j) += X_(j, i) * (pred_prob_(i, k + 1) - ymat_(i, k));
+        DNloglike_(j, k) += X_(i, j) * (pred_prob_(i, k + 1) - ymat_(i, k));
       }
     }
   }
+  //Rprintf("UpdateDNlogLike:\n");
+  //Rcpp::Rcout << DNloglike_;
 }
 
-// this function computes log likelihood given normlv
+// norm_lv: n * C
+// Modified: loglike
 void Fit::UpdateLogLike()
 {
   loglike_ = 0;
@@ -411,71 +471,104 @@ void Fit::UpdateLogLike()
   {
     loglike_ += norm_lv_(i, ybase_[i]);
   }
+  //Rprintf("loglike=%f\n", loglike_);
 }
 
-// this function update sum_deltas_ and DNlogprior
+// deltas: nvar * K
+// DNlogprior: nvar * K
+// sum_deltas: nvar
+// Modified: sum_deltas, DNlogprior:  
 void Fit::UpdateDNlogPrior()
 {
-  //arma::mat tmp1 = deltas.cols(ids_update);
   for (int uj = 0; uj < nuvar_; uj++)
   {
     int j = ids_update_[uj];
+    //Rprintf("%d\n", j);
     //sum deltas for each feature
-    sum_deltas_[j] = 0;
+    //sum_deltas_[j] = 0;
+    double tmp = 0;
+    for (int kk = 0; kk < K_; kk++)
+    {
+      //sum_deltas_[j] += deltas_(j, kk);
+      tmp += deltas_(j, kk);
+      //Rprintf("d%f\t", deltas_(j, kk));
+    }
+    sum_deltas_[j] = tmp;
+    //Rprintf("\n");
+    //Rprintf("s%f\n", sum_deltas_[j]);
     for (int k = 0; k < K_; k++)
     {
-      sum_deltas_[j] += deltas_(k, j);
-      //}
-      //for (int k = 0; k < K; k++)
-      //{
-      DNlogprior_(k, j) = deltas_(k, j) - sum_deltas_[j] / C_;
+      DNlogprior_(j, k) = deltas_(j, k) - sum_deltas_[j] / C_;
+      //Rprintf("%f\t", DNlogprior_(j, k));
     }
   }
+  //Rprintf("UpdateDNlogPrior:\n");
+  //Rcpp::Rcout << DNlogprior_;
 }
 
+// DNloglike: nvar * K
+// DNlogprior: nvar * K
+// DNlogpost: nvar * K
+// sigmasbt: nvar
+// Modified: DNlogpost:  
 void Fit::UpdateDNlogPost()
 {
+  //Rprintf("nuvar: %d\n", nuvar_);
   for (int uj = 0; uj < nuvar_; uj++)
   {
     int j = ids_update_[uj];
     for (int k = 0; k < K_; k++)
     {
-      DNlogpost_(k, j) = DNloglike_(k, j) + DNlogprior_(k, j) / sigmasbt_[j];
+      DNlogpost_(j, k) = DNloglike_(j, k) + DNlogprior_(j, k) / sigmasbt_[j];
+      //Rprintf("like: %f\t prior: %f\t sbt: %f\t post: %f\n",
+      //DNloglike_(j, k), DNlogprior_(j, k), sigmasbt_[j], DNlogpost_(j, k));
     }
   }
+  //Rprintf("UpdateDNlogPost:\n");
+  //Rcpp::Rcout << DNlogpost_;
 }
 
-// this function updates sumsq_deltas_, var_deltas_
+// deltas: nvar * K
+// sumsq_deltas: nvar
+// var_deltas: nvar
+// Modified: sumsq_deltas, var_deltas  
 void Fit::UpdateVarDeltas()
 {
   for (int uj = 0; uj < nuvar_; uj++)
   {
     int j = ids_update_[uj];
     // prior deltas
-    sumsq_deltas_[j] = 0;
+    //sumsq_deltas_[j] = 0;
+    double tmp = 0;
     for (int k = 0; k < K_; k++)
     {
-      sumsq_deltas_[j] += R_pow_di(deltas_(k, j), 2);
+      //sumsq_deltas_[j] += R_pow_di(deltas_(j, k), 2);
+      tmp += R_pow_di(deltas_(j, k), 2);
     }
+    sumsq_deltas_[j] = tmp;
+    //Rprintf("%f\t", sumsq_deltas_[j]);
     var_deltas_[j] = sumsq_deltas_[j] - R_pow_di(sum_deltas_[j], 2) / C_;
   }
 }
 
-// this function compute neg. energy
+// momt: nvar * K
 double Fit::CompNegEnergy()
 {
   double logprior = 0;
-  double logprior_momt_ = 0;
+  double logprior_momt = 0;
   for (int uj = 0; uj < nuvar_; uj++)
   {
     int j = ids_update_[uj];
-    logprior += var_deltas_(j) / sigmasbt_[j];
+    logprior += var_deltas_[j] / sigmasbt_[j];
     for (int k = 0; k < K_; k++)
-      logprior_momt_ += R_pow_di(momt_(k, j), 2);
+      logprior_momt += R_pow_di(momt_(j, k), 2);
   }
-  return (loglike_ - logprior / 2 - logprior_momt_ / 2);
+  //Rprintf("%f\t%f\n", logprior, logprior_momt);
+  return (loglike_ - logprior / 2 - logprior_momt / 2);
 }
 
+// momt: nvar * K
+// Modified: momt
 void Fit::GenMomt()
 {
   for (int uj = 0; uj < nuvar_; uj++)
@@ -484,12 +577,15 @@ void Fit::GenMomt()
     for (int k = 0; k < K_; k++)
     {
       GetRNGstate();
-      momt_(k, j) = R::rnorm(0, 1);
+      momt_(j, k) = R::rnorm(0, 1);
       PutRNGstate();
     }
   }
 }
 
+// deltas: nvar * K
+// DNlogprior: nvar * K
+// var_deltas: nvar 
 void Fit::CacheOldValues()
 {
   lv_old_ = cpvec(lv_);
@@ -501,13 +597,16 @@ void Fit::CacheOldValues()
     int j = ids_update_[uj];
     for (int k = 0; k < K_; k++)
     {
-      deltas_old_(k, j) = deltas_(k, j);
-      DNlogprior_old_(k, j) = DNlogprior_(k, j);
+      deltas_old_(j, k) = deltas_(j, k);
+      DNlogprior_old_(j, k) = DNlogprior_(j, k);
     }
     var_deltas_old_(j) = var_deltas_(j);
   }
 }
 
+// deltas: nvar * K
+// DNlogprior: nvar * K
+// var_deltas: nvar 
 void Fit::RestoreOldValues()
 {
   lv_ = cpvec(lv_old_);
@@ -519,13 +618,17 @@ void Fit::RestoreOldValues()
     int j = ids_update_[uj];
     for (int k = 0; k < K_; k++)
     {
-      deltas_(k, j) = deltas_old_(k, j);
-      DNlogprior_(k, j) = DNlogprior_old_(k, j);
+      deltas_(j, k) = deltas_old_(j, k);
+      DNlogprior_(j, k) = DNlogprior_old_(j, k);
     }
     var_deltas_(j) = var_deltas_old_(j);
   }
 }
 
+// step_sizes: nvar
+// DDNloglike_: nvar
+// sigmasbt: nvar
+// Modified: step_sizes 
 void Fit::UpdateStepSizes()
 {
   for (int uj = 0; uj < nuvar_; uj++)
@@ -533,5 +636,6 @@ void Fit::UpdateStepSizes()
     int j = ids_update_[uj];
     step_sizes_(j) = leap_step_;
     step_sizes_(j) /= sqrt(DDNloglike_(j) + K_ / sigmasbt_[j] / C_);
+    //Rprintf("%f\t", step_sizes_(j));
   }
 }
