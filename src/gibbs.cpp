@@ -169,7 +169,6 @@ void Fit::StartSampling()
             momt_(j, k) -= step_sizes_(j) / 2 * DNlogpost_(j, k);
           }
         }
-        if (debug) Rcpp::Rcerr << "here4.5\n";
       }
 
       bool isfault = false;
@@ -180,7 +179,6 @@ void Fit::StartSampling()
           if (fabs(deltas_(j, k)) > 20)
           {
             isfault = true;
-            Rprintf("fault\n");
             break;
           }
         }
@@ -192,7 +190,6 @@ void Fit::StartSampling()
       UpdateLogLike();
       UpdateVarDeltas();
       double nenergy = CompNegEnergy();
-      //Rprintf("%f\n", nenergy);
 
       GetRNGstate();
       if (log(R::runif(0, 1)) > (nenergy - nenergy_old) || isfault)
@@ -206,10 +203,12 @@ void Fit::StartSampling()
       
       if (ptype_.compare("t") == 0)
       {
+        double alpha_post = (alpha_ + K_) / 2;
+        
         for (int j = 1; j < nvar_; j++)
         {
           GetRNGstate();
-          double alpha_post = (alpha_ + K_) / 2;
+          // TODO: may use for_each
           sigmasbt_[j] =
               1.0 / R::rgamma(alpha_post, 1.0) * (alpha_ * exp(logw_) + var_deltas_[j]) / 2.0;
           PutRNGstate();
@@ -364,10 +363,10 @@ arma::uvec Fit::GetIdsFix()
 // Modified: lv, norm_lv, pred_prob
 void Fit::UpdatePredProb()
 {
-  //arma::mat deltas_update = deltas_.rows(ids_update_);
-  //arma::mat X_update = X_.cols(ids_update_);
-  //arma::mat updated_part = X_update * deltas_update;
-  //lv_.tail_cols(K_) = lv_fix_.tail_cols(K_) + updated_part;
+  // auto ids = GetIdsUpdate();
+  // arma::mat deltas_update = deltas_.rows(ids);
+  // arma::mat X_update = X_.cols(ids);
+  // lv_.tail_cols(K_) = lv_fix_.tail_cols(K_) + X_update * deltas_update;
   lv_.tail_cols(K_) = lv_fix_.tail_cols(K_);
   for (int j : GetIdsUpdate())
   {
@@ -375,13 +374,12 @@ void Fit::UpdatePredProb()
     {
       for (int i = 0; i < n_; i++)
       {
-        lv_(i,k + 1) += deltas_(j, k) * X_(i,j);
+        lv_(i,k + 1) += X_(i,j) * deltas_(j, k);
       }
     }
   }
   norm_lv_ = find_normlv(lv_);
   pred_prob_ = arma::exp(norm_lv_);
-
 }
 
 // lv: n * (1 + K)
@@ -436,7 +434,6 @@ void Fit::UpdateDNlogLike()
 {
   for (int j : GetIdsUpdate())
   {
-    //int j = ids_update_[uj];
     for (int k = 0; k < K_; k++)
     {
       DNloglike_(j, k) = 0;
@@ -457,9 +454,8 @@ void Fit::UpdateLogLike()
   loglike_ = 0;
   for (int i = 0; i < n_; i++)
   {
-    loglike_ += norm_lv_(i, ybase_[i]);
+    loglike_ += norm_lv_(i, ybase_(i));
   }
-  //Rprintf("loglike=%f\n", loglike_);
 }
 
 // deltas: nvar * K
@@ -501,18 +497,10 @@ void Fit::UpdateDNlogPrior()
 // Modified: DNlogpost:  
 void Fit::UpdateDNlogPost()
 {
-  //Rprintf("nuvar: %d\n", nuvar_);
   for (int j : GetIdsUpdate())
   {
-    for (int k = 0; k < K_; k++)
-    {
-      DNlogpost_(j, k) = DNloglike_(j, k) + DNlogprior_(j, k) / sigmasbt_[j];
-      //Rprintf("like: %f\t prior: %f\t sbt: %f\t post: %f\n",
-      //DNloglike_(j, k), DNlogprior_(j, k), sigmasbt_[j], DNlogpost_(j, k));
-    }
+    DNlogpost_.row(j) = DNloglike_.row(j) + DNlogprior_.row(j) / sigmasbt_(j);
   }
-  //Rprintf("UpdateDNlogPost:\n");
-  //Rcpp::Rcout << DNlogpost_;
 }
 
 // deltas: nvar * K
