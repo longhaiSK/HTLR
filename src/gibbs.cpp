@@ -145,16 +145,10 @@ void Fit::StartSampling()
       {
         for (int j : GetIdsUpdate())
         {
-          //int j = ids_update_[uj];
           for (int k = 0; k < K_; k++)
           {
-            //Rprintf("momt1: %f\t step: %f\t post: %f\n",
-            //  momt_(j, k), step_sizes_(j), DNlogpost_(j, k));
             momt_(j, k) -= step_sizes_(j) / 2 * DNlogpost_(j, k);
-            //Rprintf("delta1: %f\t momt2: %f\n", deltas_(j, k),  
-            //  momt_(j, k));
             deltas_(j, k) += step_sizes_(j) * momt_(j, k);
-            //Rprintf("delta2: %f\n", deltas_(j, k));
           }
         }
         if (debug) Rcpp::Rcerr << "here4\n";
@@ -170,7 +164,6 @@ void Fit::StartSampling()
         // move momonton with new derivatives
         for (int j : GetIdsUpdate())
         {
-          //int j = ids_update_[uj];
           for (int k = 0; k < K_; k++)
           {
             momt_(j, k) -= step_sizes_(j) / 2 * DNlogpost_(j, k);
@@ -182,7 +175,6 @@ void Fit::StartSampling()
       bool isfault = false;
       for (int j : GetIdsUpdate())
       {
-        //int j = ids_update_[uj];
         for (int k = 0; k < K_; k++)
         {
           if (fabs(deltas_(j, k)) > 20)
@@ -203,10 +195,7 @@ void Fit::StartSampling()
       //Rprintf("%f\n", nenergy);
 
       GetRNGstate();
-      double tmp1 = log(R::runif(0, 1));
-      double tmp2 = nenergy - nenergy_old; 
-      //Rprintf("nen: %f\t%f\n", tmp1, tmp2);
-      if (tmp1 > tmp2 || isfault)
+      if (log(R::runif(0, 1)) > (nenergy - nenergy_old) || isfault)
       {
         RestoreOldValues();
         rej++;
@@ -342,7 +331,7 @@ void Fit::WhichUpdate(double cut)
 {
   nuvar_ = 0;
   nfvar_ = 0;
-  // TODO: C++ 11 for loop
+
   for (int j = 0; j < nvar_; j++)
   {
     if (sigmasbt_(j) > cut)
@@ -515,7 +504,6 @@ void Fit::UpdateDNlogPost()
   //Rprintf("nuvar: %d\n", nuvar_);
   for (int j : GetIdsUpdate())
   {
-    //nt j = ids_update_[uj];
     for (int k = 0; k < K_; k++)
     {
       DNlogpost_(j, k) = DNloglike_(j, k) + DNlogprior_(j, k) / sigmasbt_[j];
