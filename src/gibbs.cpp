@@ -273,12 +273,13 @@ void Fit::WhichUpdate(bool init)
     else
       ids_fix_(nfvar_++) = j;
   }
+  iup_ = ids_update_.head(nuvar_); // save a quick reference 
 }
 
 // Get int vector ids_update of length nuvar. 
 arma::uvec Fit::GetIdsUpdate()
 {
-  return ids_update_.head(nuvar_);
+  return iup_;
 }
 
 // Get int vector ids_fix of length nfvar.
@@ -384,9 +385,8 @@ void Fit::UpdateLogLike()
 // Modified: sum_deltas, DNlogprior:  
 void Fit::UpdateDNlogPrior()
 {
-  auto ids = GetIdsUpdate();
-  sum_deltas_(ids) = row_sum(deltas_.rows(ids)); 
-  DNlogprior_.rows(ids) = deltas_.rows(ids) - sum_deltas_(ids) / C_;
+  sum_deltas_(iup_) = row_sum(deltas_.rows(iup_)); 
+  DNlogprior_.rows(iup_) = deltas_.rows(iup_) - sum_deltas_(iup_) / C_;
 }
 
 // DNloglike: nvar * K
@@ -396,8 +396,8 @@ void Fit::UpdateDNlogPrior()
 // Modified: DNlogpost 
 void Fit::UpdateDNlogPost()
 {
-  auto ids = GetIdsUpdate();
-  DNlogpost_.rows(ids) = DNloglike_.rows(ids) + DNlogprior_.rows(ids) / sigmasbt_(ids);
+  DNlogpost_.rows(iup_) = DNloglike_.rows(iup_) +
+                          DNlogprior_.rows(iup_) / sigmasbt_(iup_);
 }
 
 // This function is called at the beginning of the trajectory loop.
@@ -408,11 +408,8 @@ void Fit::UpdateDNlogPost()
 // Modified: momt, deltas
 void Fit::UpdateMomtAndDeltas()
 {
-  for (int j : GetIdsUpdate())
-  {
-    momt_.row(j) -= step_sizes_(j) / 2 * DNlogpost_.row(j);
-    deltas_.row(j) += step_sizes_(j) * momt_.row(j);
-  }
+  momt_.rows(iup_) -= step_sizes_(iup_) / 2 % DNlogpost_.rows(iup_);
+  deltas_.rows(iup_) += step_sizes_(iup_) % momt_.rows(iup_);
 }
 
 // deltas: nvar * K
@@ -421,22 +418,15 @@ void Fit::UpdateMomtAndDeltas()
 // Modified: sumsq_deltas, var_deltas  
 void Fit::UpdateVarDeltas()
 {
-  auto ids = GetIdsUpdate();
-  sumsq_deltas_(ids) = row_sum(arma::square(deltas_.rows(ids)));
-  var_deltas_(ids) = sumsq_deltas_(ids) - arma::square(sum_deltas_(ids)) / C_;
+  sumsq_deltas_(iup_) = row_sum(arma::square(deltas_.rows(iup_)));
+  var_deltas_(iup_) = sumsq_deltas_(iup_) - arma::square(sum_deltas_(iup_)) / C_;
 }
 
 // momt: nvar * K
 double Fit::CompNegEnergy()
 {
-  double logprior = 0;
-  double logprior_momt = 0;
-  for (int j : GetIdsUpdate())
-  {
-    logprior += var_deltas_[j] / sigmasbt_[j];
-    for (int k = 0; k < K_; k++)
-      logprior_momt += R_pow_di(momt_(j, k), 2);
-  }
+  double logprior = arma::sum(var_deltas_(iup_) / sigmasbt_(iup_));
+  double logprior_momt = arma::accu(arma::square(momt_.rows(iup_)));
   return (loglike_ - logprior / 2 - logprior_momt / 2);
 }
 
@@ -462,10 +452,7 @@ void Fit::GenMomt()
 // Modified: momt
 void Fit::MoveMomt()
 {
-  for (int j : GetIdsUpdate())
-  {
-    momt_.row(j) -= step_sizes_(j) / 2 * DNlogpost_.row(j); 
-  }
+  momt_.rows(iup_) -= step_sizes_(iup_) / 2 % DNlogpost_.rows(iup_);
 }
 
 // step_sizes: nvar
@@ -474,9 +461,8 @@ void Fit::MoveMomt()
 // Modified: step_sizes
 void Fit::UpdateStepSizes()
 {
-  auto ids = GetIdsUpdate();
-  step_sizes_(ids) = leap_step_ /
-                     arma::sqrt(DDNloglike_(ids) + K_ / sigmasbt_(ids) / C_);
+  step_sizes_(iup_) = leap_step_ /
+                     arma::sqrt(DDNloglike_(iup_) + K_ / sigmasbt_(iup_) / C_);
 }
 
 void Fit::CacheOldValues()

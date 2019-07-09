@@ -35,7 +35,7 @@ class Fit
   const int nvar_;
   double logw_;
   int nuvar_, nfvar_;
-  arma::uvec ids_update_, ids_fix_;
+  arma::uvec ids_update_, ids_fix_, iup_;
 
   arma::mat 
       lv_, lv_old_, lv_fix_, norm_lv_,
