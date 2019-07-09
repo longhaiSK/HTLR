@@ -70,6 +70,7 @@ class Fit
   void RestoreOldValues();
   bool IsFault(double cri = 20);
   void Initialize();
+  void Traject(int i_mc);
 
   public:
 

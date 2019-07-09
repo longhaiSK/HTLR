@@ -35,26 +35,16 @@ Fit::Fit(int p, int K, int n,
   mc_hmcrej_ = arma::vec(iters_rmc + 1, arma::fill::zeros);
 
   lv_ = arma::mat(n, C_, arma::fill::zeros);
-  lv_old_ = arma::mat(n, C_, arma::fill::zeros);
   lv_fix_ = arma::mat(n, C_, arma::fill::zeros);
-  norm_lv_ = arma::mat(n, C_, arma::fill::zeros);
-  pred_prob_ = arma::mat(n, C_, arma::fill::zeros);
-  pred_prob_old_ = arma::mat(n, C_, arma::fill::zeros);
 
   DNloglike_ = arma::mat(nvar_, K, arma::fill::zeros);
-  //DNloglike_old_ = arma::mat(nvar_, K, arma::fill::zeros);
-  deltas_old_ = arma::mat(nvar_, K, arma::fill::zeros);
   momt_ = arma::mat(nvar_, K, arma::fill::zeros);
   DNlogprior_ = arma::mat(nvar_, K, arma::fill::zeros);
-  DNlogprior_old_ = arma::mat(nvar_, K, arma::fill::zeros);
   DNlogpost_ = arma::mat(nvar_, K, arma::fill::zeros);
 
   sumsq_deltas_ = arma::vec(nvar_, arma::fill::zeros);
-  sumsq_deltas_old_ = arma::vec(nvar_, arma::fill::zeros);
   sum_deltas_ = arma::vec(nvar_, arma::fill::zeros);
-  sum_deltas_old_ = arma::vec(nvar_, arma::fill::zeros);
   var_deltas_ = arma::vec(nvar_, arma::fill::zeros);
-  var_deltas_old_ = arma::vec(nvar_, arma::fill::zeros);
   step_sizes_ = arma::vec(nvar_, arma::fill::zeros);
 
   sgmsq_cut_ = hmc_sgmcut > 0 ? R_pow_di(hmc_sgmcut, 2) : hmc_sgmcut;
@@ -68,23 +58,7 @@ void Fit::StartSampling()
   for (int i_mc = 0; i_mc < iters_h_ + iters_rmc_; i_mc++)
   {
     int i_rmc = i_mc - iters_h_;
-    int L;
 
-    if (i_mc < iters_h_ / 2.0)
-    {
-      L = leap_L_h_;
-      logw_ = -10;
-    }
-    else if (i_mc < iters_h_)
-    {
-      L = leap_L_h_;
-      logw_ = s_;
-    }
-    else
-    {
-      L = leap_L_;
-      logw_ = s_;
-    }
     /***************** thin iterations of Gibbs sampling ******************/
     double no_uvar = 0;
     double rej = 0;
@@ -108,17 +82,7 @@ void Fit::StartSampling()
       UpdateDNlogPrior();
       UpdateDNlogLike();
       UpdateDNlogPost();
-
-      for (int i_trj = 0; i_trj < L; i_trj++)
-      {
-        UpdateMomtAndDeltas();
-        // compute derivative of minus log joint distribution
-        UpdatePredProb();
-        UpdateDNlogPrior();
-        UpdateDNlogLike();
-        UpdateDNlogPost();
-        MoveMomt();
-      }
+      Traject(i_mc);
 
       // decide whether to accept it
       UpdateLogLike();
@@ -512,4 +476,36 @@ void Fit::Initialize()
   UpdateDNlogPrior();
   UpdateVarDeltas();
   mc_var_deltas_.col(0) = var_deltas_;
+}
+
+void Fit::Traject(int i_mc)
+{
+  int L;
+
+  if (i_mc < iters_h_ / 2.0)
+  {
+    L = leap_L_h_;
+    logw_ = -10;
+  }
+  else if (i_mc < iters_h_)
+  {
+    L = leap_L_h_;
+    logw_ = s_;
+  }
+  else
+  {
+    L = leap_L_;
+    logw_ = s_;
+  }
+
+  for (int i_trj = 0; i_trj < L; i_trj++)
+  {
+    UpdateMomtAndDeltas();
+    // compute derivative of minus log joint distribution
+    UpdatePredProb();
+    UpdateDNlogPrior();
+    UpdateDNlogLike();
+    UpdateDNlogPost();
+    MoveMomt();
+  }
 }
