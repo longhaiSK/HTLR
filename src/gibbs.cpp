@@ -13,8 +13,7 @@ Fit::Fit(int p, int K, int n,
       ptype_(ptype), alpha_(alpha), s_(s), eta_(eta), sigmab0_(sigmab0),
       iters_rmc_(iters_rmc), iters_h_(iters_h), thin_(thin),
       leap_L_(leap_L), leap_L_h_(leap_L_h), leap_step_(leap_step),
-      hmc_sgmcut_(hmc_sgmcut), DDNloglike_(DDNloglike_),
-      silence_(silence), looklf_(looklf), nvar_(p + 1), logw_(logw)
+      DDNloglike_(DDNloglike_), silence_(silence), looklf_(looklf), nvar_(p + 1), logw_(logw)
 {
   ids_update_ = arma::uvec(nvar_, arma::fill::zeros);
   ids_fix_ = arma::uvec(nvar_, arma::fill::zeros);
@@ -64,7 +63,7 @@ Fit::Fit(int p, int K, int n,
 void Fit::StartSampling()
 {
   /*********************** getting initial values ************************/
-  WhichUpdate(-1); // set to update all
+  WhichUpdate(true); // set to update all
   UpdatePredProb(); // lv is computed here
 
   UpdateLogLike();
@@ -104,7 +103,7 @@ void Fit::StartSampling()
       /*********************** HMC Metropolis Update ********************/
       
       // initialize HMC
-      WhichUpdate(sgmsq_cut_);
+      WhichUpdate();
       no_uvar += nuvar_;
 
       GenMomt();
@@ -251,7 +250,7 @@ Rcpp::List Fit::OutputR()
       Rcpp::Named("leap.L") = leap_L_,
       Rcpp::Named("leap.L.h") = leap_L_h_,
       Rcpp::Named("leap.step") = leap_step_,
-      Rcpp::Named("hmc.sgmcut") = hmc_sgmcut_,
+      Rcpp::Named("sgmsq.cut") = sgmsq_cut_,
       Rcpp::Named("DDNloglike") = DDNloglike_);
 
   return Rcpp::List::create(
@@ -271,10 +270,11 @@ Rcpp::List Fit::OutputR()
 
 // This function determines which features to be updated.
 // Modified: nuvar, nfvar, ids_update, ids_fix_  
-void Fit::WhichUpdate(double cut)
+void Fit::WhichUpdate(bool init)
 {
   nuvar_ = 0;
   nfvar_ = 0;
+  double cut = init ? -1 : sgmsq_cut_;
 
   for (int j = 0; j < nvar_; j++)
   {

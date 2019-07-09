@@ -19,7 +19,8 @@ class Fit
 
   // sampling
   const int iters_rmc_, iters_h_, thin_, leap_L_, leap_L_h_; 
-  const double leap_step_, hmc_sgmcut_; 
+  const double leap_step_; 
+  double sgmsq_cut_;
   arma::vec DDNloglike_;
 
   // fit result
@@ -48,9 +49,9 @@ class Fit
       sum_deltas_, sum_deltas_old_,
       var_deltas_, var_deltas_old_,
       step_sizes_, sigmasbt_; 
-  double loglike_, loglike_old_, sgmsq_cut_;
+  double loglike_, loglike_old_;
  
-  void WhichUpdate(double cut);  
+  void WhichUpdate(bool init = false);  
   arma::uvec GetIdsUpdate();
   arma::uvec GetIdsFix();
   void UpdatePredProb();
