@@ -63,10 +63,10 @@ class Fit
   double CompNegEnergy();
   void GenMomt();
   void MoveMomt();
+  void UpdateStepSizes();
   void CacheOldValues();
   void RestoreOldValues();
-  void UpdateStepSizes();
-
+  bool IsFault(double cri = 20);
 
   public:
 

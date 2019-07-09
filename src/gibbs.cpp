@@ -65,16 +65,14 @@ void Fit::StartSampling()
 {
   /*********************** getting initial values ************************/
   WhichUpdate(-1); // set to update all
-
   UpdatePredProb(); // lv is computed here
-  
+
   UpdateLogLike();
   mc_loglike_[0] = loglike_;
 
   UpdateDNlogPrior();
   
   UpdateVarDeltas();
-  
   mc_var_deltas_.col(0) = var_deltas_;
 
   /************************ start gibbs sampling **************************/
@@ -107,24 +105,19 @@ void Fit::StartSampling()
       
       // initialize HMC
       WhichUpdate(sgmsq_cut_);
-
       no_uvar += nuvar_;
 
       GenMomt();
-
       UpdateStepSizes();
 
       DetachFixlv();
-
       CacheOldValues();
  
       double nenergy_old = CompNegEnergy();
 
       // start trajectory
       UpdateDNlogPrior();
-
       UpdateDNlogLike(); // recompute derivatives of log likelihood
-
       UpdateDNlogPost(); // recompute derivatives of log prior
 
       for (int i_trj = 0; i_trj < L; i_trj++)
@@ -139,29 +132,10 @@ void Fit::StartSampling()
         }
         // compute derivative of minus log joint distribution
         UpdatePredProb();
-
         UpdateDNlogPrior();
-
         UpdateDNlogLike();
-
         UpdateDNlogPost();
-
         MoveMomt();
-      }
-
-      bool isfault = false;
-      for (int j : GetIdsUpdate())
-      {
-        for (int k = 0; k < K_; k++)
-        {
-          if (fabs(deltas_(j, k)) > 20)
-          {
-            isfault = true;
-            break;
-          }
-        }
-        if (isfault)
-          break;
       }
 
       // decide whether to accept it
@@ -170,7 +144,7 @@ void Fit::StartSampling()
       double nenergy = CompNegEnergy();
 
       GetRNGstate();
-      if (log(R::runif(0, 1)) > (nenergy - nenergy_old) || isfault)
+      if (log(R::runif(0, 1)) > (nenergy - nenergy_old) || IsFault())
       {
         RestoreOldValues();
         rej++;
@@ -527,12 +501,19 @@ void Fit::MoveMomt()
 {
   for (int j : GetIdsUpdate())
   {
-    // for (int k = 0; k < K_; k++)
-    // {
-    //   momt_(j, k) -= step_sizes_(j) / 2 * DNlogpost_(j, k);
-    // }
     momt_.row(j) -= step_sizes_(j) / 2 * DNlogpost_.row(j); 
   }
+}
+
+// step_sizes: nvar
+// DDNloglike_: nvar
+// sigmasbt: nvar
+// Modified: step_sizes
+void Fit::UpdateStepSizes()
+{
+  auto ids = GetIdsUpdate();
+  step_sizes_(ids) = leap_step_ /
+                     arma::sqrt(DDNloglike_(ids) + K_ / sigmasbt_(ids) / C_);
 }
 
 void Fit::CacheOldValues()
@@ -555,13 +536,17 @@ void Fit::RestoreOldValues()
   loglike_ = loglike_old_;
 }
 
-// step_sizes: nvar
-// DDNloglike_: nvar
-// sigmasbt: nvar
-// Modified: step_sizes
-void Fit::UpdateStepSizes()
+bool Fit::IsFault(double cri)
 {
-  auto ids = GetIdsUpdate();
-  step_sizes_(ids) = leap_step_ /
-                     arma::sqrt(DDNloglike_(ids) + K_ / sigmasbt_(ids) / C_);
+  for (int j : GetIdsUpdate())
+  {
+    for (int k = 0; k < K_; k++)
+    {
+      if (fabs(deltas_(j, k)) > cri)
+      {
+        return true;
+      }
+    }
+  }
+  return false;
 }
