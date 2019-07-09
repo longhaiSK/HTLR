@@ -384,30 +384,9 @@ void Fit::UpdateLogLike()
 // Modified: sum_deltas, DNlogprior:  
 void Fit::UpdateDNlogPrior()
 {
-  for (int j : GetIdsUpdate())
-  {
-    //int j = ids_update_[uj];
-    //Rprintf("%d\n", j);
-    //sum deltas for each feature
-    //sum_deltas_[j] = 0;
-    double tmp = 0;
-    for (int kk = 0; kk < K_; kk++)
-    {
-      //sum_deltas_[j] += deltas_(j, kk);
-      tmp += deltas_(j, kk);
-      //Rprintf("d%f\t", deltas_(j, kk));
-    }
-    sum_deltas_[j] = tmp;
-    //Rprintf("\n");
-    //Rprintf("s%f\n", sum_deltas_[j]);
-    for (int k = 0; k < K_; k++)
-    {
-      DNlogprior_(j, k) = deltas_(j, k) - sum_deltas_[j] / C_;
-      //Rprintf("%f\t", DNlogprior_(j, k));
-    }
-  }
-  //Rprintf("UpdateDNlogPrior:\n");
-  //Rcpp::Rcout << DNlogprior_;
+  auto ids = GetIdsUpdate();
+  sum_deltas_(ids) = row_sum(deltas_.rows(ids)); 
+  DNlogprior_.rows(ids) = deltas_.rows(ids) - sum_deltas_(ids) / C_;
 }
 
 // DNloglike: nvar * K
@@ -417,10 +396,8 @@ void Fit::UpdateDNlogPrior()
 // Modified: DNlogpost 
 void Fit::UpdateDNlogPost()
 {
-  for (int j : GetIdsUpdate())
-  {
-    DNlogpost_.row(j) = DNloglike_.row(j) + DNlogprior_.row(j) / sigmasbt_(j);
-  }
+  auto ids = GetIdsUpdate();
+  DNlogpost_.rows(ids) = DNloglike_.rows(ids) + DNlogprior_.rows(ids) / sigmasbt_(ids);
 }
 
 // This function is called at the beginning of the trajectory loop.
