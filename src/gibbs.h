@@ -62,6 +62,7 @@ class Fit
   void UpdateVarDeltas();
   double CompNegEnergy();
   void GenMomt();
+  void MoveMomt();
   void CacheOldValues();
   void RestoreOldValues();
   void UpdateStepSizes();
