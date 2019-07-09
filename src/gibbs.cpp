@@ -62,17 +62,7 @@ Fit::Fit(int p, int K, int n,
 
 void Fit::StartSampling()
 {
-  /*********************** getting initial values ************************/
-  WhichUpdate(true); // set to update all
-  UpdatePredProb(); // lv is computed here
-
-  UpdateLogLike();
-  mc_loglike_[0] = loglike_;
-
-  UpdateDNlogPrior();
-  
-  UpdateVarDeltas();
-  mc_var_deltas_.col(0) = var_deltas_;
+  Initialize();
 
   /************************ start gibbs sampling **************************/
   for (int i_mc = 0; i_mc < iters_h_ + iters_rmc_; i_mc++)
@@ -454,21 +444,9 @@ void Fit::UpdateMomtAndDeltas()
 // Modified: sumsq_deltas, var_deltas  
 void Fit::UpdateVarDeltas()
 {
-  for (int j : GetIdsUpdate())
-  {
-    //int j = ids_update_[uj];
-    // prior deltas
-    //sumsq_deltas_[j] = 0;
-    double tmp = 0;
-    for (int k = 0; k < K_; k++)
-    {
-      //sumsq_deltas_[j] += R_pow_di(deltas_(j, k), 2);
-      tmp += R_pow_di(deltas_(j, k), 2);
-    }
-    sumsq_deltas_[j] = tmp;
-    //Rprintf("%f\t", sumsq_deltas_[j]);
-    var_deltas_[j] = sumsq_deltas_[j] - R_pow_di(sum_deltas_[j], 2) / C_;
-  }
+  auto ids = GetIdsUpdate();
+  sumsq_deltas_(ids) = row_sum(arma::square(deltas_.rows(ids)));
+  var_deltas_(ids) = sumsq_deltas_(ids) - arma::square(sum_deltas_(ids)) / C_;
 }
 
 // momt: nvar * K
@@ -557,4 +535,18 @@ bool Fit::IsFault(double cri)
     }
   }
   return false;
+}
+
+// This function is called once at the beginning of the sampling process.
+void Fit::Initialize()
+{
+  WhichUpdate(true); // set to update all
+  UpdatePredProb();  // lv is computed here
+
+  UpdateLogLike();
+  mc_loglike_[0] = loglike_;
+
+  UpdateDNlogPrior();
+  UpdateVarDeltas();
+  mc_var_deltas_.col(0) = var_deltas_;
 }
