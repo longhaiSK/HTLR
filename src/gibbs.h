@@ -59,6 +59,7 @@ class Fit
   void UpdateLogLike();
   void UpdateDNlogPrior();
   void UpdateDNlogPost();
+  void UpdateMomtAndDeltas();
   void UpdateVarDeltas();
   double CompNegEnergy();
   void GenMomt();

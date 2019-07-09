@@ -117,19 +117,12 @@ void Fit::StartSampling()
 
       // start trajectory
       UpdateDNlogPrior();
-      UpdateDNlogLike(); // recompute derivatives of log likelihood
-      UpdateDNlogPost(); // recompute derivatives of log prior
+      UpdateDNlogLike();
+      UpdateDNlogPost();
 
       for (int i_trj = 0; i_trj < L; i_trj++)
       {
-        for (int j : GetIdsUpdate())
-        {
-          for (int k = 0; k < K_; k++)
-          {
-            momt_(j, k) -= step_sizes_(j) / 2 * DNlogpost_(j, k);
-            deltas_(j, k) += step_sizes_(j) * momt_(j, k);
-          }
-        }
+        UpdateMomtAndDeltas();
         // compute derivative of minus log joint distribution
         UpdatePredProb();
         UpdateDNlogPrior();
@@ -364,9 +357,9 @@ void Fit::DetachFixlv()
 }
 
 // DNloglike: nvar * K
-// const X: n * nvar
+// X: n * nvar
 // pred_prob: n * (1 + K)
-// const ymat: n * K
+// ymat: n * K
 // Modified: DNloglike
 void Fit::UpdateDNlogLike()
 {
@@ -427,16 +420,31 @@ void Fit::UpdateDNlogPrior()
   //Rcpp::Rcout << DNlogprior_;
 }
 
-// const DNloglike: nvar * K
-// const DNlogprior: nvar * K
+// DNloglike: nvar * K
+// DNlogprior: nvar * K
 // DNlogpost: nvar * K
 // sigmasbt: nvar
-// Modified: DNlogpost:  
+// Modified: DNlogpost 
 void Fit::UpdateDNlogPost()
 {
   for (int j : GetIdsUpdate())
   {
     DNlogpost_.row(j) = DNloglike_.row(j) + DNlogprior_.row(j) / sigmasbt_(j);
+  }
+}
+
+// This function is called at the beginning of the trajectory loop.
+// momt: nvar * K
+// step_sizes: nvar
+// DNlogpost: nvar * K
+// deltas: nvar * K
+// Modified: momt, deltas
+void Fit::UpdateMomtAndDeltas()
+{
+  for (int j : GetIdsUpdate())
+  {
+    momt_.row(j) -= step_sizes_(j) / 2 * DNlogpost_.row(j);
+    deltas_.row(j) += step_sizes_(j) * momt_.row(j);
   }
 }
 
@@ -493,8 +501,8 @@ void Fit::GenMomt()
 }
 
 // This function moves momonton with new derivatives.
-// const step_sizes: nvar
-// const DNlogpost: nvar * K
+// step_sizes: nvar
+// DNlogpost: nvar * K
 // momt: nvar * K
 // Modified: momt
 void Fit::MoveMomt()
