@@ -30,6 +30,7 @@ class Fit
 
   // other control or result
   const int silence_, looklf_;
+  const bool legacy_;
 
   // internal
   const int nvar_;
@@ -81,7 +82,7 @@ class Fit
       int leap_L, int leap_L_h, double leap_step,
       double hmc_sgmcut, arma::vec &DDNloglike,
       arma::mat &deltas, double logw, arma::vec &sigmasbt,
-      int silence, int looklf);
+      int silence, int looklf, bool legacy);
 
   void StartSampling();
   Rcpp::List OutputR(); 

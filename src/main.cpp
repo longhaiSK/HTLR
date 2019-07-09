@@ -12,7 +12,7 @@ Rcpp::List HtlrFit(
   int leap_L, int leap_L_h, double leap_step,
   double hmc_sgmcut, arma::vec &DDNloglike,
   arma::mat &deltas, double logw, arma::vec &sigmasbt,
-  int silence, int looklf)
+  int silence, int looklf, bool legacy)
 {
   auto f = Fit(
     p, K, n, X, ymat, ybase,
@@ -20,7 +20,7 @@ Rcpp::List HtlrFit(
     iters_rmc, iters_h, thin, 
     leap_L, leap_L_h, leap_step, hmc_sgmcut, DDNloglike, 
     deltas, logw, sigmasbt,
-    silence, looklf);
+    silence, looklf, legacy);
 
   f.StartSampling();
   return f.OutputR(); 

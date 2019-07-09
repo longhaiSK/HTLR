@@ -7,7 +7,7 @@ htlr_fit <- function (
     sigmab0 = 2000, ptype = "t", alpha = 1, s = -10, eta = 0,  ## prior
     iters_h = 1000, iters_rmc = 1000, thin = 100,  ## mc iterations
     leap_L = 50, leap_L_h = 5, leap_step = 0.3,  hmc_sgmcut = 0.05, ## hmc
-    initial_state = "lasso", alpha.rda = 0.2, silence = TRUE, ## initial state
+    initial_state = "lasso", alpha.rda = 0.2, silence = TRUE, legacy = TRUE, ## initial state
     predburn = NULL, predthin = 1) ## prediction
 {
   stopifnot(ptype %in% c("t", "ghs", "neg"), length (y_tr) == nrow (X_tr),
@@ -95,7 +95,7 @@ htlr_fit <- function (
       logw = logw,
       sigmasbt = sigmasbt,
       ## other control
-      silence = as.integer(silence), looklf = 0L)
+      silence = as.integer(silence), looklf = 0L, legacy = legacy)
   # adding data preprocessing information
   fithtlr <- c (fithtlr, list( fsel = fsel, nuj = nuj, sdj = sdj, y = y_tr) )
         

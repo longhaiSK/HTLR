@@ -8,12 +8,13 @@ Fit::Fit(int p, int K, int n,
          int leap_L, int leap_L_h, double leap_step,
          double hmc_sgmcut, arma::vec &DDNloglike_,
          arma::mat &deltas, double logw, arma::vec &sigmasbt,
-         int silence, int looklf)
+         int silence, int looklf, bool legacy)
     : p_(p), K_(K), C_(K + 1), n_(n), X_(X), ymat_(ymat), ybase_(ybase),
       ptype_(ptype), alpha_(alpha), s_(s), eta_(eta), sigmab0_(sigmab0),
       iters_rmc_(iters_rmc), iters_h_(iters_h), thin_(thin),
       leap_L_(leap_L), leap_L_h_(leap_L_h), leap_step_(leap_step),
-      DDNloglike_(DDNloglike_), silence_(silence), looklf_(looklf), nvar_(p + 1), logw_(logw)
+      DDNloglike_(DDNloglike_), silence_(silence), looklf_(looklf), 
+      legacy_(legacy), nvar_(p + 1), logw_(logw)
 {
   ids_update_ = arma::uvec(nvar_, arma::fill::zeros);
   ids_fix_ = arma::uvec(nvar_, arma::fill::zeros);
@@ -98,19 +99,30 @@ void Fit::StartSampling()
       PutRNGstate();
 
       /*********************** Sigmas Update  ***********************/
-      
+
       if (ptype_.compare("t") == 0)
       {
         double alpha_post = (alpha_ + K_) / 2;
-        
-        for (int j = 1; j < nvar_; j++)
+        if (legacy_)
         {
-          GetRNGstate();
-          // TODO: use for_each
-          sigmasbt_[j] =
-              1.0 / R::rgamma(alpha_post, 1.0) * (alpha_ * exp(logw_) + var_deltas_[j]) / 2.0;
-          PutRNGstate();
+          for (int j = 1; j < nvar_; j++)
+          {
+            GetRNGstate();
+            sigmasbt_[j] =
+                1.0 / R::rgamma(alpha_post, 1.0) * (alpha_ * exp(logw_) + var_deltas_[j]) / 2.0;
+            PutRNGstate();
+          }
         }
+        else
+        {
+          sigmasbt_ = copy(var_deltas_);
+          sigmasbt_.for_each([this, alpha_post](arma::vec::elem_type &val) {
+            GetRNGstate();
+            val = 1.0 / R::rgamma(alpha_post, 1.0) * (alpha_ * exp(logw_) + val) / 2.0;
+            PutRNGstate();
+          });
+        }
+
         /********************** logw Update  **********************/
         if (eta_ > 1E-10)
         {
@@ -181,7 +193,7 @@ void Fit::StartSampling()
     if (silence_ == 0)
     {
       Rprintf(
-          "Iter%4d: deviance=%5.3f, logw=%6.2f, nuvar=%3.0f, hmcrej=%4.2f\n\n",
+          "Iter%4d: deviance=%5.3f, logw=%6.2f, nuvar=%3.0f, hmcrej=%4.2f\n",
           i_rmc, -loglike_ / n_, logw_, no_uvar, rej);
     }
     if (i_rmc % 256 == 0) R_CheckUserInterrupt();
@@ -318,7 +330,7 @@ void Fit::DetachFixlv()
 // Modified: DNloglike
 void Fit::UpdateDNlogLike()
 {
-  arma::mat tmp = pred_prob_.tail_cols(K_) - ymat_; 
+  arma::mat tmp = pred_prob_.tail_cols(K_) - ymat_;
   for (int j : GetIdsUpdate())
   {
     for (int k = 0; k < K_; k++)
@@ -376,6 +388,38 @@ void Fit::UpdateMomtAndDeltas()
   deltas_.rows(iup_) += step_sizes_(iup_) % momt_.rows(iup_);
 }
 
+void Fit::Traject(int i_mc)
+{
+  int L;
+
+  if (i_mc < iters_h_ / 2.0)
+  {
+    L = leap_L_h_;
+    logw_ = -10;
+  }
+  else if (i_mc < iters_h_)
+  {
+    L = leap_L_h_;
+    logw_ = s_;
+  }
+  else
+  {
+    L = leap_L_;
+    logw_ = s_;
+  }
+
+  for (int i_trj = 0; i_trj < L; i_trj++)
+  {
+    UpdateMomtAndDeltas();
+    // compute derivative of minus log joint distribution
+    UpdatePredProb();
+    UpdateDNlogPrior();
+    UpdateDNlogLike();
+    UpdateDNlogPost();
+    MoveMomt();
+  }
+}
+
 // deltas: nvar * K
 // sumsq_deltas: nvar
 // var_deltas: nvar
@@ -398,14 +442,22 @@ double Fit::CompNegEnergy()
 // Modified: momt
 void Fit::GenMomt()
 {
-  for (int j : GetIdsUpdate())
+  if (legacy_)
   {
-    for (int k = 0; k < K_; k++)
+    for (int j : GetIdsUpdate())
     {
-      GetRNGstate();
-      momt_(j, k) = R::rnorm(0, 1);
-      PutRNGstate();
+      for (int k = 0; k < K_; k++)
+      {
+        GetRNGstate();
+        momt_(j, k) = R::rnorm(0, 1);
+        PutRNGstate();
+      }
     }
+  }
+  else
+  {
+    arma::vec rn = Rcpp::rnorm(nuvar_ * K_);
+    momt_.rows(iup_) = rn;
   }
 }
 
@@ -478,34 +530,3 @@ void Fit::Initialize()
   mc_var_deltas_.col(0) = var_deltas_;
 }
 
-void Fit::Traject(int i_mc)
-{
-  int L;
-
-  if (i_mc < iters_h_ / 2.0)
-  {
-    L = leap_L_h_;
-    logw_ = -10;
-  }
-  else if (i_mc < iters_h_)
-  {
-    L = leap_L_h_;
-    logw_ = s_;
-  }
-  else
-  {
-    L = leap_L_;
-    logw_ = s_;
-  }
-
-  for (int i_trj = 0; i_trj < L; i_trj++)
-  {
-    UpdateMomtAndDeltas();
-    // compute derivative of minus log joint distribution
-    UpdatePredProb();
-    UpdateDNlogPrior();
-    UpdateDNlogLike();
-    UpdateDNlogPost();
-    MoveMomt();
-  }
-}
