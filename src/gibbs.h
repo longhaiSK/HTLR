@@ -54,8 +54,8 @@ class Fit
   void WhichUpdate(bool init = false);  
   arma::uvec GetIdsUpdate();
   arma::uvec GetIdsFix();
-  void UpdatePredProb();
   void DetachFixlv();
+  void UpdatePredProb();
   void UpdateDNlogLike();
   void UpdateLogLike();
   void UpdateDNlogPrior();
@@ -69,6 +69,7 @@ class Fit
   void CacheOldValues();
   void RestoreOldValues();
   bool IsFault(double cri = 20);
+  void Initialize();
 
   public:
 
