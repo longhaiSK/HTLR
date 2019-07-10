@@ -1,19 +1,41 @@
-## y takes values 1,..., C
-## initial_state can be NULL, or a gived parameter vector,
-## or a previous markov chain results
-
+#' Logistic Regression with Heavy-Tail priors 
+#'
+#' Fit a model using bayesian logistic regression with heavy-tail priors 
+#'
+#' @param y_tr Vector of class labels in training or test data set. 
+#' Must be coded as non-negative integers, e.g., 0,1,2,\ldots,C-1 for C classes.
+#' @param X_tr Design matrix of traning data; 
+#' rows should be for the cases, and columns for different features.
+#' @param fsel Subsets of features selected before fitting, such as by univariate screening.
+#' @param stdzx If TRUE, the original features values are standardized to have mean = 0 and sd = 1.
+#' 
+#' @param initial_state The initial state of Markov Chain;
+#' can be NULL, or a gived parameter vector, or a previous markov chain results.    
+#' 
 htlr_fit <- function (
     y_tr, X_tr, X_ts = NULL, fsel = 1:ncol(X_tr), stdzx = TRUE, ## data
     sigmab0 = 2000, ptype = "t", alpha = 1, s = -10, eta = 0,  ## prior
     iters_h = 1000, iters_rmc = 1000, thin = 100,  ## mc iterations
     leap_L = 50, leap_L_h = 5, leap_step = 0.3,  hmc_sgmcut = 0.05, ## hmc
-    initial_state = "lasso", alpha.rda = 0.2, silence = TRUE, legacy = TRUE, ## initial state
+    initial_state = "lasso", alpha.rda = 0.2, silence = TRUE, .legacy = TRUE, ## initial state
     predburn = NULL, predthin = 1) ## prediction
 {
-  stopifnot(ptype %in% c("t", "ghs", "neg"), length (y_tr) == nrow (X_tr),
-            iters_rmc > 0, iters_h > 0, leap_L > 0, leap_L_h > 0, thin > 0)
+  #.Deprecated("htlr")
+  
+  ## checking prior types
+  if (!(ptype %in% c("t", "ghs", "neg"))) 
+  {
+    stop ("\"ptype\" NOT in (\"t\", \"ghs\", \"neg\")")
+  }
+  ## checking arguments
+  if (iters_rmc <= 0||iters_h < 0||leap_L <=0 ||leap_L_h <= 0 || thin <= 0)
+  {
+    stop ("MC iterations and Leapfrog lengths must be nonnegative.")
+  }
+  
+  if (length (y_tr) != nrow (X_tr) ) stop ("'y' and 'X' mismatch")
 
-  ###################### data preprocessing ######################
+  ###################### Data preprocessing ######################
   if (min(y_tr) == 0)
     y_tr <- y_tr + 1
   
@@ -80,101 +102,109 @@ htlr_fit <- function (
     
   #################### Do Gibbs sampling ####################
 
-  fithtlr <- HtlrFit(
+  fit <- HtlrFit(
       ## data
-      p = as.integer(p), K = as.integer(K), n = as.integer(n),
-      X = as.matrix(X_addint), ymat = as.matrix(ymat), ybase = as.vector(ybase),
+      p = p, K = K, n = n,
+      X = as.matrix(X_addint), 
+      ymat = as.matrix(ymat), 
+      ybase = as.vector(ybase),
       ## prior
       ptype = ptype, alpha = alpha, s = s, eta = eta, sigmab0 = sigmab0,
       ## sampling
-      iters_rmc = as.integer(iters_rmc), iters_h = as.integer(iters_h), 
-      thin = as.integer(thin), leap_L = as.integer(leap_L), leap_L_h = as.integer(leap_L_h),
-      leap_step = leap_step, hmc_sgmcut = hmc_sgmcut, DDNloglike = as.vector(DDNloglike),
+      iters_rmc = iters_rmc, iters_h = iters_h, thin = thin, 
+      leap_L = leap_L, leap_L_h = leap_L_h, leap_step = leap_step, 
+      hmc_sgmcut = hmc_sgmcut, DDNloglike = as.vector(DDNloglike),
       ## fit result
-      deltas = deltas,
-      logw = logw,
-      sigmasbt = sigmasbt,
+      deltas = deltas, logw = logw, sigmasbt = sigmasbt,
       ## other control
-      silence = as.integer(silence), looklf = 0L, legacy = legacy)
+      silence = as.integer(silence), looklf = 0L, legacy = .legacy)
+  
   # adding data preprocessing information
-  fithtlr <- c (fithtlr, list( fsel = fsel, nuj = nuj, sdj = sdj, y = y_tr) )
+  fit <- c(fit, list(fsel = fsel, nuj = nuj, sdj = sdj, y = y_tr))
         
-    ################## prediction for test cases #########################
-    if (!is.null (X_ts))
-    {
-      fithtlr$probs_pred <- htlr_predict (X_ts = X_ts, fithtlr = fithtlr, 
-                               			 burn = predburn, thin = predthin)
-    }
-    else fithtlr$probs_pred <- NULL
-    
-    ############## Hhtlr fitting and prediction results  #################
-    fithtlr
+  ################## Prediction for test cases #########################
+  if (!is.null (X_ts))
+  {
+    fit$probs_pred <- htlr_predict(
+      X_ts = X_ts,
+      fithtlr = fit,
+      burn = predburn,
+      thin = predthin
+    )
+  }
+  else
+    fit$probs_pred <- NULL
+  
+  ############## Htlr fitting and prediction results #################
+  return(fit)
 }
-
 
 ## deltas --- the values of deltas (for example true deltas) used to prediction
 ## fithtlr --- if this is not a null, will use Markov chain samples of deltas
 ## to do predictions.
-htlr_predict <- function (X_ts, fithtlr = NULL, deltas = NULL, 
-                          burn = NULL, thin = NULL, usedmc = NULL)
+htlr_predict <- function(X_ts, fithtlr = NULL, deltas = NULL, burn = NULL, thin = NULL, usedmc = NULL)
 {
-    ## chaning X_ts as needed
-    if (is.vector (X_ts)) X_ts <- matrix (X_ts, 1,)
-    no_ts <- nrow (X_ts)
-
-    if (is.null (deltas) & !is.null (fithtlr))
-    {
-        mcdims <- dim (fithtlr$mcdeltas)
-        p <- mcdims [1] - 1
-        K <- mcdims [2]
-        no_mcspl <- mcdims[3]
-
-        ## index of mc iters used for inference
-        if (is.null(usedmc))
-        {
-		  if (is.null (burn)) burn <- floor (no_mcspl * 0.1)
-		  if (is.null (thin)) thin <- 1
-		  usedmc <- seq (burn + 1, no_mcspl, by = thin)
-        }
-       
-        no_used <- length (usedmc)
-
-        ## read deltas for prediction
-        longdeltas <- matrix (fithtlr$mcdeltas[,,usedmc], nrow = p + 1)
-
-        ## selecting features and standardizing
-        fsel <- fithtlr$fsel
-        X_ts <- X_ts [, fsel, drop = FALSE]
-        nuj <- fithtlr$nuj
-        sdj <- fithtlr$sdj
-        X_ts <- sweep (X_ts, 2, nuj, "-")
-        X_ts <- sweep (X_ts, 2, sdj, "/")
-    }
-    else
-    {   
-        if (is.vector (deltas) | is.matrix (deltas) ) {
-		    deltas <- matrix (deltas, nrow = ncol (X_ts) + 1,)
-		    p <- nrow (deltas) - 1
-            K <- 1
-		    longdeltas <- deltas
-		    no_used <- 1
-        }
-    }
-
-    ## add intercept to all cases
-    X_addint_ts <- cbind (1, X_ts)
-
-    longlv <- X_addint_ts %*% longdeltas
-    arraylv <- array (longlv, dim = c(no_ts, K, no_used))
-    logsumlv <- apply (arraylv, 3, comp_lsl)
-    array_normlv <- sweep (arraylv, c(1,3), logsumlv)
-    array_predprobs <- exp (array_normlv)
-    probs_pred <- apply (array_predprobs, c(1,2), mean)
-
-    predprobs_c1 <- pmax(0, 1 - apply (probs_pred, 1, sum) )
-    probs_pred <- cbind (predprobs_c1, probs_pred)
+  ## chaning X_ts as needed
+  if (is.vector(X_ts))
+    X_ts <- matrix(X_ts, 1, )
+  no_ts <- nrow(X_ts)
+  
+  if (is.null(deltas) & !is.null(fithtlr))
+  {
+    mcdims <- dim(fithtlr$mcdeltas)
+    p <- mcdims[1] - 1
+    K <- mcdims[2]
+    no_mcspl <- mcdims[3]
     
-    probs_pred
+    ## index of mc iters used for inference
+    if (is.null(usedmc))
+    {
+      if (is.null(burn))
+        burn <- floor(no_mcspl * 0.1)
+      if (is.null(thin))
+        thin <- 1
+      usedmc <- seq(burn + 1, no_mcspl, by = thin)
+    }
+    
+    no_used <- length(usedmc)
+    
+    ## read deltas for prediction
+    longdeltas <- matrix(fithtlr$mcdeltas[, , usedmc], nrow = p + 1)
+    
+    ## selecting features and standardizing
+    fsel <- fithtlr$fsel
+    X_ts <- X_ts[, fsel, drop = FALSE]
+    nuj <- fithtlr$nuj
+    sdj <- fithtlr$sdj
+    X_ts <- sweep(X_ts, 2, nuj, "-")
+    X_ts <- sweep(X_ts, 2, sdj, "/")
+  }
+  else
+  {
+    if (is.vector(deltas) | is.matrix (deltas)) 
+    {
+      deltas <- matrix(deltas, nrow = ncol (X_ts) + 1, )
+      p <- nrow(deltas) - 1
+      K <- 1
+      longdeltas <- deltas
+      no_used <- 1
+    }
+  }
+  
+  ## add intercept to all cases
+  X_addint_ts <- cbind(1, X_ts)
+  
+  longlv <- X_addint_ts %*% longdeltas
+  arraylv <- array(longlv, dim = c(no_ts, K, no_used))
+  logsumlv <- apply(arraylv, 3, comp_lsl)
+  array_normlv <- sweep(arraylv, c(1, 3), logsumlv)
+  array_predprobs <- exp(array_normlv)
+  probs_pred <- apply(array_predprobs, c(1, 2), mean)
+  
+  predprobs_c1 <- pmax(0, 1 - apply(probs_pred, 1, sum))
+  probs_pred <- cbind(predprobs_c1, probs_pred)
+  
+  return(probs_pred)
 }
 
 
