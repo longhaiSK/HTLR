@@ -76,13 +76,13 @@ void Fit::StartSampling()
 
       DetachFixlv();
       CacheOldValues();
- 
+      
       double nenergy_old = CompNegEnergy();
 
       // start trajectory
-      UpdateDNlogPrior();
-      UpdateDNlogLike();
-      UpdateDNlogPost();
+      UpdateDNlogPrior(); 
+      UpdateDNlogLike(); 
+      UpdateDNlogPost(); 
       Traject(i_mc);
 
       // decide whether to accept it
@@ -271,7 +271,7 @@ arma::uvec Fit::GetIdsFix()
 void Fit::UpdatePredProb()
 {
   lv_.tail_cols(K_) = lv_fix_.tail_cols(K_);
-  for (int j : GetIdsUpdate())
+  for (int j : iup_)
   {
     for (int k = 0; k < K_; k++)
     {
@@ -295,7 +295,7 @@ void Fit::DetachFixlv()
   {
     lv_fix_.tail_cols(K_) = lv_.tail_cols(K_); 
     // remove updated part
-    for (int j : GetIdsUpdate())
+    for (int j : iup_)
     {
       for (int k = 0; k < K_; k++)
       {
@@ -331,7 +331,7 @@ void Fit::DetachFixlv()
 void Fit::UpdateDNlogLike()
 {
   arma::mat tmp = pred_prob_.tail_cols(K_) - ymat_;
-  for (int j : GetIdsUpdate())
+  for (int j : iup_)
   {
     for (int k = 0; k < K_; k++)
     {
@@ -361,8 +361,9 @@ void Fit::UpdateLogLike()
 // Modified: sum_deltas, DNlogprior:  
 void Fit::UpdateDNlogPrior()
 {
-  sum_deltas_(iup_) = row_sum(deltas_.rows(iup_)); 
-  DNlogprior_.rows(iup_) = deltas_.rows(iup_) - sum_deltas_(iup_) / C_;
+  arma::mat deltas_tmp = deltas_.rows(iup_);
+  sum_deltas_(iup_) = row_sum(deltas_tmp); 
+  DNlogprior_.rows(iup_) = deltas_tmp.each_col() - sum_deltas_(iup_) / C_;
 }
 
 // DNloglike: nvar * K
@@ -372,8 +373,8 @@ void Fit::UpdateDNlogPrior()
 // Modified: DNlogpost 
 void Fit::UpdateDNlogPost()
 {
-  DNlogpost_.rows(iup_) = DNloglike_.rows(iup_) +
-                          DNlogprior_.rows(iup_) / sigmasbt_(iup_);
+  arma::mat DNlogprior_tmp = DNlogprior_.rows(iup_);
+  DNlogpost_.rows(iup_) = DNloglike_.rows(iup_) + DNlogprior_tmp.each_col() / sigmasbt_(iup_);
 }
 
 // This function is called at the beginning of the trajectory loop.
@@ -384,8 +385,10 @@ void Fit::UpdateDNlogPost()
 // Modified: momt, deltas
 void Fit::UpdateMomtAndDeltas()
 {
-  momt_.rows(iup_) -= step_sizes_(iup_) / 2 % DNlogpost_.rows(iup_);
-  deltas_.rows(iup_) += step_sizes_(iup_) % momt_.rows(iup_);
+  arma::mat DNlogpost_tmp = DNlogpost_.rows(iup_);
+  momt_.rows(iup_) -= step_sizes_(iup_) / 2 % DNlogpost_tmp.each_col();
+  arma::mat momt_tmp = momt_.rows(iup_);
+  deltas_.rows(iup_) += step_sizes_(iup_) % momt_tmp.each_col();
 }
 
 void Fit::Traject(int i_mc)
@@ -444,7 +447,7 @@ void Fit::GenMomt()
 {
   if (legacy_)
   {
-    for (int j : GetIdsUpdate())
+    for (int j : iup_)
     {
       for (int k = 0; k < K_; k++)
       {
@@ -457,7 +460,7 @@ void Fit::GenMomt()
   else
   {
     arma::vec rn = Rcpp::rnorm(nuvar_ * K_);
-    momt_.rows(iup_) = rn;
+    momt_.rows(iup_) = arma::reshape(rn, nuvar_, K_);
   }
 }
 
@@ -468,7 +471,8 @@ void Fit::GenMomt()
 // Modified: momt
 void Fit::MoveMomt()
 {
-  momt_.rows(iup_) -= step_sizes_(iup_) / 2 % DNlogpost_.rows(iup_);
+  arma::mat DNlogpost_tmp = DNlogpost_.rows(iup_);
+  momt_.rows(iup_) -= step_sizes_(iup_) / 2 % DNlogpost_tmp.each_col();
 }
 
 // step_sizes: nvar
@@ -503,7 +507,7 @@ void Fit::RestoreOldValues()
 
 bool Fit::IsFault(double cri)
 {
-  for (int j : GetIdsUpdate())
+  for (int j : iup_)
   {
     for (int k = 0; k < K_; k++)
     {
@@ -526,7 +530,7 @@ void Fit::Initialize()
   mc_loglike_[0] = loglike_;
 
   UpdateDNlogPrior();
-  UpdateVarDeltas();
+  UpdateVarDeltas(); 
   mc_var_deltas_.col(0) = var_deltas_;
 }
 
