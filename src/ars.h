@@ -15,43 +15,43 @@ class ARS
 {
   private:
 
-  const int n; // number of samples
+  const int n_; // number of samples
   
-  const double lb, ub;     // lower and upper bounds of logf
+  const double lb_, ub_;     // lower and upper bounds of logf
   //const double ini_tpoint; // initial tangent point
-  const bool verbose;      // flag whether to print ARS information
+  const bool verbose_;       // flag whether to print ARS information
 
   /* optional User Settings */
 
-  const int max_nhull; // maximum number of pieces of linear hulls
-  double stepout; // size of stepout in initializing linear hulls
+  const int max_nhull_; // maximum number of pieces of linear hulls
+  double stepout_;      // size of stepout in initializing linear hulls
 
   // the smallest difference of derivatives that can be thought of as the same
   // so that we don't need to insert one more hull
-  double tol_dlogf_is0, tol_ddlogf_is0;
+  double tol_dlogf_is0_, tol_ddlogf_is0_;
 
   /* global working vectors used to represent linear hulls */
   
   double 
-    *tpoints,                       // tangent points 
-    *lws,                           // log integrals of exp hulls
-    *lowerbounds, *upperbounds,     // bounds of hulls 
-    *logfvs, *dlogfvs,              // values of logf and dlogf at tangent points
-    *slopes_leftsq, *slopes_ritesq; // slopes of left and right squeezings
+    *tpoints_,                        // tangent points 
+    *lws_,                            // log integrals of exp hulls
+    *lowerbounds_, *upperbounds_,     // bounds of hulls 
+    *logfvs_, *dlogfvs_,              // values of logf and dlogf at tangent points
+    *slopes_leftsq_, *slopes_ritesq_; // slopes of left and right squeezings
 
-  int *lefthulls, *ritehulls;     // indice of left and right hulls
-  int no_hulls;                   // total number of hulls 
+  int *lefthulls_, *ritehulls_;    // indice of left and right hulls
+  int no_hulls_;                   // total number of hulls 
 
-  double newx, newlogf, newdlogf; // a new tangent point to be inserted
-  int h;                          // index of the hull where newx is from
+  double newx_, newlogf_, newdlogf_; // a new tangent point to be inserted
+  int h_;                            // index of the hull where newx is from
 
   // the sampling target object which provides function for evaluating logf and dlogf  
-  SampleTarget *target;
+  SampleTarget *target_;
 
   void update_hulls(const int h, const double newx, const double logfv, const double dlogfv);
   double eval_upperhull(const int h, const double newx);
   double eval_lowerhull(const int h, const double newx);
-  void Prepare();
+  void Initialize();
 
   public:
 
@@ -59,6 +59,8 @@ class ARS
       double lb = R_NegInf, double ub = R_PosInf,
       bool verbose = false, int max_nhull = 1000, double stepout = 10,
       double tol_dlogf_is0 = 1E-5, double tol_ddlogf_is0 = 1E-5);
+
+  ~ARS();
 
   Rcpp::NumericVector Sample(); 
 

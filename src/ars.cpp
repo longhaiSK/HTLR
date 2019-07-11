@@ -7,13 +7,13 @@
 // Header of helper functions
 int sample_disc(const int k, const double *lw);
 double sample_elin(const double lower, const double upper,
-                   const double dlogf, const double tol_dlogf_is0);
+                   const double dlogf, const double tol_dlogf_is0_);
 double logint_elin(const double logf, const double dlogf, const double t,
-                   const double lower, const double upper, const double tol_dlogf_is0);
+                   const double lower, const double upper, const double tol_dlogf_is0_);
 double interc(const double t1, const double t2,
               const double logf1, const double logf2,
               const double dlogf1, const double dlogf2,
-              const double tol_ddlogf_is0);
+              const double tol_ddlogf_is0_);
 
 // this function updates the envolop and squeezing functions.
 // newx --- new point to be inserted
@@ -23,228 +23,233 @@ void ARS::update_hulls(const int h, const double newx, const double logfv, const
 {
   int lh, rh, nh;
 
-  if (no_hulls == max_nhull) return;// reaching the limit of working vector
+  if (no_hulls_ == max_nhull_) return;// reaching the limit of working vector
 
   //specify left and right hulls of new hull
-  if (newx > tpoints[h]) // to insert to the right of hull h
+  if (newx > tpoints_[h]) // to insert to the right of hull h
   {
-    lh = h; rh = ritehulls[h];
+    lh = h; rh = ritehulls_[h];
     // if logfv is -infinity, only update the rightest hull rightbound and lw
-    if ((rh == max_nhull) & (logfv == R_NegInf))
+    if ((rh == max_nhull_) & (logfv == R_NegInf))
     {
-      if (upperbounds[h] != newx)
+      if (upperbounds_[h] != newx)
       {
-        upperbounds[h] = newx;
-        lws[h] = logint_elin(logfvs[h], dlogfvs[h], tpoints[h],
-                             lowerbounds[h], upperbounds[h], tol_dlogf_is0);
+        upperbounds_[h] = newx;
+        lws_[h] = logint_elin(logfvs_[h], dlogfvs_[h], tpoints_[h],
+                             lowerbounds_[h], upperbounds_[h], tol_dlogf_is0_);
       }
       return;
     }
   }
   else // to insert to the left of hull h
   {
-    lh = lefthulls[h]; rh = h;
+    lh = lefthulls_[h]; rh = h;
     // if logfv is -infinity, only update the leftest hull leftbound and lw
     if ((lh == -1) & (logfv == R_NegInf))
     {
-      if (lowerbounds[h] != newx)
+      if (lowerbounds_[h] != newx)
       {
-        lowerbounds[h] = newx;
-        lws[h] = logint_elin(logfvs[h], dlogfvs[h], tpoints[h],
-                             lowerbounds[h], upperbounds[h], tol_dlogf_is0);
+        lowerbounds_[h] = newx;
+        lws_[h] = logint_elin(logfvs_[h], dlogfvs_[h], tpoints_[h],
+                             lowerbounds_[h], upperbounds_[h], tol_dlogf_is0_);
       }
       return;
     }
   }
 
   // insert a new hull
-  nh = no_hulls;
-  no_hulls ++;
-  tpoints[nh] = newx;
-  logfvs[nh] = logfv;
-  dlogfvs[nh] = dlogfv;
-  lefthulls[nh] = lh;
-  ritehulls[nh] = rh;
+  nh = no_hulls_;
+  no_hulls_ ++;
+  tpoints_[nh] = newx;
+  logfvs_[nh] = logfv;
+  dlogfvs_[nh] = dlogfv;
+  lefthulls_[nh] = lh;
+  ritehulls_[nh] = rh;
 
   if (lh == -1) // nh will be the new leftest hull
   {
-    lowerbounds[nh] = lowerbounds[h];
-    slopes_leftsq[nh] = R_PosInf;
+    lowerbounds_[nh] = lowerbounds_[h];
+    slopes_leftsq_[nh] = R_PosInf;
   }
   else
   {
-    lowerbounds[nh] = interc(
-        tpoints[lh], tpoints[nh], logfvs[lh], logfvs[nh],
-        dlogfvs[lh], dlogfvs[nh], tol_ddlogf_is0);
-    slopes_leftsq[nh] = (logfvs[nh] - logfvs[lh]) /
-                        (tpoints[nh] - tpoints[lh]);
+    lowerbounds_[nh] = interc(
+        tpoints_[lh], tpoints_[nh], logfvs_[lh], logfvs_[nh],
+        dlogfvs_[lh], dlogfvs_[nh], tol_ddlogf_is0_);
+    slopes_leftsq_[nh] = (logfvs_[nh] - logfvs_[lh]) /
+                        (tpoints_[nh] - tpoints_[lh]);
   }
-  if (rh == max_nhull)
+  if (rh == max_nhull_)
   {
-    upperbounds[nh] = upperbounds[h];
-    slopes_ritesq[nh] = R_NegInf;
+    upperbounds_[nh] = upperbounds_[h];
+    slopes_ritesq_[nh] = R_NegInf;
   }
   else
   {
-    upperbounds[nh] =
-        interc(tpoints[nh], tpoints[rh], logfvs[nh], logfvs[rh],
-               dlogfvs[nh], dlogfvs[rh], tol_ddlogf_is0);
-    slopes_ritesq[nh] = (logfvs[nh] - logfvs[rh]) /
-                        (tpoints[nh] - tpoints[rh]);
+    upperbounds_[nh] =
+        interc(tpoints_[nh], tpoints_[rh], logfvs_[nh], logfvs_[rh],
+               dlogfvs_[nh], dlogfvs_[rh], tol_ddlogf_is0_);
+    slopes_ritesq_[nh] = (logfvs_[nh] - logfvs_[rh]) /
+                        (tpoints_[nh] - tpoints_[rh]);
   }
 
-  lws[nh] = logint_elin(logfvs[nh], dlogfvs[nh], tpoints[nh],
-                        lowerbounds[nh], upperbounds[nh], tol_dlogf_is0);
+  lws_[nh] = logint_elin(logfvs_[nh], dlogfvs_[nh], tpoints_[nh],
+                        lowerbounds_[nh], upperbounds_[nh], tol_dlogf_is0_);
 
   // update left hull of new null
   if (lh != -1)
   {
-    upperbounds[lh] = lowerbounds[nh];
-    ritehulls[lh] = nh;
-    slopes_ritesq[lh] = slopes_leftsq[nh];
-    lws[lh] = logint_elin(logfvs[lh], dlogfvs[lh], tpoints[lh],
-                          lowerbounds[lh], upperbounds[lh], tol_dlogf_is0);
+    upperbounds_[lh] = lowerbounds_[nh];
+    ritehulls_[lh] = nh;
+    slopes_ritesq_[lh] = slopes_leftsq_[nh];
+    lws_[lh] = logint_elin(logfvs_[lh], dlogfvs_[lh], tpoints_[lh],
+                          lowerbounds_[lh], upperbounds_[lh], tol_dlogf_is0_);
   }
 
   // update right hull of newh if it exists
-  if (rh != max_nhull)
+  if (rh != max_nhull_)
   {
-    lowerbounds[rh] = upperbounds[nh];
-    lefthulls[rh] = nh;
-    slopes_leftsq[rh] = slopes_ritesq[nh];
+    lowerbounds_[rh] = upperbounds_[nh];
+    lefthulls_[rh] = nh;
+    slopes_leftsq_[rh] = slopes_ritesq_[nh];
 
-    lws[rh] = logint_elin(logfvs[rh], dlogfvs[rh], tpoints[rh],
-                          lowerbounds[rh], upperbounds[rh], tol_dlogf_is0);
+    lws_[rh] = logint_elin(logfvs_[rh], dlogfvs_[rh], tpoints_[rh],
+                          lowerbounds_[rh], upperbounds_[rh], tol_dlogf_is0_);
   }
 }
 
 double ARS::eval_upperhull(const int h, const double newx)
 {
-  return ((newx - tpoints[h]) * dlogfvs[h] + logfvs[h]);
+  return ((newx - tpoints_[h]) * dlogfvs_[h] + logfvs_[h]);
 }
 
 double ARS::eval_lowerhull(const int h, const double newx)
 {
-    if (newx >= tpoints[h])
+    if (newx >= tpoints_[h])
     {
-      return ((newx - tpoints[h]) * slopes_ritesq[h] + logfvs[h]);
+      return ((newx - tpoints_[h]) * slopes_ritesq_[h] + logfvs_[h]);
     }
     else
     {
-      return ((newx - tpoints[h]) * slopes_leftsq[h] + logfvs[h]);
+      return ((newx - tpoints_[h]) * slopes_leftsq_[h] + logfvs_[h]);
     }
 }
 
-void ARS::Prepare()
+void ARS::Initialize()
 {
   // if lb is finite, bound the first hull at left
   // or insert a hull tangent at lb if logf at lb is finite too
-  if (R_FINITE(lb))
+  if (R_FINITE(lb_))
   {
-    h = 0;
-    newx = lb;
-    target->eval_logf(newx, newlogf, newdlogf);
-    update_hulls(h, newx, newlogf, newdlogf);
+    h_ = 0;
+    newx_ = lb_;
+    target_->eval_logf(newx_, newlogf_, newdlogf_);
+    update_hulls(h_, newx_, newlogf_, newdlogf_);
   }
   // expanding at the left until reaching a bound or integral to finite
   else
   {
-    newx = tpoints[0] - stepout;
+    newx_ = tpoints_[0] - stepout_;
     do
     {
-      if (no_hulls == max_nhull)
+      if (no_hulls_ == max_nhull_)
       {
         Rcpp::stop(
             "Error in Rejection Sampling: (finite lb)\n"
-            "'max_nhull' is set too small, or your log-PDF is NOT concave.\n");
+            "'max_nhull_' is set too small, or your log-PDF is NOT concave.\n");
       }
-      h = 0;
-      target->eval_logf(newx, newlogf, newdlogf);
-      update_hulls (h, newx, newlogf, newdlogf);
+      h_ = 0;
+      target_->eval_logf(newx_, newlogf_, newdlogf_);
+      update_hulls(h_, newx_, newlogf_, newdlogf_);
       // finding a new leftbound, quit expanding
-      if (newlogf == R_NegInf) break;
-      newx -= stepout;
-      h = no_hulls - 1;
+      if (newlogf_ == R_NegInf) break;
+      newx_ -= stepout_;
+      h_ = no_hulls_ - 1;
     }
-    while (newdlogf < tol_dlogf_is0);
+    while (newdlogf_ < tol_dlogf_is0_);
   }
 
   // if ub is finite, bound the first hull at the right
   // or insert a hull tangent at ub if logf at ub is finite too
-  if (R_FINITE(ub))
+  if (R_FINITE(ub_))
   {
-    h = 0;
-    newx = ub;
-    target->eval_logf(newx, newlogf, newdlogf);
-    update_hulls (h, newx, newlogf, newdlogf);
+    h_= 0;
+    newx_ = ub_;
+    target_->eval_logf(newx_, newlogf_, newdlogf_);
+    update_hulls(h_, newx_, newlogf_, newdlogf_);
   }
   else // expanding at the right until reaching a bound or integral to finite
   {
-    h = 0;
-    newx = tpoints[0] + stepout;
+    h_ = 0;
+    newx_ = tpoints_[0] + stepout_;
     do
     {
-      if (no_hulls == max_nhull)
+      if (no_hulls_ == max_nhull_)
       {
         //Rcpp::Rcerr << no_hulls << " " << max_nhull << "\n";
         Rcpp::stop(
             "Error in Rejection Sampling: (finite ub)\n"
             "'max_nhull' is set too small, or your log-PDF is NOT concave.\n");
       }
-      target->eval_logf(newx, newlogf, newdlogf);
-      update_hulls (h, newx, newlogf, newdlogf);
-      if (!R_FINITE(newlogf)) break;
-      newx += stepout;
-      h = no_hulls - 1;
+      target_->eval_logf(newx_, newlogf_, newdlogf_);
+      update_hulls(h_, newx_, newlogf_, newdlogf_);
+      if (!R_FINITE(newlogf_)) break;
+      newx_ += stepout_;
+      h_ = no_hulls_ - 1;
     }
-    while (newdlogf > - tol_dlogf_is0);
+    while (newdlogf_ > - tol_dlogf_is0_);
   }
 }
 
-ARS::ARS(int n, SampleTarget *target, double ini_tpoint, 
+ARS::ARS(int n, SampleTarget *target_, double ini_tpoint, 
     double lb/*= -INFINITY*/, double ub/*= +INFINITY*/,   
-    bool verbose/*=false*/, int max_nhull/*=1000*/, double stepout/*=10*/,
-    double tol_dlogf_is0/*= 1E-5*/, double tol_ddlogf_is0/*= 1E-5*/)
-    : n(n), lb(lb), ub(ub), verbose(verbose), max_nhull(max_nhull), stepout(stepout), 
-    tol_dlogf_is0(tol_dlogf_is0), tol_ddlogf_is0(tol_ddlogf_is0), target(target)  
+    bool verbose/*=false*/, int max_nhull_/*=1000*/, double stepout_/*=10*/,
+    double tol_dlogf_is0_/*= 1E-5*/, double tol_ddlogf_is0_/*= 1E-5*/)
+    : n_(n), lb_(lb), ub_(ub), verbose_(verbose), max_nhull_(max_nhull_), stepout_(stepout_), 
+    tol_dlogf_is0_(tol_dlogf_is0_), tol_ddlogf_is0_(tol_ddlogf_is0_), target_(target_)  
 {
   // construct the first hull
-  this->logfvs  = new double[max_nhull] {0};
-  this->dlogfvs = new double[max_nhull] {0};
-  this->tpoints = new double[max_nhull] {0};
-  this->tpoints[0] = ini_tpoint; // the tangent point
-  this->target->eval_logf(tpoints[0], logfvs[0], dlogfvs[0]);
-  if (!R_FINITE(logfvs[0]))
+  logfvs_  = new double[max_nhull_] {0};
+  dlogfvs_ = new double[max_nhull_] {0};
+  tpoints_ = new double[max_nhull_] {0};
+  tpoints_[0] = ini_tpoint; // the tangent point
+  target_->eval_logf(tpoints_[0], logfvs_[0], dlogfvs_[0]);
+  if (!R_FINITE(logfvs_[0]))
   {
     Rcpp::stop(
         "Error in adaptive rejection sampling:\n"
         "the first tangent point doesn't have positive probability.\n");
   }
 
-  this->lowerbounds = new double[max_nhull] {0};
-  this->upperbounds = new double[max_nhull] {0};
-  lowerbounds[0] = fmax(lb, R_NegInf); // lower bound of the hull
-  upperbounds[0] = fmin(ub, R_PosInf); // upper bound of the hull
+  lowerbounds_ = new double[max_nhull_] {0};
+  upperbounds_ = new double[max_nhull_] {0};
+  lowerbounds_[0] = fmax(lb, R_NegInf); // lower bound of the hull
+  upperbounds_[0] = fmin(ub, R_PosInf); // upper bound of the hull
 
-  this->lefthulls = new int[max_nhull]{0};
-  this->ritehulls = new int[max_nhull]{0};
-  lefthulls[0] = -1;        // index of left hull
-  ritehulls[0] = max_nhull; // index of right hull
+  lefthulls_ = new int[max_nhull_] {0};
+  ritehulls_ = new int[max_nhull_] {0};
+  lefthulls_[0] = -1;        // index of left hull
+  ritehulls_[0] = max_nhull_; // index of right hull
 
-  this->slopes_leftsq = new double[max_nhull] {0};
-  this->slopes_ritesq = new double[max_nhull] {0};
-  slopes_leftsq[0] = R_PosInf; // slope of left squeezing arc
-  slopes_ritesq[0] = R_NegInf; // slope of right sequeezing arc
+  slopes_leftsq_ = new double[max_nhull_] {0};
+  slopes_ritesq_ = new double[max_nhull_] {0};
+  slopes_leftsq_[0] = R_PosInf; // slope of left squeezing arc
+  slopes_ritesq_[0] = R_NegInf; // slope of right sequeezing arc
 
-  this->lws = new double[max_nhull] {0};
-  lws[0] = R_PosInf; // compute log weights, updating lws[0]
-  this->no_hulls = 1;
+  lws_ = new double[max_nhull_] {0};
+  lws_[0] = R_PosInf; // compute log weights, updating lws_[0]
+  no_hulls_ = 1;
+}
+
+ARS::~ARS()
+{
+  //delete[] 
 }
 
 // Do adaptive rejection sampling
 Rcpp::NumericVector ARS::Sample()
 {
-  Prepare();
+  Initialize();
   // define parameters used while sampling
   int one = 1, no_rejs = 0;
   double
@@ -252,38 +257,40 @@ Rcpp::NumericVector ARS::Sample()
       lowerhullv, // value of lower (squeezing) hull at newx
       u,          // a random number used to determine whether to accept
       logacceptv; // if logacceptv is smaller than logf, newx accepted
-  Rcpp::NumericVector output (n); // sampling output
+  Rcpp::NumericVector output (n_); // sampling output
 
-  for (int i = 0; i < n; i++)
+  for (int i = 0; i < n_; i++)
   {
     bool rejected = true;
     while (rejected)
     {
       // draw a new point and a unif random number
-      h = sample_disc(no_hulls, lws);
-      newx = sample_elin(lowerbounds[h], upperbounds[h],
-                         dlogfvs[h], tol_dlogf_is0);
-      upperhullv = eval_upperhull(h, newx);
+      h_ = sample_disc(no_hulls_, lws_);
+      newx_ = sample_elin(lowerbounds_[h_], upperbounds_[h_],
+                         dlogfvs_[h_], tol_dlogf_is0_);
+      upperhullv = eval_upperhull(h_, newx_);
+
       GetRNGstate();
       u = unif_rand();
       PutRNGstate();
+
       logacceptv = upperhullv + log(u);
-      lowerhullv = eval_lowerhull(h, newx);
+      lowerhullv = eval_lowerhull(h_, newx_);
       //check acceptance with squeezing function
       if (logacceptv <= lowerhullv)
       {
-        output[i] = newx;
+        output[i] = newx_;
         rejected = false;
       }
       else
       {
         // check acceptance with logf
         // eval logf at newx and insert a new hull
-        target->eval_logf(newx, newlogf, newdlogf);
-        update_hulls(h, newx, newlogf, newdlogf);
-        if (logacceptv <= newlogf)
+        target_->eval_logf(newx_, newlogf_, newdlogf_);
+        update_hulls(h_, newx_, newlogf_, newdlogf_);
+        if (logacceptv <= newlogf_)
         {
-          output[i] = newx;
+          output[i] = newx_;
           rejected = false;
         }
         else
@@ -291,11 +298,11 @@ Rcpp::NumericVector ARS::Sample()
       }
     }
   }
-  if (verbose)
+  if (verbose_)
   {
-    double rej_rate = (no_rejs + 0.0) / (no_rejs + n + 0.0);
+    double rej_rate = (no_rejs + 0.0) / (no_rejs + n_ + 0.0);
     Rprintf("Sampling complete. Number of hulls: %d, Rejection rate: %4.2f\n",
-            no_hulls, rej_rate);
+            no_hulls_, rej_rate);
   }
   return output;
 }
@@ -339,14 +346,14 @@ int sample_disc(const int k, const double *lw)
 
 // this function samples one point from: exp (a[0]*x) I (x in [lb, upper[0]])
 double sample_elin(const double lower, const double upper,
-                   const double dlogf, const double tol_dlogf_is0)
+                   const double dlogf, const double tol_dlogf_is0_)
 {
   // set smallest value for derivative that can be thought of as 0
   int type_lin = -1; 
   bool isfault = false;
 
   // checking linear function type and fault
-  if (fabs(dlogf) <= tol_dlogf_is0)
+  if (fabs(dlogf) <= tol_dlogf_is0_)
   {
     if (!(R_FINITE(lower) & R_FINITE(upper)))
       isfault = true;
@@ -354,7 +361,7 @@ double sample_elin(const double lower, const double upper,
       type_lin = 0; // slope is zero
   }
 
-  if (dlogf > tol_dlogf_is0)
+  if (dlogf > tol_dlogf_is0_)
   {
     if (!R_FINITE(upper))
       isfault = true;
@@ -362,7 +369,7 @@ double sample_elin(const double lower, const double upper,
       type_lin = 1; // slope is postive
   }
 
-  if (dlogf < -tol_dlogf_is0)
+  if (dlogf < -tol_dlogf_is0_)
   {
     if (!R_FINITE(lower))
       isfault = true;
@@ -404,20 +411,20 @@ double sample_elin(const double lower, const double upper,
 // t --- tangent point where logf is calculated
 // lower and upper --- lower and upper bounds of linear hull
 double logint_elin(const double logf, const double dlogf, const double t,
-                   const double lower, const double upper, const double tol_dlogf_is0)
+                   const double lower, const double upper, const double tol_dlogf_is0_)
 {
   double output;
 
   double dx = upper - lower;
   double abs_dlogf = fabs(dlogf);
 
-  if (abs_dlogf <= tol_dlogf_is0) // slope is 0
+  if (abs_dlogf <= tol_dlogf_is0_) // slope is 0
   {
     output = logf + log(dx);
   }
   else
   {
-    if (dlogf > tol_dlogf_is0) // slope is positive
+    if (dlogf > tol_dlogf_is0_) // slope is positive
     {
       output = logf + dlogf * (upper - t) - log(abs_dlogf) +
                log(1 - exp(-abs_dlogf * dx));
@@ -435,9 +442,9 @@ double logint_elin(const double logf, const double dlogf, const double t,
 double interc(const double t1, const double t2,
               const double logf1, const double logf2,
               const double dlogf1, const double dlogf2,
-              const double tol_ddlogf_is0)
+              const double tol_ddlogf_is0_)
 {
-  if (fabs(dlogf1 - dlogf2) > tol_ddlogf_is0)
+  if (fabs(dlogf1 - dlogf2) > tol_ddlogf_is0_)
     return ((logf2 - logf1 - dlogf2 * t2 + dlogf1 * t1) / (dlogf1 - dlogf2));
   else
     return ((t1 + t2) / 2.0);
