@@ -243,7 +243,16 @@ ARS::ARS(int n, SampleTarget *target_, double ini_tpoint,
 
 ARS::~ARS()
 {
-  //delete[] 
+  delete[] logfvs_;
+  delete[] dlogfvs_;
+  delete[] tpoints_;
+  delete[] lowerbounds_;
+  delete[] upperbounds_;
+  delete[] lefthulls_;
+  delete[] ritehulls_;
+  delete[] slopes_leftsq_;
+  delete[] slopes_ritesq_;
+  delete[] lws_;
 }
 
 // Do adaptive rejection sampling
