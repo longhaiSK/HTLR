@@ -360,7 +360,8 @@ void Fit::UpdateSigmasT()
       logw_ = s_;
     else
     {
-      auto target = SamplerLogw(p_, var_deltas_, K_, alpha_, s_, eta_);
+      arma::vec tmp = var_deltas_.tail(p_);
+      auto target = SamplerLogw(p_, tmp, K_, alpha_, s_, eta_);
       auto spl = ARS(1, &target, logw_);
       logw_ = spl.Sample()[0];
     }
@@ -370,13 +371,13 @@ void Fit::UpdateSigmasT()
 void Fit::UpdateSigmasGHS()
 {
   double log_aw = logw_ + log(alpha_);
-  auto target = SamplerSgmGhs(p_, var_deltas_, K_, alpha_, log_aw);
-  for (int idx = 0; idx < p_; idx++)
+  auto target = SamplerSgmGhs(nvar_, var_deltas_, K_, alpha_, log_aw);
+  for (int j = 1; j < nvar_; j++)
   {
     // performa ars on log(sigma_j), which is still saved in sigma_j
-    target.set_idx(idx);
-    auto spl = ARS(1, &target, log(var_deltas_[idx] / K_));
-    sigmasbt_[idx] = exp(spl.Sample()[0]);
+    target.set_idx(j);
+    auto spl = ARS(1, &target, log(var_deltas_(j) / K_));
+    sigmasbt_(j) = exp(spl.Sample()[0]);
   }
 }
 
@@ -384,12 +385,12 @@ void Fit::UpdateSigmasNEG()
 {
   double log_aw = logw_ + log(alpha_);
   auto target = SamplerSgmNeg(p_, var_deltas_, K_, alpha_, log_aw);
-  for (int idx = 0; idx < p_; idx++)
+  for (int j = 1; j < nvar_; j++)
   {
     // performa ars on log(sigma_j), which is still saved in sigma_j
-    target.set_idx(idx);
-    ARS spl = ARS(1, &target, log(var_deltas_[idx] / K_));
-    sigmasbt_[idx] = exp(spl.Sample()[0]);
+    target.set_idx(j);
+    ARS spl = ARS(1, &target, log(var_deltas_(j) / K_));
+    sigmasbt_(j) = exp(spl.Sample()[0]);
   }
 }
 
