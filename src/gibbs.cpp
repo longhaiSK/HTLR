@@ -98,80 +98,7 @@ void Fit::StartSampling()
       }
       PutRNGstate();
 
-      /*********************** Sigmas Update  ***********************/
-
-      if (ptype_.compare("t") == 0)
-      {
-        double alpha_post = (alpha_ + K_) / 2;
-        if (legacy_)
-        {
-          for (int j = 1; j < nvar_; j++)
-          {
-            GetRNGstate();
-            sigmasbt_[j] =
-                1.0 / R::rgamma(alpha_post, 1.0) * (alpha_ * exp(logw_) + var_deltas_[j]) / 2.0;
-            PutRNGstate();
-          }
-        }
-        else
-        {
-          sigmasbt_ = copy(var_deltas_);
-          sigmasbt_.for_each([this, alpha_post](arma::vec::elem_type &val) {
-            GetRNGstate();
-            val = 1.0 / R::rgamma(alpha_post, 1.0) * (alpha_ * exp(logw_) + val) / 2.0;
-            PutRNGstate();
-          });
-        }
-
-        /********************** logw Update  **********************/
-        if (eta_ > 1E-10)
-        {
-          if (eta_ < 0.01)
-          {
-            logw_ = s_;
-          }
-          else
-          {
-            auto target = SamplerLogw(p_, var_deltas_, K_, alpha_, s_, eta_);
-            auto spl = ARS(1, &target, logw_);
-            logw_ = spl.Sample()[0];
-          }
-        }
-      }
-
-      double log_aw = logw_ + log(alpha_);
-
-      if (ptype_.compare("ghs") == 0)
-      {
-        //GetRNGstate();
-        auto target = SamplerSgmGhs(p_, var_deltas_, K_, alpha_, log_aw);
-        for (int idx = 0; idx < p_; idx++)
-        {
-          // performa ars on log(sigma_j), which is still saved in sigma_j
-          //if (log(var_deltas_[j]) > -20)
-          target.set_idx(idx);
-          auto spl = ARS(1, &target, log(var_deltas_[idx] / K_));
-          //convert xi to sigma_j
-          sigmasbt_[idx] = exp(spl.Sample()[0]);
-        }
-        //PutRNGstate();
-      }
-
-      if (ptype_.compare("neg") == 0)
-      {
-        //GetRNGstate();
-        auto target = SamplerSgmNeg(p_, var_deltas_, K_, alpha_, log_aw);
-        for (int idx = 0; idx < p_; idx++)
-        {
-          // performa ars on log(sigma_j), which is still saved in sigma_j
-          //if (log(var_deltas_[j]) > -20)
-          target.set_idx(idx);
-          ARS spl = ARS(1, &target, log(var_deltas_[idx] / K_));
-          //convert xi to sigma_j
-          sigmasbt_[idx] = exp(spl.Sample()[0]);
-        }
-        //PutRNGstate();
-      }
+      UpdateSigmas();
     }
 
     no_uvar /= thin_;
@@ -391,6 +318,81 @@ void Fit::UpdateMomtAndDeltas()
   deltas_.rows(iup_) += step_sizes_(iup_) % momt_tmp.each_col();
 }
 
+void Fit::UpdateSigmas()
+{
+  if (ptype_.compare("t") == 0)
+    UpdateSigmasT();
+  else if (ptype_.compare("ghs") == 0)
+    UpdateSigmasGHS();
+  else if (ptype_.compare("neg") == 0)
+    UpdateSigmasNEG();
+  else
+    Rcpp::stop("Unsupported prior type %s", ptype_);
+}
+
+void Fit::UpdateSigmasT()
+{
+  double alpha_post = (alpha_ + K_) / 2;
+  if (legacy_)
+  {
+    for (int j = 1; j < nvar_; j++)
+    {
+      GetRNGstate();
+      sigmasbt_[j] =
+          1.0 / R::rgamma(alpha_post, 1.0) * (alpha_ * exp(logw_) + var_deltas_[j]) / 2.0;
+      PutRNGstate();
+    }
+  }
+  else
+  {
+    sigmasbt_ = copy(var_deltas_);
+    sigmasbt_.for_each([this, alpha_post](arma::vec::elem_type &val) {
+      GetRNGstate();
+      val = 1.0 / R::rgamma(alpha_post, 1.0) * (alpha_ * exp(logw_) + val) / 2.0;
+      PutRNGstate();
+    });
+  }
+
+  // logw Update
+  if (eta_ > 1E-10)
+  {
+    if (eta_ < 0.01)
+      logw_ = s_;
+    else
+    {
+      auto target = SamplerLogw(p_, var_deltas_, K_, alpha_, s_, eta_);
+      auto spl = ARS(1, &target, logw_);
+      logw_ = spl.Sample()[0];
+    }
+  }
+}
+
+void Fit::UpdateSigmasGHS()
+{
+  double log_aw = logw_ + log(alpha_);
+  auto target = SamplerSgmGhs(p_, var_deltas_, K_, alpha_, log_aw);
+  for (int idx = 0; idx < p_; idx++)
+  {
+    // performa ars on log(sigma_j), which is still saved in sigma_j
+    target.set_idx(idx);
+    auto spl = ARS(1, &target, log(var_deltas_[idx] / K_));
+    sigmasbt_[idx] = exp(spl.Sample()[0]);
+  }
+}
+
+void Fit::UpdateSigmasNEG()
+{
+  double log_aw = logw_ + log(alpha_);
+  auto target = SamplerSgmNeg(p_, var_deltas_, K_, alpha_, log_aw);
+  for (int idx = 0; idx < p_; idx++)
+  {
+    // performa ars on log(sigma_j), which is still saved in sigma_j
+    target.set_idx(idx);
+    ARS spl = ARS(1, &target, log(var_deltas_[idx] / K_));
+    sigmasbt_[idx] = exp(spl.Sample()[0]);
+  }
+}
+
 void Fit::Traject(int i_mc)
 {
   int L;
@@ -414,7 +416,6 @@ void Fit::Traject(int i_mc)
   for (int i_trj = 0; i_trj < L; i_trj++)
   {
     UpdateMomtAndDeltas();
-    // compute derivative of minus log joint distribution
     UpdatePredProb();
     UpdateDNlogPrior();
     UpdateDNlogLike();

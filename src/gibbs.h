@@ -63,6 +63,10 @@ class Fit
   void UpdateDNlogPost();
   void UpdateMomtAndDeltas();
   void UpdateVarDeltas();
+  void UpdateSigmas();
+  void UpdateSigmasT();
+  void UpdateSigmasNEG();
+  void UpdateSigmasGHS();
   double CompNegEnergy();
   void GenMomt();
   void MoveMomt();
