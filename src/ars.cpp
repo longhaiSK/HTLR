@@ -259,13 +259,14 @@ ARS::~ARS()
 Rcpp::NumericVector ARS::Sample()
 {
   Initialize();
-  // define parameters used while sampling
-  int one = 1, no_rejs = 0;
+
+  /* define parameters used while sampling */ 
   double
       upperhullv, // value of upper hull at newx
       lowerhullv, // value of lower (squeezing) hull at newx
       u,          // a random number used to determine whether to accept
       logacceptv; // if logacceptv is smaller than logf, newx accepted
+  int no_rejs = 0;
   Rcpp::NumericVector output (n_); // sampling output
 
   for (int i = 0; i < n_; i++)
