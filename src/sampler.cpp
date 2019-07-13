@@ -1,13 +1,13 @@
 #include "sampler.h"
 
 SamplerSgm::SamplerSgm(int p, const arma::vec &vardeltas, int K, double alpha, double log_aw)
-    : p(p), K(K), alpha(alpha), log_aw(log_aw), vardeltas(vardeltas)
+    : p_(p), K_(K), alpha_(alpha), log_aw_(log_aw), vardeltas_(vardeltas)
 {
 }
 
 void SamplerSgm::set_idx(int i)
 {
-  idx = i;
+  idx_ = i;
 }
 
 SamplerSgmNeg::SamplerSgmNeg(int p, const arma::vec &vardeltas, int K, double alpha, double log_aw)
@@ -17,16 +17,16 @@ SamplerSgmNeg::SamplerSgmNeg(int p, const arma::vec &vardeltas, int K, double al
 
 void SamplerSgmNeg::eval_logf(const double x, double &logf, double &dlogf)
 {
-  logf = -(K / 2.0 - 1.0) * x;
-  dlogf = -(K / 2.0 - 1.0);
+  logf = -(K_ / 2.0 - 1.0) * x;
+  dlogf = -(K_ / 2.0 - 1.0);
 
-  double vexi = vardeltas[idx] / 2.0 / exp(x);
+  double vexi = vardeltas_[idx_] / 2.0 / exp(x);
   logf -= vexi;
   dlogf += vexi;
 
-  double eximinlogaw = exp(x - log_aw);
-  logf -= (alpha / 2.0 + 1.0) * log(1.0 + 2.0 * eximinlogaw);
-  dlogf -= (alpha + 2.0) * eximinlogaw / (1.0 + 2.0 * eximinlogaw);
+  double eximinlogaw = exp(x - log_aw_);
+  logf -= (alpha_ / 2.0 + 1.0) * log(1.0 + 2.0 * eximinlogaw);
+  dlogf -= (alpha_ + 2.0) * eximinlogaw / (1.0 + 2.0 * eximinlogaw);
 }
 
 SamplerSgmGhs::SamplerSgmGhs(int p, const arma::vec &vardeltas, int K, double alpha, double log_aw)
@@ -36,41 +36,37 @@ SamplerSgmGhs::SamplerSgmGhs(int p, const arma::vec &vardeltas, int K, double al
 
 void SamplerSgmGhs::eval_logf(const double x, double &logf, double &dlogf)
 {
-  logf = -(K - 1.0) / 2.0 * x;
-  dlogf = -(K - 1.0) / 2.0;
+  logf = -(K_ - 1.0) / 2.0 * x;
+  dlogf = -(K_ - 1.0) / 2.0;
 
-  double vexi = vardeltas[idx] / 2.0 / exp(x);
+  double vexi = vardeltas_[idx_] / 2.0 / exp(x);
   logf -= vexi;
   dlogf += vexi;
 
-  double eximinlogaw = exp(x - log_aw);
-  logf -= (alpha + 1.0) / 2.0 * log(1.0 + eximinlogaw);
-  dlogf -= (alpha + 1.0) / 2.0 * eximinlogaw / (1.0 + eximinlogaw);
+  double eximinlogaw = exp(x - log_aw_);
+  logf -= (alpha_ + 1.0) / 2.0 * log(1.0 + eximinlogaw);
+  dlogf -= (alpha_ + 1.0) / 2.0 * eximinlogaw / (1.0 + eximinlogaw);
 }
 
 SamplerLogw::SamplerLogw(int p, const arma::vec &vardeltas, int K,
                          double nu, double s, double eta)
-    : p(p), K(K), nu(nu), s(s), eta(eta), vardeltas(vardeltas)
+    : p_(p), K_(K), nu_(nu), s_(s), eta_(eta), vardeltas_(vardeltas)
 {
 }
 
 void SamplerLogw::eval_logf(const double x, double &logf, double &dlogf)
 {
   double w = exp(x);
-  double sdu = (x - s) / eta;
-  double wnu = w * nu;
-  // loglikelihood
-  dlogf = 0;
-  logf = 0;
-  for (int j = 0; j < p; j++)
-  {
-    logf += log(vardeltas[j] + wnu);
-    dlogf += wnu / (vardeltas[j] + wnu);
-  }
-  logf *= (-(nu + K) / 2);
-  dlogf *= (-(nu + K) / 2);
-  logf += p * nu / 2 * x;
-  dlogf += p * nu / 2;
-  logf += -R_pow_di(sdu, 2) / 2 - log(eta);
-  dlogf += -sdu / eta;
+  double sdu = (x - s_) / eta_;
+  double wnu = w * nu_;
+
+  dlogf = arma::accu(wnu / (vardeltas_ + wnu));
+  logf = arma::accu(arma::log(vardeltas_ + wnu));
+
+  logf *= (-(nu_ + K_) / 2);
+  dlogf *= (-(nu_ + K_) / 2);
+  logf += p_ * nu_ / 2 * x;
+  dlogf += p_ * nu_ / 2;
+  logf += -R_pow_di(sdu, 2) / 2 - log(eta_);
+  dlogf += -sdu / eta_;
 }

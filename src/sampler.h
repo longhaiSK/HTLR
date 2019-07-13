@@ -8,16 +8,15 @@ class SamplerSgm : public SampleTarget
 {
   protected:
 
-  int idx;
-  const int p, K;
-  const double alpha, log_aw;
-  const arma::vec vardeltas;
+  int idx_;
+  const int p_, K_;
+  const double alpha_, log_aw_;
+  const arma::vec vardeltas_;
 
   public:
 
   SamplerSgm(int p, const arma::vec &vardeltas, int K, double alpha, double log_aw);
   void set_idx(int i);
-
 };
 
 class SamplerSgmNeg : public SamplerSgm
@@ -40,9 +39,9 @@ class SamplerLogw : public SampleTarget
 {
   protected:
 
-  const int p, K;
-  const double nu, s, eta;
-  const arma::vec vardeltas;
+  const int p_, K_;
+  const double nu_, s_, eta_;
+  const arma::vec vardeltas_;
 
   public:
 
