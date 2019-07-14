@@ -353,6 +353,11 @@ void Fit::UpdateSigmasT()
     });
   }
 
+  UpdateLogw();
+}
+
+void Fit::UpdateLogw()
+{
   // logw Update
   if (eta_ > 1E-10)
   {
