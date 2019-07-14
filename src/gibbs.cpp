@@ -323,9 +323,9 @@ void Fit::UpdateSigmas()
   if (ptype_.compare("t") == 0)
     UpdateSigmasT();
   else if (ptype_.compare("ghs") == 0)
-    UpdateSigmasGHS();
+    UpdateSigmasGhs();
   else if (ptype_.compare("neg") == 0)
-    UpdateSigmasNEG();
+    UpdateSigmasNeg();
   else
     Rcpp::stop("Unsupported prior type %s", ptype_);
 }
@@ -368,30 +368,44 @@ void Fit::UpdateSigmasT()
   }
 }
 
-void Fit::UpdateSigmasGHS()
+// Helper function for UpdateSigmasGhs and UpdateSigmasNeg  
+void Fit::UpdateSigmasSgm(SamplerSgm *target)
 {
-  double log_aw = logw_ + log(alpha_);
-  auto target = SamplerSgmGhs(nvar_, var_deltas_, K_, alpha_, log_aw);
-  for (int j = 1; j < nvar_; j++)
+  if (legacy_)
   {
-    // performa ars on log(sigma_j), which is still saved in sigma_j
-    target.set_idx(j);
-    auto spl = ARS(1, &target, log(var_deltas_(j) / K_));
-    sigmasbt_(j) = exp(spl.Sample()[0]);
+    for (int j = 1; j < nvar_; j++)
+    {
+      target->set_idx(j);    
+      auto spl = ARS(1, target, log(var_deltas_(j) / K_));
+      sigmasbt_(j) = exp(spl.Sample()[0]); // perform ars on log(sigma_j)
+    }
+  }
+  else
+  {
+    arma::vec tmp = arma::linspace(1, p_, p_);
+    tmp.for_each([this, &target](arma::vec::elem_type &val) {
+      target->set_idx(val);
+      auto spl = ARS(1, target, log(var_deltas_(val) / K_));
+      val = exp(spl.Sample()[0]); // perform ars on log(sigma_j)
+    });
+    sigmasbt_.tail(p_) = tmp;
   }
 }
 
-void Fit::UpdateSigmasNEG()
+void Fit::UpdateSigmasGhs()
 {
-  double log_aw = logw_ + log(alpha_);
-  auto target = SamplerSgmNeg(p_, var_deltas_, K_, alpha_, log_aw);
-  for (int j = 1; j < nvar_; j++)
-  {
-    // performa ars on log(sigma_j), which is still saved in sigma_j
-    target.set_idx(j);
-    ARS spl = ARS(1, &target, log(var_deltas_(j) / K_));
-    sigmasbt_(j) = exp(spl.Sample()[0]);
-  }
+  auto *target = 
+    new SamplerSgmGhs(nvar_, var_deltas_, K_, alpha_, logw_ + log(alpha_));
+  UpdateSigmasSgm(target);
+  delete target;
+}
+
+void Fit::UpdateSigmasNeg()
+{
+  auto *target = 
+    new SamplerSgmNeg(nvar_, var_deltas_, K_, alpha_, logw_ + log(alpha_));
+  UpdateSigmasSgm(target);
+  delete target;
 }
 
 void Fit::Traject(int i_mc)
@@ -483,8 +497,8 @@ void Fit::MoveMomt()
 // Modified: step_sizes
 void Fit::UpdateStepSizes()
 {
-  step_sizes_(iup_) = leap_step_ /
-                     arma::sqrt(DDNloglike_(iup_) + K_ / sigmasbt_(iup_) / C_);
+  step_sizes_(iup_) =
+      leap_step_ / arma::sqrt(DDNloglike_(iup_) + K_ / sigmasbt_(iup_) / C_);
 }
 
 void Fit::CacheOldValues()
@@ -535,4 +549,3 @@ void Fit::Initialize()
   UpdateVarDeltas(); 
   mc_var_deltas_.col(0) = var_deltas_;
 }
-
