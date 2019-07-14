@@ -68,6 +68,7 @@ class Fit
   void UpdateSigmasSgm(SamplerSgm *target);
   void UpdateSigmasNeg();
   void UpdateSigmasGhs();
+  void UpdateLogw();
   double CompNegEnergy();
   void GenMomt();
   void MoveMomt();
