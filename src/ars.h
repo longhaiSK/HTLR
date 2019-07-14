@@ -7,7 +7,8 @@
 class SampleTarget 
 { 
   public: 
-  virtual void eval_logf(const double x, double &logf, double &dlogf) = 0; 
+  virtual void eval_logf(const double x, double &logf, double &dlogf) = 0;
+  virtual ~SampleTarget() = default; 
 };
 
 // Main ARS class
