@@ -1,6 +1,7 @@
-#' Logistic Regression with Heavy-Tail priors 
+#' Fitting HTLR Models and Making Predictions 
 #'
-#' Fit a model using bayesian logistic regression with heavy-tail priors. 
+#' This function trains linear logistic regression models with HMC in restricted Gibbs sampling. 
+#' It also makes predictions for test cases if \code{X_ts} are provided.
 #'
 #' @param y_tr Vector of class labels in training or test data set. 
 #' Must be coded as non-negative integers, e.g., 1,2,\ldots,C for C classes.
@@ -10,7 +11,9 @@
 #' @param stdzx If TRUE, the original features values are standardized to have mean = 0 and sd = 1.
 #' 
 #' @param initial_state The initial state of Markov Chain;
-#' can be NULL, or a gived parameter vector, or a previous markov chain results.    
+#' can be NULL, or a gived parameter vector, or a previous markov chain results.  
+#' 
+#' @return A list of fitting results.  
 #' 
 #' @references
 #' Longhai Li and Weixin Yao. (2018). Fully Bayesian Logistic Regression 
@@ -164,14 +167,24 @@ htlr_fit <- function (
   return(fit)
 }
 
-## deltas --- the values of deltas (for example true deltas) used to prediction
-## fithtlr --- if this is not a null, will use Markov chain samples of deltas
-## to do predictions.
+#' Make prediction on new data
+#' 
+#' This function uses MCMC samples returned by \code{htlr_fit} to predict the class labels of test cases. 
+#' 
+#' @param X_ts Matrix of values at which predictions are to be made.
+#' @param fithtlr Fitted HTLR model object.
+#' @param deltas The values of deltas (for example true deltas) used to prediction. 
+#' 
+#' @return A matrix of predictive probabilities, with rows for cases, cols for classes.
+#' 
+#' @export
+#' 
+#' @seealso htlr_fit  
 htlr_predict <- function(X_ts, fithtlr = NULL, deltas = NULL, burn = NULL, thin = NULL, usedmc = NULL)
 {
   ## chaning X_ts as needed
   if (is.vector(X_ts))
-    X_ts <- matrix(X_ts, 1, )
+    X_ts <- matrix(X_ts, 1)
   no_ts <- nrow(X_ts)
   
   if (is.null(deltas) & !is.null(fithtlr))
@@ -208,7 +221,7 @@ htlr_predict <- function(X_ts, fithtlr = NULL, deltas = NULL, burn = NULL, thin 
   {
     if (is.vector(deltas) | is.matrix (deltas)) 
     {
-      deltas <- matrix(deltas, nrow = ncol (X_ts) + 1, )
+      deltas <- matrix(deltas, nrow = ncol (X_ts) + 1)
       p <- nrow(deltas) - 1
       K <- 1
       longdeltas <- deltas

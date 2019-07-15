@@ -2,7 +2,7 @@
 % Please edit documentation in R/bplrhmc.r
 \name{htlr_fit}
 \alias{htlr_fit}
-\title{Logistic Regression with Heavy-Tail priors}
+\title{Fitting HTLR Models and Making Predictions}
 \usage{
 htlr_fit(y_tr, X_tr, X_ts = NULL, fsel = 1:ncol(X_tr), stdzx = TRUE,
   sigmab0 = 2000, ptype = "t", alpha = 1, s = -10, eta = 0,
@@ -25,8 +25,12 @@ rows should be for the cases, and columns for different features.}
 \item{initial_state}{The initial state of Markov Chain;
 can be NULL, or a gived parameter vector, or a previous markov chain results.}
 }
+\value{
+A list of fitting results.
+}
 \description{
-Fit a model using bayesian logistic regression with heavy-tail priors.
+This function trains linear logistic regression models with HMC in restricted Gibbs sampling. 
+It also makes predictions for test cases if \code{X_ts} are provided.
 }
 \examples{
 \dontrun{

@@ -152,8 +152,31 @@ optim_logit <- function (deltas, X_addint, y_tr, alpha, s, sigmab0, tol = 1e-2,
 }
 
 
-
-
+#' Feature subsets selection with MCMC Samples
+#' 
+#' This function divides all of the Markov chain samples into a certain number of subpools, 
+#' each representing a feature subset.
+#' 
+#' @param fithtlr A list containing fitting results by \code{htlr_fitpred}.
+#' 
+#' @return 
+#' \itemize{
+#'   \item ftab - The fitting results of \code{htlr_fitpred} are a mixture of subpools (posterior modes) of 
+#'   Markov chain samples for different feature subsets. \code{htlr_fss} divides the Markov chain samples into 
+#'   different subpools associated with different feature subsets (posterior modes). The rows of \code{ftab} 
+#'   are different feature subsets, with the 1st column showing the indices of feature subset, 
+#'   the 2nd column showing the relative frequency of Markov chain iterations in the subpool, 
+#'   and the 3rd column showing the coefficients estimated by median with the subpool.
+#'   \item mcids - A list of vectors containing the indices of Markov chain iterations associated with 
+#'   different feature subsets.
+#'   \item wsdbs - Weighted average of sdbs in all feature subsets found. 
+#'   The weights are the relative frequencies of Markov chain samples for different feature subsets.
+#'   \item msdbs - The maximum of sdbs in all feature subsets, for discovering features used in feature subsets with small frequencies.
+#' }
+#' 
+#' @export
+#' 
+#' @seealso htlr_fitpred 
 htlr_fss <- function  (fithtlr, threshold = NULL, mfreq = NULL, print = TRUE)
 {
     if (is.null (threshold) | is.null (mfreq)) {

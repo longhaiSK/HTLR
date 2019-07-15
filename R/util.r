@@ -29,6 +29,7 @@ comp_vardeltas <- function (deltas)
 }
 
 ## compute sd of betas
+#' @export
 comp_sdb <- function (deltas, removeint = TRUE, normalize = FALSE)
 {
     C <- ncol (deltas) + 1
@@ -65,7 +66,15 @@ get_ix <- function (sub, whole, digits= 0)
 }
 
 
-
+#' Plots feature importance scores
+#' 
+#' This function plots feature importance scores or coefficients using histogram line. 
+#' 
+#' @param fscores Scores measuring feature importance, such as \code{wsdbs}, \code{msdbs}, or coefficients values.
+#' 
+#' @export
+#' 
+#' @seealso htlr_fss
 plot_fscore <- function (fscores, fsel=1:length (fscores), show_ix = 0.1, do.plot = TRUE, ...)
 {
 	if (show_ix > 1) stop ("show_ix must be less than 1")
