@@ -15,6 +15,8 @@ knitr::opts_chunk$set(
 # HTLR
 
 <!-- badges: start -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![Build Status](https://travis-ci.org/longhaiSK/HTLR.svg?branch=dev)](https://travis-ci.org/longhaiSK/HTLR)
 <!-- badges: end -->
 
 This package performs classification and feature selection by 
