@@ -1,9 +1,9 @@
 #' Logistic Regression with Heavy-Tail priors 
 #'
-#' Fit a model using bayesian logistic regression with heavy-tail priors 
+#' Fit a model using bayesian logistic regression with heavy-tail priors. 
 #'
 #' @param y_tr Vector of class labels in training or test data set. 
-#' Must be coded as non-negative integers, e.g., 0,1,2,\ldots,C-1 for C classes.
+#' Must be coded as non-negative integers, e.g., 1,2,\ldots,C for C classes.
 #' @param X_tr Design matrix of traning data; 
 #' rows should be for the cases, and columns for different features.
 #' @param fsel Subsets of features selected before fitting, such as by univariate screening.
@@ -12,6 +12,31 @@
 #' @param initial_state The initial state of Markov Chain;
 #' can be NULL, or a gived parameter vector, or a previous markov chain results.    
 #' 
+#' @references
+#' Longhai Li and Weixin Yao. (2018). Fully Bayesian Logistic Regression 
+#' with Hyper-Lasso Priors for High-dimensional Feature Selection.
+#' \emph{Journal of Statistical Computation and Simulation} 2018, 88:14, 2827-2851.
+#' 
+#' @export
+#' 
+#' @examples
+#' \dontrun{
+#' data (gen_grpcor_data)
+#' ## creating training and test data sets
+#' tr <- 200
+#' X_tr <- data$X[1:tr,]
+#' y_tr <- data$y[1:tr]
+#' X_ts <- data$X[-(1:tr), ]
+#' y_ts <- data$y[-(1:tr)]
+#' ## fit htlr models
+#' fithtlr <- htlr_fitpred (
+#'   y_tr = y_tr, X_tr = X_tr, stdzx = TRUE, #fsel = c (1,51,101),
+#'   pty = "t", alpha = 1, s = -15, 
+#'   iters_h = 1000, iters_rmc = 1000, thin = 50,
+#'   leap_L_h = 5, leap_L = 50, leap_step = 0.5, hmc_sgmcut = 0.05, 
+#'   initial_state = "bcbcsfrda", silence = F)
+#' }
+#'
 htlr_fit <- function (
     y_tr, X_tr, X_ts = NULL, fsel = 1:ncol(X_tr), stdzx = TRUE, ## data
     sigmab0 = 2000, ptype = "t", alpha = 1, s = -10, eta = 0,  ## prior
@@ -78,7 +103,7 @@ htlr_fit <- function (
   }
   else if (initial_state == "lasso")
   {
-    deltas <- lasso_fitpred(X_tr = X, y_tr = y_tr)
+    deltas <- lasso_deltas(x = X, y = y_tr, .legacy = .legacy)
     logw <- s
   }
   else if (initial_state == "bcbcsfrda")
