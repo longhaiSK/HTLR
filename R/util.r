@@ -100,3 +100,18 @@ plot_fscore <- function (fscores, fsel=1:length (fscores), show_ix = 0.1, do.plo
     
 }
 
+try_require <- function(pkg, f = NULL) {
+  if (is.null(f)) {
+    f <- "this action"
+  } else {
+    f <- paste0("`", f, "`")
+  }
+  
+  if (requireNamespace(pkg, quietly = TRUE)) {
+    library(pkg, character.only = TRUE)
+    return(invisible())
+  }
+  
+  stop(paste0("Package `", pkg, "` required for ", f , ".\n",
+              "Please install and try again."), call. = FALSE)
+}
