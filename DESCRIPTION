@@ -12,4 +12,5 @@ LinkingTo: Rcpp, RcppArmadillo
 URL: https://github.com/longhaiSK/HTLR, https://math.usask.ca/~longhai/software/BLRHL/index.html
 NeedsCompilation: yes
 SystemRequirements: C++11
+Encoding: UTF-8
 RoxygenNote: 6.1.1
