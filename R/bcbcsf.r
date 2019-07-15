@@ -1,100 +1,113 @@
-require ("BCBCSF")
-
+#' @importFrom BCBCSF bcbcsf_fitpred bcbcsf_sumfit   
 bcbcsf_deltas <- function (X_tr, y_tr, alpha = 0)
 {
-    n <- nrow (X_tr) ## numbers of obs
-    p <- ncol (X_tr)
-    ## find number of observations in each group
-    nos_g <- as.vector (tapply (rep(1,n),INDEX = y_tr, sum))
-    G <- length (nos_g)
-
-    muj <- matrix (0, p, G)
-    ## estimate centroids
-    fit_bcbcsf <- bcbcsf_fitpred  (
-        X_tr = X_tr, y_tr = y_tr, 
-        alpha1_mu = 1, standardize = FALSE, no_rmc = 500, 
-        no_imc = 1, no_mhwmux = 10, bcor = 0, fit_bcbcsf_filepre = NULL,
-        monitor = F) $ fit_bcbcsf
-
-
-    muj [fit_bcbcsf$fsel,] <- bcbcsf_sumfit (fit_bcbcsf = fit_bcbcsf)$muj
-
-    ## transform X
-    tX_tr <- t (X_tr)
-    rm (X_tr)
-
-    if (any(nos_g < 2)) stop ("Less than 2 cases in some group")
-
-    if (alpha >= 1 & n - G <= p)
-    {   stop ("'alpha' must be less than 1")
-    }
-
-    ## proportions of groups
-    gprior <- table (y_tr)/n
-
-    for (g in 1:G)
-    {
-      ## subtract muj[,g] from data in gth group
-      tX_tr[, y_tr==g] <- sweep (tX_tr[, y_tr == g, drop = FALSE], 1, muj[,g])
-    }
-    X_tr <- t (tX_tr)
-
-    ## estimate inverse of covariance matrix
-    lambda <- alpha/(1-alpha)/n
-    inv_SGM <- 1/(1-alpha) * (diag (1, p) -
-    lambda * tX_tr %*% solve (diag (1, n) + lambda * X_tr %*% tX_tr) %*% X_tr )
-
-    deltas_bc_inv (muj = muj, inv_SGM = inv_SGM, gprior = gprior)
+  n <- nrow (X_tr) ## numbers of obs
+  p <- ncol (X_tr)
+  ## find number of observations in each group
+  nos_g <- as.vector (tapply (rep(1, n), INDEX = y_tr, sum))
+  G <- length (nos_g)
+  
+  muj <- matrix (0, p, G)
+  ## estimate centroids
+  fit_bcbcsf <- bcbcsf_fitpred  (
+    X_tr = X_tr,
+    y_tr = y_tr,
+    alpha1_mu = 1,
+    standardize = FALSE,
+    no_rmc = 500,
+    no_imc = 1,
+    no_mhwmux = 10,
+    bcor = 0,
+    fit_bcbcsf_filepre = NULL,
+    monitor = F
+  )$fit_bcbcsf
+  
+  muj [fit_bcbcsf$fsel, ] <-
+    bcbcsf_sumfit (fit_bcbcsf = fit_bcbcsf)$muj
+  
+  ## transform X
+  tX_tr <- t (X_tr)
+  rm (X_tr)
+  
+  if (any(nos_g < 2))
+    stop ("Less than 2 cases in some group")
+  
+  if (alpha >= 1 & n - G <= p)
+    stop ("'alpha' must be less than 1")
+  
+  ## proportions of groups
+  gprior <- table (y_tr) / n
+  
+  for (g in 1:G)
+  {
+    ## subtract muj[,g] from data in gth group
+    tX_tr[, y_tr == g] <-
+      sweep (tX_tr[, y_tr == g, drop = FALSE], 1, muj[, g])
+  }
+  X_tr <- t (tX_tr)
+  
+  ## estimate inverse of covariance matrix
+  lambda <- alpha / (1 - alpha) / n
+  inv_SGM <- 1 / (1 - alpha) * 
+    (diag (1, p) - lambda * tX_tr %*% solve (diag (1, n) + lambda * X_tr %*% tX_tr) %*% X_tr)
+  
+  deltas_bc_inv (muj = muj,
+                 inv_SGM = inv_SGM,
+                 gprior = gprior)
 }
 
-deltas_bc_inv <- function (muj, inv_SGM, gprior = rep(1, ncol (muj) ) )
+deltas_bc_inv <- function (muj, inv_SGM, gprior = rep(1, ncol (muj)))
 {
-    G <- ncol (muj)
-    p <- nrow (muj)
-
-    ## find coefficients of discriminative functions
-    betas <- matrix (0, p + 1, G)
-    for (g in 1:G)
-    {
-      ## coefficients for variables
-      betas[-1,g] <- inv_SGM %*% muj[,g]
-      ## intercept
-      betas [1,g] <- log (gprior[g]) - 0.5 * sum (muj[,g] * betas[-1,g])
-    }
-
-    ## find 'deltas'
-    deltas <- betas[, -1, drop = FALSE] - betas[,1]
-
-    deltas
+  G <- ncol (muj)
+  p <- nrow (muj)
+  
+  ## find coefficients of discriminative functions
+  betas <- matrix (0, p + 1, G)
+  for (g in 1:G)
+  {
+    ## coefficients for variables
+    betas[-1, g] <- inv_SGM %*% muj[, g]
+    ## intercept
+    betas [1, g] <-
+      log (gprior[g]) - 0.5 * sum (muj[, g] * betas[-1, g])
+  }
+  
+  ## find 'deltas'
+  deltas <- betas[, -1, drop = FALSE] - betas[, 1]
+  
+  deltas
 }
 
 
 deltas_bc <- function (muj, SGM, subset = NULL, gprior = NULL)
 {
-    G <- ncol (muj)
-    p <- nrow (muj)
-    
-    if (is.null(gprior)) gprior <- rep (1/G,G)
-    gprior <- gprior/sum(gprior)
-    
-    if (is.null (subset)) subset <- 1:p
-
-    muj <- muj [subset, , drop = FALSE]
-    SGM <- SGM [subset, subset, drop = FALSE]
-        
-    ## find coefficients of discriminative functions
-    betas <- matrix (0, length (subset) + 1, G)
-    for (g in 1:G)
-    {
-      ## coefficients for variables
-      betas[-1,g] <- solve(SGM) %*% muj[,g]
-      ## intercept
-      betas [1,g] <- log (gprior[g]) - 0.5 * sum (muj[,g] * betas[-1,g])
-    }
-
-    ## find 'deltas'
-    betas[, -1, drop = FALSE] - betas[,1]
-
+  G <- ncol (muj)
+  p <- nrow (muj)
+  
+  if (is.null(gprior))
+    gprior <- rep (1 / G, G)
+  gprior <- gprior / sum(gprior)
+  
+  if (is.null (subset))
+    subset <- 1:p
+  
+  muj <- muj [subset, , drop = FALSE]
+  SGM <- SGM [subset, subset, drop = FALSE]
+  
+  ## find coefficients of discriminative functions
+  betas <- matrix (0, length (subset) + 1, G)
+  for (g in 1:G)
+  {
+    ## coefficients for variables
+    betas[-1, g] <- solve(SGM) %*% muj[, g]
+    ## intercept
+    betas [1, g] <-
+      log (gprior[g]) - 0.5 * sum (muj[, g] * betas[-1, g])
+  }
+  
+  ## find 'deltas'
+  betas[,-1, drop = FALSE] - betas[, 1]
+  
 }
 #require (abind)
 
