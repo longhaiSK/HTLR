@@ -2,18 +2,18 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 sample_trunc_norm <- function(n, lb, ub, verbose = FALSE) {
-    .Call(`_HTLR_sample_trunc_norm`, n, lb, ub, verbose)
+    .Call('_HTLR_sample_trunc_norm', PACKAGE = 'HTLR', n, lb, ub, verbose)
 }
 
 sample_post_ichi <- function(n, sigmasq, alpha1, alpha0 = 1E-5, w0 = 1E-5, verbose = FALSE) {
-    .Call(`_HTLR_sample_post_ichi`, n, sigmasq, alpha1, alpha0, w0, verbose)
+    .Call('_HTLR_sample_post_ichi', PACKAGE = 'HTLR', n, sigmasq, alpha1, alpha0, w0, verbose)
 }
 
 sample_trunc_beta <- function(n, alpha, beta, lb = 0, ub = 1, verbose = FALSE) {
-    .Call(`_HTLR_sample_trunc_beta`, n, alpha, beta, lb, ub, verbose)
+    .Call('_HTLR_sample_trunc_beta', PACKAGE = 'HTLR', n, alpha, beta, lb, ub, verbose)
 }
 
 HtlrFit <- function(p, K, n, X, ymat, ybase, ptype, alpha, s, eta, sigmab0, iters_rmc, iters_h, thin, leap_L, leap_L_h, leap_step, hmc_sgmcut, DDNloglike, deltas, logw, sigmasbt, silence, looklf, legacy) {
-    .Call(`_HTLR_HtlrFit`, p, K, n, X, ymat, ybase, ptype, alpha, s, eta, sigmab0, iters_rmc, iters_h, thin, leap_L, leap_L_h, leap_step, hmc_sgmcut, DDNloglike, deltas, logw, sigmasbt, silence, looklf, legacy)
+    .Call('_HTLR_HtlrFit', PACKAGE = 'HTLR', p, K, n, X, ymat, ybase, ptype, alpha, s, eta, sigmab0, iters_rmc, iters_h, thin, leap_L, leap_L_h, leap_step, hmc_sgmcut, DDNloglike, deltas, logw, sigmasbt, silence, looklf, legacy)
 }
 
