@@ -1,11 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-<<<<<<< HEAD
 ^docs$
 ^\.travis\.yml$
-
-=======
-^\.travis\.yml$
-^docs$
 ^README\.Rmd$
->>>>>>> 8a172bc3d05a106fbc4b42650cb1727d99767ac9
