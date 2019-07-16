@@ -20,6 +20,8 @@
 #' with Hyper-Lasso Priors for High-dimensional Feature Selection.
 #' \emph{Journal of Statistical Computation and Simulation} 2018, 88:14, 2827-2851.
 #' 
+#' @useDynLib HTLR
+#' 
 #' @export
 #' 
 #' @examples
