@@ -154,7 +154,7 @@ htlr_fit <- function (
       ## fit result
       deltas = deltas, logw = logw, sigmasbt = sigmasbt,
       ## other control
-      silence = as.integer(silence), looklf = 0L, legacy = .legacy)
+      silence = as.integer(silence), legacy = .legacy)
   
   # adding data preprocessing information
   fit <- c(fit, list(fsel = fsel, nuj = nuj, sdj = sdj, y = y_tr))

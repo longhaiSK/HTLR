@@ -8,12 +8,12 @@ Fit::Fit(int p, int K, int n,
          int leap_L, int leap_L_h, double leap_step,
          double hmc_sgmcut, arma::vec &DDNloglike_,
          arma::mat &deltas, double logw, arma::vec &sigmasbt,
-         int silence, int looklf, bool legacy)
+         int silence, bool legacy)
     : p_(p), K_(K), C_(K + 1), n_(n), X_(X), ymat_(ymat), ybase_(ybase),
       ptype_(ptype), alpha_(alpha), s_(s), eta_(eta), sigmab0_(sigmab0),
       iters_rmc_(iters_rmc), iters_h_(iters_h), thin_(thin),
       leap_L_(leap_L), leap_L_h_(leap_L_h), leap_step_(leap_step),
-      DDNloglike_(DDNloglike_), silence_(silence), looklf_(looklf), 
+      DDNloglike_(DDNloglike_), silence_(silence), 
       legacy_(legacy), nvar_(p + 1), logw_(logw)
 {
   ids_update_ = arma::uvec(nvar_, arma::fill::zeros);
