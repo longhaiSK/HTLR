@@ -84,7 +84,7 @@
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#htlr" class="anchor"></a>HTLR</h1></div>
 <!-- badges: start -->
-<!-- badges: end -->
+
 <p>This package performs classification and feature selection by fitting Bayesian polychotomous (multiclass) logistic regression models based on heavy-tailed priors with small degree freedom. The software is suitable for classification with high-dimensional features, such as gene expression profiles. Heavy-tailed priors can impose stronger shrinkage (compared to Guassian and Laplace priors) to the coefficients associated with a large number of useless features, but still allow coefficients of a small number of useful features to stand out without punishment. Heavy-tailed priors can also automatically make selection within a large number of correlated features. The posterior of coefficients and hyperparameters is sampled with resitricted Gibbs sampling for leveraging high-dimensionality and Hamiltonian Monte Carlo for handling high-correlations among coefficients. The core computation in this software is carried out with fast C++ code.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
@@ -134,6 +134,12 @@ devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumen
 <li>GPL (&gt;=2)</li>
 </ul>
 </div>
+<div class="citation">
+<h2>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html">Citing HTLR</a></li>
+</ul>
+</div>
 <div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
@@ -142,7 +148,14 @@ devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumen
 </ul>
 </div>
 
-      </div>
+      <div class="dev-status">
+<h2>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
+<li><a href="https://travis-ci.org/longhaiSK/HTLR"><img src="https://travis-ci.org/longhaiSK/HTLR.svg?branch=dev" alt="Build Status"></a></li>
+</ul>
+</div>
+</div>
 
 </div>
 

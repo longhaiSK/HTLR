@@ -6,7 +6,7 @@
 \usage{
 htlr_fit(y_tr, X_tr, X_ts = NULL, fsel = 1:ncol(X_tr), stdzx = TRUE,
   sigmab0 = 2000, ptype = "t", alpha = 1, s = -10, eta = 0,
-  iters_h = 1000, iters_rmc = 1000, thin = 100, leap_L = 50,
+  iters_h = 1000, iters_rmc = 1000, thin = 1, leap_L = 50,
   leap_L_h = 5, leap_step = 0.3, hmc_sgmcut = 0.05,
   initial_state = "lasso", alpha.rda = 0.2, silence = TRUE,
   .legacy = TRUE, predburn = NULL, predthin = 1)
@@ -22,8 +22,14 @@ rows should be for the cases, and columns for different features.}
 
 \item{stdzx}{If TRUE, the original features values are standardized to have mean = 0 and sd = 1.}
 
-\item{initial_state}{The initial state of Markov Chain;
-can be NULL, or a gived parameter vector, or a previous markov chain results.}
+\item{iters_rmc}{A positive integer specifying the number of iterations after warmup.}
+
+\item{thin}{A positive integer specifying the period for saving samples.}
+
+\item{initial_state}{The initial state of Markov Chain; can be NULL, 
+or a gived parameter vector, or a previous markov chain results.}
+
+\item{iter_h}{A positive integer specifying the number of warmup (aka burnin).}
 }
 \value{
 A list of fitting results.

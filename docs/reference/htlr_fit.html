@@ -114,7 +114,7 @@ It also makes predictions for test cases if <code>X_ts</code> are provided.</p>
 
     <pre class="usage"><span class='fu'>htlr_fit</span>(<span class='no'>y_tr</span>, <span class='no'>X_tr</span>, <span class='kw'>X_ts</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>fsel</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>ncol</a></span>(<span class='no'>X_tr</span>), <span class='kw'>stdzx</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>sigmab0</span> <span class='kw'>=</span> <span class='fl'>2000</span>, <span class='kw'>ptype</span> <span class='kw'>=</span> <span class='st'>"t"</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>s</span> <span class='kw'>=</span> -<span class='fl'>10</span>, <span class='kw'>eta</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>iters_h</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>iters_rmc</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>leap_L</span> <span class='kw'>=</span> <span class='fl'>50</span>,
+  <span class='kw'>iters_h</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>iters_rmc</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>leap_L</span> <span class='kw'>=</span> <span class='fl'>50</span>,
   <span class='kw'>leap_L_h</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>leap_step</span> <span class='kw'>=</span> <span class='fl'>0.3</span>, <span class='kw'>hmc_sgmcut</span> <span class='kw'>=</span> <span class='fl'>0.05</span>,
   <span class='kw'>initial_state</span> <span class='kw'>=</span> <span class='st'>"lasso"</span>, <span class='kw'>alpha.rda</span> <span class='kw'>=</span> <span class='fl'>0.2</span>, <span class='kw'>silence</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>.legacy</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>predburn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>predthin</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
@@ -141,9 +141,21 @@ rows should be for the cases, and columns for different features.</p></td>
       <td><p>If TRUE, the original features values are standardized to have mean = 0 and sd = 1.</p></td>
     </tr>
     <tr>
+      <th>iters_rmc</th>
+      <td><p>A positive integer specifying the number of iterations after warmup.</p></td>
+    </tr>
+    <tr>
+      <th>thin</th>
+      <td><p>A positive integer specifying the period for saving samples.</p></td>
+    </tr>
+    <tr>
       <th>initial_state</th>
-      <td><p>The initial state of Markov Chain;
-can be NULL, or a gived parameter vector, or a previous markov chain results.</p></td>
+      <td><p>The initial state of Markov Chain; can be NULL, 
+or a gived parameter vector, or a previous markov chain results.</p></td>
+    </tr>
+    <tr>
+      <th>iter_h</th>
+      <td><p>A positive integer specifying the number of warmup (aka burnin).</p></td>
     </tr>
     </table>
     
