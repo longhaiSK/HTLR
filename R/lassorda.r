@@ -1,15 +1,39 @@
-lasso_deltas <- function(x, y, .legacy)
+#' Lasso initial state
+#' 
+#' Generate initial Markov chain state with Lasso.
+#' 
+#' @param X Design matrix of traning data; 
+#' rows should be for the cases, and columns for different features.
+#' 
+#' @param y Vector of class labels in training or test data set. 
+#' Must be coded as non-negative integers, e.g., 1,2,\ldots,C for C classes.
+#' 
+#' @param lambda A user supplied lambda value for \code{glmnet}. 
+#' By default, it is determined by cross-validation.
+#' 
+#' @return A matrix - the initial state of Markov Chain for HTLR model fitting.
+#' 
+#' @references Jerome Friedman, Trevor Hastie, Robert Tibshirani (2010).
+#' Regularization Paths for Generalized Linear Models via Coordinate
+#' Descent. \emph{Journal of Statistical Software}, 33(1), 1-22.  
+#'
+#' @export
+#' 
+#' @keywords internal
+#' 
+#' @seealso htlr htlr_fit
+lasso_deltas <- function(x, y, lambda = NA)
 {
   try_require("glmnet")
   
-  if (.legacy)
+  if (is.na(lambda))
   {
     lasso.fit <- glmnet::cv.glmnet(x = x, y = y, nlambda = 500, family = "multinomial")
     message("The best lambda chosen by CV: ", lasso.fit$lambda.min ,"\n")
   }
   else
   {
-    lasso.fit <- glmnet::glmnet(x = x, y = y, lambda = .01, family = "multinomial")  
+    lasso.fit <- glmnet::glmnet(x = x, y = y, lambda = lambda, family = "multinomial")  
   }
   
   betas <- coef(lasso.fit, s = "lambda.min")

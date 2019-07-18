@@ -10,8 +10,12 @@
 #' @param fsel Subsets of features selected before fitting, such as by univariate screening.
 #' @param stdzx If TRUE, the original features values are standardized to have mean = 0 and sd = 1.
 #' 
-#' @param initial_state The initial state of Markov Chain;
-#' can be NULL, or a gived parameter vector, or a previous markov chain results.  
+#' @param iter_h A positive integer specifying the number of warmup (aka burnin).
+#' @param iters_rmc A positive integer specifying the number of iterations after warmup.
+#' @param thin A positive integer specifying the period for saving samples.
+#' 
+#' @param initial_state The initial state of Markov Chain; can be NULL, 
+#' or a gived parameter vector, or a previous markov chain results.  
 #' 
 #' @return A list of fitting results.  
 #' 
@@ -21,6 +25,8 @@
 #' \emph{Journal of Statistical Computation and Simulation} 2018, 88:14, 2827-2851.
 #' 
 #' @useDynLib HTLR
+#' 
+#' @import Rcpp
 #' 
 #' @export
 #' 
@@ -45,7 +51,7 @@
 htlr_fit <- function (
     y_tr, X_tr, X_ts = NULL, fsel = 1:ncol(X_tr), stdzx = TRUE, ## data
     sigmab0 = 2000, ptype = "t", alpha = 1, s = -10, eta = 0,  ## prior
-    iters_h = 1000, iters_rmc = 1000, thin = 100,  ## mc iterations
+    iters_h = 1000, iters_rmc = 1000, thin = 1,  ## mc iterations
     leap_L = 50, leap_L_h = 5, leap_step = 0.3,  hmc_sgmcut = 0.05, ## hmc
     initial_state = "lasso", alpha.rda = 0.2, silence = TRUE, .legacy = TRUE, ## initial state
     predburn = NULL, predthin = 1) ## prediction
@@ -108,7 +114,8 @@ htlr_fit <- function (
   }
   else if (initial_state == "lasso")
   {
-    deltas <- lasso_deltas(x = X, y = y_tr, .legacy = .legacy)
+    lambda <- ifelse(.legacy, NA, .01)
+    deltas <- lasso_deltas(x = X, y = y_tr, lambda)
     logw <- s
   }
   else if (initial_state == "bcbcsfrda")
