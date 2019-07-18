@@ -4,18 +4,15 @@ Title: Bayesian Logistic Regression Based on Heavy-Tailed Priors
 Authors@R: as.person(c(
     "Longhai Li <longhai@math.usask.ca> [aut, cre]", 
     "Steven Liu <xil865@usask.com> [aut]"))
-Description: This package performs classification and feature selection by 
-  fitting Bayesian polychotomous (multiclass) logistic regression models based on 
-  heavy-tailed priors with small degree freedom. The software is suitable for 
-  classification with high-dimensional features, such as gene expression profiles. 
-  Heavy-tailed priors can impose stronger shrinkage (compared to Guassian and Laplace priors) 
-  to the coefficients associated with a large number of useless features, 
-  but still allow coefficients of a small number of useful features to stand out 
-  without punishment. Heavy-tailed priors can also automatically make selection within 
-  a large number of correlated features. The posterior of coefficients and hyperparameters 
-  is sampled with resitricted Gibbs sampling for leveraging high-dimensionality and 
-  Hamiltonian Monte Carlo for handling high-correlations among coefficients. 
-  The core computation in this software is carried out with fast C++ code. 
+Description: This software performs classification and feature selection by fitting Baeysian polychotomous 
+  (multiclass, multinomial) logistic regression models based on heavy-tailed priors with small degree freedom. 
+  This package is suitable for classification with high-dimensional features, such as gene expression profiles. 
+  Heavy-tailed priors can impose stronger shrinkage (compared to Guassian and Laplace priors) to the 
+  coefficients associated with a large number of useless features, but still allow coefficients of a 
+  small number of useful features to stand out without punishment. It can also automatically make selection 
+  within a large number of correlated features. The posterior of coefficients and hyperparameters is sampled 
+  with resitricted Gibbs sampling for leveraging high-dimensionality and Hamiltonian Monte Carlo for handling 
+  high-correlations among coefficients.
 License: GPL (>=2)
 URL: https://github.com/longhaiSK/HTLR, https://math.usask.ca/~longhai/software/BLRHL/index.html
 BugReports: https://github.com/longhaiSK/HTLR/issues

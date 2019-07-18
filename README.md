@@ -6,7 +6,9 @@ HTLR
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental) [![Build Status](https://travis-ci.org/longhaiSK/HTLR.svg?branch=dev)](https://travis-ci.org/longhaiSK/HTLR) <!-- badges: end -->
 
-This package performs classification and feature selection by fitting Bayesian polychotomous (multiclass) logistic regression models based on heavy-tailed priors with small degree freedom. The software is suitable for classification with high-dimensional features, such as gene expression profiles. Heavy-tailed priors can impose stronger shrinkage (compared to Guassian and Laplace priors) to the coefficients associated with a large number of useless features, but still allow coefficients of a small number of useful features to stand out without punishment. Heavy-tailed priors can also automatically make selection within a large number of correlated features. The posterior of coefficients and hyperparameters is sampled with resitricted Gibbs sampling for leveraging high-dimensionality and Hamiltonian Monte Carlo for handling high-correlations among coefficients. The core computation in this software is carried out with fast C++ code.
+`HTLR` performs classification and feature selection by fitting Baeysian polychotomous (multiclass, multinomial) logistic regression models based on heavy-tailed priors with small degree freedom. This package is suitable for classification with high-dimensional features, such as gene expression profiles. Heavy-tailed priors can impose stronger shrinkage (compared to Guassian and Laplace priors) to the coefficients associated with a large number of useless features, but still allow coefficients of a small number of useful features to stand out without punishment. It can also automatically make selection within a large number of correlated features. The posterior of coefficients and hyperparameters is sampled with resitricted Gibbs sampling for leveraging high-dimensionality and Hamiltonian Monte Carlo for handling high-correlations among coefficients.
+
+This site focuses mainly on illustrating the usage and syntax of `HTLR`. For more details on the algorithm, see the original article: &lt;[DOI:10.1080/00949655.2018.1490418](https://www.tandfonline.com/doi/full/10.1080/00949655.2018.1490418)&gt; ([PDF](https://arxiv.org/pdf/1405.3319.pdf)).
 
 Installation
 ------------
@@ -34,23 +36,4 @@ library(HTLR)
 ## basic example code
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
-
-``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
-```
-
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date.
-
-You can also embed plots, for example:
-
-<img src="man/figures/README-pressure-1.svg" width="100%" />
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub!
+This page is under construction.
