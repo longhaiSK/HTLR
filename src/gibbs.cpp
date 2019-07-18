@@ -1,7 +1,6 @@
 #include <string>
 #include "gibbs.h"
 
-
 Fit::Fit(int p, int K, int n,
          arma::mat &X, arma::mat &ymat, arma::uvec &ybase,
          std::string ptype, double alpha, double s, double eta, double sigmab0,
