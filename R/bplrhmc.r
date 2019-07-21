@@ -1,4 +1,4 @@
-#' Fitting HTLR Models and Making Predictions 
+#' Fit a HTLR models and make predictions 
 #'
 #' This function trains linear logistic regression models with HMC in restricted Gibbs sampling. 
 #' It also makes predictions for test cases if \code{X_ts} are provided.
@@ -8,14 +8,36 @@
 #' @param X_tr Design matrix of traning data; 
 #' rows should be for the cases, and columns for different features.
 #' @param fsel Subsets of features selected before fitting, such as by univariate screening.
-#' @param stdzx If TRUE, the original features values are standardized to have mean = 0 and sd = 1.
+#' @param stdzx Logical; if \code{TRUE}, the original feature values are standardized to have \code{mean} = 0 
+#' and \code{sd} = 1.
 #' 
 #' @param iter_h A positive integer specifying the number of warmup (aka burnin).
 #' @param iters_rmc A positive integer specifying the number of iterations after warmup.
 #' @param thin A positive integer specifying the period for saving samples.
 #' 
+#' @param leap_L The length of leapfrog trajectory in sampling phase.
+#' @param leap_L_h The length of leapfrog trajectory in burnin phase.
+#' @param leap_step The stepsize adjustment multiplied to the second-order partial derivatives of log posterior.
+#' 
 #' @param initial_state The initial state of Markov Chain; can be NULL, 
-#' or a gived parameter vector, or a previous markov chain results.  
+#' or a gived parameter vector, or a previous markov chain results.
+#' 
+#' @param ptype The prior to be applied to the model. Either "t" (default), "ghs" (horseshoe), 
+#' or "neg" (normal-exponential-gamma).
+#' 
+#' @param sigmab0 The \code{sd} of the normal prior for the intercept.
+#' @param alpha The degree freedom of t/ghs/neg prior for coefficients.
+#' @param s The log scale of priors (logw) for coefficients.
+#' @param eta The \code{sd} of the normal prior for logw. When it is set to 0, logw is fixed. 
+#' Otherwise, logw is assigned with a normal prior and it will be updated during sampling. 
+#' 
+#' @param hmc_sgmcut The coefficients smaller than this criteria will be fixed in each HMC updating step.
+#' 
+#' @param alpha.rda A user supplied alpha value for \code{bcbcsf_deltas}. The default is 0.2.
+#' 
+#' @param silence Setting it to \code{FALSE} for tracking MCMC sampling iterations. 
+#' @param pre.legacy Logical; if \code{TRUE}, the output produced in \code{HTLR} versions up to 
+#' legacy-3.1-1 is reproduced. 
 #' 
 #' @return A list of fitting results.  
 #' 
@@ -53,7 +75,7 @@ htlr_fit <- function (
     sigmab0 = 2000, ptype = "t", alpha = 1, s = -10, eta = 0,  ## prior
     iters_h = 1000, iters_rmc = 1000, thin = 1,  ## mc iterations
     leap_L = 50, leap_L_h = 5, leap_step = 0.3,  hmc_sgmcut = 0.05, ## hmc
-    initial_state = "lasso", alpha.rda = 0.2, silence = TRUE, .legacy = TRUE, ## initial state
+    initial_state = "lasso", alpha.rda = 0.2, silence = TRUE, pre.legacy = TRUE, ## initial state
     predburn = NULL, predthin = 1) ## prediction
 {
   #.Deprecated("htlr")
@@ -114,8 +136,8 @@ htlr_fit <- function (
   }
   else if (initial_state == "lasso")
   {
-    lambda <- ifelse(.legacy, NA, .01)
-    deltas <- lasso_deltas(x = X, y = y_tr, lambda)
+    lambda <- ifelse(pre.legacy, NA, .01)
+    deltas <- lasso_deltas(X = X, y = y_tr, lambda)
     logw <- s
   }
   else if (initial_state == "bcbcsfrda")
@@ -154,7 +176,7 @@ htlr_fit <- function (
       ## fit result
       deltas = deltas, logw = logw, sigmasbt = sigmasbt,
       ## other control
-      silence = as.integer(silence), legacy = .legacy)
+      silence = as.integer(silence), legacy = pre.legacy)
   
   # adding data preprocessing information
   fit <- c(fit, list(fsel = fsel, nuj = nuj, sdj = sdj, y = y_tr))

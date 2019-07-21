@@ -2,14 +2,14 @@
 % Please edit documentation in R/bplrhmc.r
 \name{htlr_fit}
 \alias{htlr_fit}
-\title{Fitting HTLR Models and Making Predictions}
+\title{Fit a HTLR models and make predictions}
 \usage{
 htlr_fit(y_tr, X_tr, X_ts = NULL, fsel = 1:ncol(X_tr), stdzx = TRUE,
   sigmab0 = 2000, ptype = "t", alpha = 1, s = -10, eta = 0,
   iters_h = 1000, iters_rmc = 1000, thin = 1, leap_L = 50,
   leap_L_h = 5, leap_step = 0.3, hmc_sgmcut = 0.05,
   initial_state = "lasso", alpha.rda = 0.2, silence = TRUE,
-  .legacy = TRUE, predburn = NULL, predthin = 1)
+  pre.legacy = TRUE, predburn = NULL, predthin = 1)
 }
 \arguments{
 \item{y_tr}{Vector of class labels in training or test data set. 
@@ -20,14 +20,42 @@ rows should be for the cases, and columns for different features.}
 
 \item{fsel}{Subsets of features selected before fitting, such as by univariate screening.}
 
-\item{stdzx}{If TRUE, the original features values are standardized to have mean = 0 and sd = 1.}
+\item{stdzx}{Logical; if \code{TRUE}, the original feature values are standardized to have \code{mean} = 0 
+and \code{sd} = 1.}
+
+\item{sigmab0}{The \code{sd} of the normal prior for the intercept.}
+
+\item{ptype}{The prior to be applied to the model. Either "t" (default), "ghs" (horseshoe), 
+or "neg" (normal-exponential-gamma).}
+
+\item{alpha}{The degree freedom of t/ghs/neg prior for coefficients.}
+
+\item{s}{The log scale of priors (logw) for coefficients.}
+
+\item{eta}{The \code{sd} of the normal prior for logw. When it is set to 0, logw is fixed. 
+Otherwise, logw is assigned with a normal prior and it will be updated during sampling.}
 
 \item{iters_rmc}{A positive integer specifying the number of iterations after warmup.}
 
 \item{thin}{A positive integer specifying the period for saving samples.}
 
+\item{leap_L}{The length of leapfrog trajectory in sampling phase.}
+
+\item{leap_L_h}{The length of leapfrog trajectory in burnin phase.}
+
+\item{leap_step}{The stepsize adjustment multiplied to the second-order partial derivatives of log posterior.}
+
+\item{hmc_sgmcut}{The coefficients smaller than this criteria will be fixed in each HMC updating step.}
+
 \item{initial_state}{The initial state of Markov Chain; can be NULL, 
 or a gived parameter vector, or a previous markov chain results.}
+
+\item{alpha.rda}{A user supplied alpha value for \code{bcbcsf_deltas}. The default is 0.2.}
+
+\item{silence}{Setting it to \code{FALSE} for tracking MCMC sampling iterations.}
+
+\item{pre.legacy}{Logical; if \code{TRUE}, the output produced in \code{HTLR} versions up to 
+legacy-3.1-1 is reproduced.}
 
 \item{iter_h}{A positive integer specifying the number of warmup (aka burnin).}
 }

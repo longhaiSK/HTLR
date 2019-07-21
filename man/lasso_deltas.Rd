@@ -4,17 +4,17 @@
 \alias{lasso_deltas}
 \title{Lasso initial state}
 \usage{
-lasso_deltas(x, y, lambda = NA)
+lasso_deltas(X, y, lambda = NA)
 }
 \arguments{
+\item{X}{Design matrix of traning data; 
+rows should be for the cases, and columns for different features.}
+
 \item{y}{Vector of class labels in training or test data set. 
 Must be coded as non-negative integers, e.g., 1,2,\ldots,C for C classes.}
 
 \item{lambda}{A user supplied lambda value for \code{glmnet}. 
 By default, it is determined by cross-validation.}
-
-\item{X}{Design matrix of traning data; 
-rows should be for the cases, and columns for different features.}
 }
 \value{
 A matrix - the initial state of Markov Chain for HTLR model fitting.
@@ -28,6 +28,6 @@ Regularization Paths for Generalized Linear Models via Coordinate
 Descent. \emph{Journal of Statistical Software}, 33(1), 1-22.
 }
 \seealso{
-htlr htlr_fit
+htlr htlr_fit bcbcsf_deltas
 }
 \keyword{internal}

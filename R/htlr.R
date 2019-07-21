@@ -1,18 +1,187 @@
-htlr <- function (
-  x, y, fsel = 1:ncol(X_tr), prior = c("t", "neg", "ghs"), 
-  stdzx = TRUE,
-  sigmab0 = 2000,  alpha = 1, s = -10, eta = 0,
-  iters_h = 1000, iters_rmc = 1000, thin = 100,
-  leap_L = 50, leap_L_h = 5, leap_step = 0.3,  hmc_sgmcut = 0.05,
-  initial_state = "lasso", alpha.rda = 0.2, verbose = FALSE, .legacy = FALSE)
+#' Fit a HTLR Model
+#'
+#' This function trains linear logistic regression models with HMC in restricted Gibbs sampling. 
+#'
+#' @param X Design matrix of traning data; 
+#' rows should be for the cases, and columns for different features.
+#' 
+#' @param y Vector of class labels in training or test data set. 
+#' Must be coded as non-negative integers, e.g., 1,2,\ldots,C for C classes.
+#' 
+#' @param fsel Subsets of features selected before fitting, such as by univariate screening.
+#' @param stdzx Logical; if \code{TRUE}, the original feature values are standardized to have \code{mean} = 0 
+#' and \code{sd} = 1.
+#' 
+#' @param iter A positive integer specifying the number of iterations (including warmup).
+#' @param warmup A positive integer specifying the number of warmup (aka burnin). 
+#' The number of warmup iterations should not be larger than iter and the default is iter/2.
+#' 
+#' @param thin A positive integer specifying the period for saving samples.
+#' 
+#' @param leap The length of leapfrog trajectory in sampling phase.
+#' @param leap.warm The length of leapfrog trajectory in burnin phase.
+#' @param leap.step The stepsize adjustment multiplied to the second-order partial derivatives of log posterior.
+#' 
+#' @param cut The coefficients smaller than this criteria will be fixed in each HMC updating step.
+#' 
+#' @param init The initial state of Markov Chain; can be NULL, 
+#' or a gived parameter vector, or a previous markov chain results.
+#' 
+#' @param prior The prior to be applied to the model. Either "t" (default), "ghs" (horseshoe), 
+#' or "neg" (normal-exponential-gamma).
+#' 
+#' @param sigmab0 The \code{sd} of the normal prior for the intercept.
+#' @param alpha The degree freedom of t/ghs/neg prior for coefficients.
+#' @param logw The log scale of priors for coefficients.
+#' @param eta The \code{sd} of the normal prior for logw. When it is set to 0, logw is fixed. 
+#' Otherwise, logw is assigned with a normal prior and it will be updated during sampling.  
+#' 
+#' @param verbose Logical; setting it to \code{TRUE} for tracking MCMC sampling iterations.
+#' 
+#' @param pre.legacy Logical; if \code{TRUE}, the output produced in \code{HTLR} versions up to 
+#' legacy-3.1-1 is reproduced. 
+#' 
+#' @param ... Other optional parameters:
+#' \itemize{
+#'   \item alpha.rda - A user supplied alpha value for \code{bcbcsf_deltas}. Default: 0.2.
+#'   \item lasso.lambda - A user supplied lambda value for \code{lasso_deltas}. Default: 0.01.
+#'   Will be ignored if .legacy is set to TRUE. 
+#' } 
+#' 
+#' @return A list of fitting results.  
+#' 
+#' @references
+#' Longhai Li and Weixin Yao. (2018). Fully Bayesian Logistic Regression 
+#' with Hyper-Lasso Priors for High-dimensional Feature Selection.
+#' \emph{Journal of Statistical Computation and Simulation} 2018, 88:14, 2827-2851.
+#' 
+#' @useDynLib HTLR
+#' 
+#' @import Rcpp
+#' 
+#' @export
+#' 
+htlr <-
+  function (X, y,
+            fsel = 1:ncol(x),
+            stdzx = TRUE,
+            prior = c("t", "neg", "ghs"),
+            iter = 2000,
+            warmup = floor(iter/2), 
+            thin = 1,
+            init = "lasso",
+            leap = 50,
+            leap.warm = floor(iter/10),
+            leap.step = 0.3,
+            sgmcut = 0.05,
+            #prior.param = list(),
+            alpha = 1,
+            logw = -10,
+            eta = 0,
+            sigmab0 = 2000,
+            verbose = FALSE,
+            pre.legacy = FALSE,
+            ...
+  )
 {
+  #------------------------------- Input Checking -------------------------------#
+    
+  stopifnot(iter > warmup, warmup > 0, thin > 0, leap > 0, leap.warm > 0,
+            alpha > 0)
+  
+  if (length (y) != nrow (X) ) 
+    stop ("'y' and 'X' mismatch")
+  
+  yfreq <- table(y)
+  if (length(yfreq) < 2)
+    stop("less than 2 classes of response")
+  if (any(yfreq < 2)) 
+    stop("less than 2 cases in some group")
+  
   prior <- match.arg(prior)
   
-  stopifnot(length (y_tr) == nrow (X_tr),
-            iters_rmc > 0, iters_h > 0, leap_L > 0, leap_L_h > 0, thin > 0)
+  #----------------------------- Data preprocessing -----------------------------#
   
-  if (any(table(y) < 2)) 
-    stop("Less than 2 cases in some group.")
+  if (min(y) == 0) y <- y + 1
+  
+  ybase <- as.integer(y - 1)
+  ymat <- model.matrix( ~ factor(y) - 1)[, -1]
+  C <- length(unique(ybase))
+  K <- C - 1
+  
+  ## feature selection
+  X <- X_tr[, fsel, drop = FALSE]
+  p <- length(fsel)
+  n <- nrow(X)
+  
+  ## standardize selected features
+  nuj <- rep(0, length(fsel))
+  sdj <- rep(1, length(fsel))
+  if (stdzx == TRUE & !is.numeric(init))
+  {
+    nuj <- apply(X, 2, median)
+    sdj <- apply(X, 2, sd)
+    X <- sweep(X, 2, nuj, "-")
+    X <- sweep(X, 2, sdj, "/")
+  }
+  
+  ## add intercept
+  X_addint <- cbind(1, X)
+  
+  ## stepsize for HMC from data
+  DDNloglike <- 1 / 4 * colSums(X_addint ^ 2)
+  
+  #---------------------- Markov chain state initialization ----------------------#
+
+  if (is.list(init)) # use the last iteration of markov chain
+  {
+    no_mcspl <- length(init$mclogw)
+    deltas <- matrix(init$mcdeltas[, , no_mcspl], nrow = p + 1)
+    sigmasbt <- init$mcsigmasbt[, no_mcspl]
+    logw <- init$mclogw[no_mcspl]
+  }
+  else
+  {
+    if (is.matrix(init)) # user supplied deltas
+    {
+      deltas <- init
+      if (nrow (deltas) != p + 1 || ncol (deltas) != K)
+      {
+        stop(
+          sprintf(
+            "Initial `deltas' mismatch data. Expected: nrow=%d, ncol=%d; Actual: nrow=%d, ncol=%d.",
+            p + 1, K, nrow (deltas), ncol (deltas))
+        )        
+      }
+      logw <- s
+    }
+    else if (init == "lasso")
+    {
+      if (pre.legacy) 
+        lasso.lambda <- NA # will be chosen by CV
+      else if (!exists("lasso.lambda"))
+        lasso.lambda <- .01
+      # else lambda is supplied via optional arg
+      deltas <- lasso_deltas(X, y, lasso.lambda)
+      logw <- s
+    }
+    else if (init == "bcbc")
+    {
+      if (!exists("alpha.rda"))
+        alpha.rda <- .2
+      deltas <- bcbcsf_deltas(X, y, alpha.rda)
+      logw <- s
+    }
+    else if (init == "random")
+    {
+      deltas <- matrix(rnorm((p + 1) * K) * 2, p + 1, K)
+      logw <- s
+    }
+    else stop("not supported init type")
+    
+    vardeltas <- comp_vardeltas(deltas)[-1]
+    sigmasbt <- c(sigmab0, spl_sgm_ig (alpha, K, exp(logw), vardeltas))
+  }
   
   #attr(fit, "class") <- "htlr"
   

@@ -1,17 +1,47 @@
-#' @importFrom BCBCSF bcbcsf_fitpred bcbcsf_sumfit   
-bcbcsf_deltas <- function (X_tr, y_tr, alpha = 0)
+#' Bias-corrected Bayesian classification initial state
+#' 
+#' Generate initial Markov chain state with Bias-corrected Bayesian classification.
+#' 
+#' Caveat: This method can be used only for continuous predictors such as gene expression profiles, 
+#' and it does not make sense for categorical predictors such as SNP profiles. 
+#' 
+#' @param X Design matrix of traning data; 
+#' rows should be for the cases, and columns for different features.
+#' 
+#' @param y Vector of class labels in training or test data set. 
+#' Must be coded as non-negative integers, e.g., 1,2,\ldots,C for C classes.
+#' 
+#' @param alpha The regularization proportion (between 0 and 1) for mixing the 
+#' diagonal covariance estimates and the sample covariance estimated with the 
+#' training samples. The default is 0, the covariance matrix is assumed to be diagonal, 
+#' which is the most robust.
+#' 
+#' @return A matrix - the initial state of Markov Chain for HTLR model fitting.
+#' 
+#' @references Longhai Li (2012). Bias-corrected hierarchical Bayesian classification 
+#' with a selected subset of high-dimensional features. 
+#'\emph{Journal of the American Statistical Association}, 107(497), 120-134.
+#' 
+#' @importFrom BCBCSF bcbcsf_fitpred bcbcsf_sumfit  
+#' 
+#' @export
+#' 
+#' @keywords internal
+#' 
+#' @seealso htlr htlr_fit lasso_deltas 
+bcbcsf_deltas <- function (X, y, alpha = 0)
 {
-  n <- nrow (X_tr) ## numbers of obs
-  p <- ncol (X_tr)
+  n <- nrow (X) ## numbers of obs
+  p <- ncol (X)
   ## find number of observations in each group
-  nos_g <- as.vector (tapply (rep(1, n), INDEX = y_tr, sum))
+  nos_g <- as.vector (tapply (rep(1, n), INDEX = y, sum))
   G <- length (nos_g)
   
   muj <- matrix (0, p, G)
   ## estimate centroids
-  fit_bcbcsf <- bcbcsf_fitpred  (
-    X_tr = X_tr,
-    y_tr = y_tr,
+  fit_bcbcsf <- bcbcsf_fitpred(
+    X_tr = X,
+    y_tr = y,
     alpha1_mu = 1,
     standardize = FALSE,
     no_rmc = 500,
@@ -26,8 +56,8 @@ bcbcsf_deltas <- function (X_tr, y_tr, alpha = 0)
     bcbcsf_sumfit (fit_bcbcsf = fit_bcbcsf)$muj
   
   ## transform X
-  tX_tr <- t (X_tr)
-  rm (X_tr)
+  tX_tr <- t (X)
+  rm (X)
   
   if (any(nos_g < 2))
     stop ("Less than 2 cases in some group")
@@ -36,20 +66,20 @@ bcbcsf_deltas <- function (X_tr, y_tr, alpha = 0)
     stop ("'alpha' must be less than 1")
   
   ## proportions of groups
-  gprior <- table (y_tr) / n
+  gprior <- table (y) / n
   
   for (g in 1:G)
   {
     ## subtract muj[,g] from data in gth group
-    tX_tr[, y_tr == g] <-
-      sweep (tX_tr[, y_tr == g, drop = FALSE], 1, muj[, g])
+    tX_tr[, y == g] <-
+      sweep (tX_tr[, y == g, drop = FALSE], 1, muj[, g])
   }
-  X_tr <- t (tX_tr)
+  X <- t (tX_tr)
   
   ## estimate inverse of covariance matrix
   lambda <- alpha / (1 - alpha) / n
   inv_SGM <- 1 / (1 - alpha) * 
-    (diag (1, p) - lambda * tX_tr %*% solve (diag (1, n) + lambda * X_tr %*% tX_tr) %*% X_tr)
+    (diag (1, p) - lambda * tX_tr %*% solve (diag (1, n) + lambda * X %*% tX_tr) %*% X)
   
   deltas_bc_inv (muj = muj,
                  inv_SGM = inv_SGM,

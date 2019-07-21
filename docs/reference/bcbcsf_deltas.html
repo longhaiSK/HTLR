@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • HTLR</title>
+<title>Bias-corrected Bayesian classification initial state — bcbcsf_deltas • HTLR</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,7 +30,10 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Bias-corrected Bayesian classification initial state — bcbcsf_deltas" />
+
+<meta property="og:description" content="Generate initial Markov chain state with Bias-corrected Bayesian classification." />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -47,7 +50,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -94,72 +97,78 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Bias-corrected Bayesian classification initial state</h1>
+    <small class="dont-index">Source: <a href='https://github.com/longhaiSK/HTLR/blob/master/R/bcbcsf.r'><code>R/bcbcsf.r</code></a></small>
+    <div class="hidden name"><code>bcbcsf_deltas.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    
+    <p>Generate initial Markov chain state with Bias-corrected Bayesian classification.</p>
+    
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
-
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="htlr.html">htlr()</a></code> </p>
-        </td>
-        <td><p>Fitting HTLR Models and Making Predictions</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="htlr_fit.html">htlr_fit()</a></code> </p>
-        </td>
-        <td><p>Fitting HTLR Models and Making Predictions</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="htlr_fss.html">htlr_fss()</a></code> </p>
-        </td>
-        <td><p>Feature subsets selection with MCMC Samples</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="htlr_mccoef.html">htlr_mccoef()</a></code> </p>
-        </td>
-        <td><p>Plots Markov chain trace or scatterplot</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="htlr_predict.html">htlr_predict()</a></code> </p>
-        </td>
-        <td><p>Make prediction on new data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plot_fscore.html">plot_fscore()</a></code> </p>
-        </td>
-        <td><p>Plots feature importance scores</p></td>
-      </tr>
-    </tbody>
+    <pre class="usage"><span class='fu'>bcbcsf_deltas</span>(<span class='no'>X</span>, <span class='no'>y</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>X</th>
+      <td><p>Design matrix of traning data; 
+rows should be for the cases, and columns for different features.</p></td>
+    </tr>
+    <tr>
+      <th>y</th>
+      <td><p>Vector of class labels in training or test data set. 
+Must be coded as non-negative integers, e.g., 1,2,&#8230;,C for C classes.</p></td>
+    </tr>
+    <tr>
+      <th>alpha</th>
+      <td><p>The regularization proportion (between 0 and 1) for mixing the 
+diagonal covariance estimates and the sample covariance estimated with the 
+training samples. The default is 0, the covariance matrix is assumed to be diagonal, 
+which is the most robust.</p></td>
+    </tr>
     </table>
-  </div>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>A matrix - the initial state of Markov Chain for HTLR model fitting.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Caveat: This method can be used only for continuous predictors such as gene expression profiles, 
+and it does not make sense for categorical predictors such as SNP profiles.</p>
+    
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>Longhai Li (2012). Bias-corrected hierarchical Bayesian classification 
+with a selected subset of high-dimensional features. 
+<em>Journal of the American Statistical Association</em>, 107(497), 120-134.</p>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p>htlr htlr_fit lasso_deltas</p></div>
+    
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
-    </ul>
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
+
+      <li><a href="#references">References</a></li>
+
+      <li><a href="#see-also">See also</a></li>
+          </ul>
+
   </div>
 </div>
 
