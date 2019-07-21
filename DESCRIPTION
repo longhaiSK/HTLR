@@ -1,9 +1,8 @@
 Package: HTLR
 Version: 0.3.1.9000
 Title: Bayesian Logistic Regression Based on Heavy-Tailed Priors
-Authors@R: as.person(c(
-    "Longhai Li <longhai@math.usask.ca> [aut, cre]", 
-    "Steven Liu <xil865@usask.com> [aut]"))
+Authors@R: c(person(given = "Longhai", family = "Li", role = c("aut", "cre"), email = "longhai@math.usask.ca",
+    comment=c(ORCID="0000-0002-3074-8584")), person(given = "Steven", family = "Liu", role = c("aut")))
 Description: This software performs classification and feature selection by fitting Baeysian polychotomous 
   (multiclass, multinomial) logistic regression models based on heavy-tailed priors with small degree freedom. 
   This package is suitable for classification with high-dimensional features, such as gene expression profiles. 
