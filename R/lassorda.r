@@ -17,23 +17,25 @@
 #' Regularization Paths for Generalized Linear Models via Coordinate
 #' Descent. \emph{Journal of Statistical Software}, 33(1), 1-22.  
 #'
+#' @importFrom glmnet glmnet cv.glmnet 
+#'
 #' @export
 #' 
 #' @keywords internal
 #' 
-#' @seealso htlr htlr_fit
-lasso_deltas <- function(x, y, lambda = NA)
+#' @seealso htlr htlr_fit bcbcsf_deltas
+lasso_deltas <- function(X, y, lambda = NA)
 {
-  try_require("glmnet")
+  #try_require("glmnet")
   
   if (is.na(lambda))
   {
-    lasso.fit <- glmnet::cv.glmnet(x = x, y = y, nlambda = 500, family = "multinomial")
+    lasso.fit <- cv.glmnet(x = X, y = y, nlambda = 500, family = "multinomial")
     message("The best lambda chosen by CV: ", lasso.fit$lambda.min ,"\n")
   }
   else
   {
-    lasso.fit <- glmnet::glmnet(x = x, y = y, lambda = lambda, family = "multinomial")  
+    lasso.fit <- glmnet(x = X, y = y, lambda = lambda, family = "multinomial")  
   }
   
   betas <- coef(lasso.fit, s = "lambda.min")
@@ -44,7 +46,7 @@ lasso_deltas <- function(x, y, lambda = NA)
 
 lasso_fitpred <- function (X_tr, y_tr, X_ts = NULL, rank_fn = rank_plain, k = ncol (X_tr))
 {
-  try_require ("glmnet")
+  #try_require ("glmnet")
   ## read information about data
   n <- nrow (X_tr) ## numbers of obs
   p <- ncol (X_tr)
@@ -63,7 +65,7 @@ lasso_fitpred <- function (X_tr, y_tr, X_ts = NULL, rank_fn = rank_plain, k = nc
   }
   
   ## choosing the best lambda
-  cvfit <- glmnet::cv.glmnet (
+  cvfit <- cv.glmnet (
     x = X_tr,
     y = y_tr,
     nlambda = 500,
@@ -73,7 +75,7 @@ lasso_fitpred <- function (X_tr, y_tr, X_ts = NULL, rank_fn = rank_plain, k = nc
   cat ("The best lambda chosen by CV:", lambda, "\n")
   
   ## fit lasso with the best lambda
-  lassofit <- glmnet::glmnet (
+  lassofit <- glmnet (
     x = X_tr,
     y = y_tr,
     nlambda = 500,

@@ -110,11 +110,16 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>lasso_deltas</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='kw'>lambda</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+    <pre class="usage"><span class='fu'>lasso_deltas</span>(<span class='no'>X</span>, <span class='no'>y</span>, <span class='kw'>lambda</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>X</th>
+      <td><p>Design matrix of traning data; 
+rows should be for the cases, and columns for different features.</p></td>
+    </tr>
     <tr>
       <th>y</th>
       <td><p>Vector of class labels in training or test data set. 
@@ -124,11 +129,6 @@ Must be coded as non-negative integers, e.g., 1,2,&#8230;,C for C classes.</p></
       <th>lambda</th>
       <td><p>A user supplied lambda value for <code>glmnet</code>. 
 By default, it is determined by cross-validation.</p></td>
-    </tr>
-    <tr>
-      <th>X</th>
-      <td><p>Design matrix of traning data; 
-rows should be for the cases, and columns for different features.</p></td>
     </tr>
     </table>
     
@@ -144,7 +144,7 @@ Descent. <em>Journal of Statistical Software</em>, 33(1), 1-22.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>htlr htlr_fit</p></div>
+    <div class='dont-index'><p>htlr htlr_fit bcbcsf_deltas</p></div>
     
 
   </div>
