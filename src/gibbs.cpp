@@ -132,16 +132,16 @@ Rcpp::List Fit::OutputR()
   auto prior_param = Rcpp::List::create(
       Rcpp::Named("ptype") = ptype_,
       Rcpp::Named("alpha") = alpha_,
-      Rcpp::Named("s") = s_,
+      Rcpp::Named("logw") = s_,
       Rcpp::Named("eta") = eta_,
       Rcpp::Named("sigmab0") = sigmab0_);
 
   auto mc_param = Rcpp::List::create(
-      Rcpp::Named("iters.rmc") = iters_rmc_,
-      Rcpp::Named("iters.h") = iters_h_,
+      Rcpp::Named("iter.rmc") = iters_rmc_,
+      Rcpp::Named("iter.warm") = iters_h_,
       Rcpp::Named("thin") = thin_,
-      Rcpp::Named("leap.L") = leap_L_,
-      Rcpp::Named("leap.L.h") = leap_L_h_,
+      Rcpp::Named("leap") = leap_L_,
+      Rcpp::Named("leap.warm") = leap_L_h_,
       Rcpp::Named("leap.step") = leap_step_,
       Rcpp::Named("sgmsq.cut") = sgmsq_cut_,
       Rcpp::Named("DDNloglike") = DDNloglike_);
