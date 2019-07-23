@@ -63,7 +63,7 @@
 #' 
 htlr <-
   function (X, y,
-            fsel = 1:ncol(x),
+            fsel = 1:ncol(X),
             stdzx = TRUE,
             prior = c("t", "neg", "ghs"),
             iter = 2000,
@@ -71,9 +71,9 @@ htlr <-
             thin = 1,
             init = "lasso",
             leap = 50,
-            leap.warm = floor(iter/10),
+            leap.warm = floor(leap/10),
             leap.step = 0.3,
-            sgmcut = 0.05,
+            cut = 0.05,
             #prior.param = list(),
             alpha = 1,
             logw = -10,
@@ -110,7 +110,7 @@ htlr <-
   K <- C - 1
   
   ## feature selection
-  X <- X_tr[, fsel, drop = FALSE]
+  X <- X[, fsel, drop = FALSE]
   p <- length(fsel)
   n <- nrow(X)
   
@@ -126,34 +126,33 @@ htlr <-
   }
   
   ## add intercept
-  X_addint <- cbind(1, X)
+  X.addint <- cbind(1, X)
   
   ## stepsize for HMC from data
-  DDNloglike <- 1 / 4 * colSums(X_addint ^ 2)
+  DDNloglike <- 1 / 4 * colSums(X.addint ^ 2)
   
   #---------------------- Markov chain state initialization ----------------------#
 
   if (is.list(init)) # use the last iteration of markov chain
   {
-    no_mcspl <- length(init$mclogw)
-    deltas <- matrix(init$mcdeltas[, , no_mcspl], nrow = p + 1)
-    sigmasbt <- init$mcsigmasbt[, no_mcspl]
-    logw <- init$mclogw[no_mcspl]
+    no.mcspl <- length(init$mclogw)
+    deltas <- matrix(init$mcdeltas[, , no.mcspl], nrow = p + 1)
+    sigmasbt <- init$mcsigmasbt[, no.mcspl]
+    logw <- init$mclogw[no.mcspl]
   }
   else
   {
     if (is.matrix(init)) # user supplied deltas
     {
       deltas <- init
-      if (nrow (deltas) != p + 1 || ncol (deltas) != K)
+      if (nrow (deltas) != p + 1 || ncol(deltas) != K)
       {
         stop(
           sprintf(
             "Initial `deltas' mismatch data. Expected: nrow=%d, ncol=%d; Actual: nrow=%d, ncol=%d.",
-            p + 1, K, nrow (deltas), ncol (deltas))
+            p + 1, K, nrow(deltas), ncol(deltas))
         )        
       }
-      logw <- s
     }
     else if (init == "lasso")
     {
@@ -163,26 +162,44 @@ htlr <-
         lasso.lambda <- .01
       # else lambda is supplied via optional arg
       deltas <- lasso_deltas(X, y, lasso.lambda)
-      logw <- s
     }
     else if (init == "bcbc")
     {
       if (!exists("alpha.rda"))
         alpha.rda <- .2
       deltas <- bcbcsf_deltas(X, y, alpha.rda)
-      logw <- s
     }
     else if (init == "random")
     {
       deltas <- matrix(rnorm((p + 1) * K) * 2, p + 1, K)
-      logw <- s
     }
     else stop("not supported init type")
     
     vardeltas <- comp_vardeltas(deltas)[-1]
-    sigmasbt <- c(sigmab0, spl_sgm_ig (alpha, K, exp(logw), vardeltas))
+    sigmasbt <- c(sigmab0, spl_sgm_ig(alpha, K, exp(logw), vardeltas))
   }
   
-  #attr(fit, "class") <- "htlr"
+  #-------------------------- Do Gibbs sampling --------------------------#
   
+  fit <- HtlrFit(
+    ## data
+    p = p, K = K, n = n,
+    X = as.matrix(X.addint), 
+    ymat = as.matrix(ymat), 
+    ybase = as.vector(ybase),
+    ## prior
+    ptype = prior, alpha = alpha, s = logw, eta = eta, sigmab0 = sigmab0,
+    ## sampling
+    iters_rmc = (iter - warmup), iters_h = warmup, thin = thin, 
+    leap_L = leap, leap_L_h = leap.warm, leap_step = leap.step, 
+    hmc_sgmcut = cut, DDNloglike = as.vector(DDNloglike),
+    ## fit result
+    deltas = deltas, logw = logw, sigmasbt = sigmasbt,
+    ## other control
+    silence = as.integer(!verbose), legacy = pre.legacy)
+  
+  # adding data preprocessing information
+  fit <- c(fit, list(fsel = fsel, nuj = nuj, sdj = sdj, y = y))
+  attr(fit, "class") <- "htlr"
+  fit
 }
