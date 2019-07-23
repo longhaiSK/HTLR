@@ -17,3 +17,7 @@ HtlrFit <- function(p, K, n, X, ymat, ybase, ptype, alpha, s, eta, sigmab0, iter
     .Call('_HTLR_HtlrFit', PACKAGE = 'HTLR', p, K, n, X, ymat, ybase, ptype, alpha, s, eta, sigmab0, iters_rmc, iters_h, thin, leap_L, leap_L_h, leap_step, hmc_sgmcut, DDNloglike, deltas, logw, sigmasbt, silence, legacy)
 }
 
+spl_sgm_ig <- function(alpha, K, w, vardeltas) {
+    .Call('_HTLR_spl_sgm_ig', PACKAGE = 'HTLR', alpha, K, w, vardeltas)
+}
+

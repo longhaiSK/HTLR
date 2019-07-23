@@ -86,12 +86,27 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// spl_sgm_ig
+arma::vec spl_sgm_ig(double alpha, int K, double w, const arma::vec& vardeltas);
+RcppExport SEXP _HTLR_spl_sgm_ig(SEXP alphaSEXP, SEXP KSEXP, SEXP wSEXP, SEXP vardeltasSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type K(KSEXP);
+    Rcpp::traits::input_parameter< double >::type w(wSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type vardeltas(vardeltasSEXP);
+    rcpp_result_gen = Rcpp::wrap(spl_sgm_ig(alpha, K, w, vardeltas));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_HTLR_sample_trunc_norm", (DL_FUNC) &_HTLR_sample_trunc_norm, 4},
     {"_HTLR_sample_post_ichi", (DL_FUNC) &_HTLR_sample_post_ichi, 6},
     {"_HTLR_sample_trunc_beta", (DL_FUNC) &_HTLR_sample_trunc_beta, 6},
     {"_HTLR_HtlrFit", (DL_FUNC) &_HTLR_HtlrFit, 24},
+    {"_HTLR_spl_sgm_ig", (DL_FUNC) &_HTLR_spl_sgm_ig, 4},
     {NULL, NULL, 0}
 };
 

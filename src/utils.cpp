@@ -43,3 +43,10 @@ arma::mat find_normlv(const arma::mat &lv)
 {  
   return lv.each_col() - log_sum_exp(lv);
 }
+
+// [[Rcpp::export]]
+arma::vec spl_sgm_ig(double alpha, int K, double w, const arma::vec &vardeltas)
+{
+  arma::vec rn_gamma = Rcpp::rgamma(vardeltas.n_elem, (alpha + K) / 2); 
+  return (1.0 / rn_gamma % (alpha * w + vardeltas) / 2.0);
+}

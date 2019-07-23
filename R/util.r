@@ -3,14 +3,14 @@
 
 
 ## a function for retrieve fithtlr objs saved in a RData file
-reload_fithtlr <- function (fithtlrfile)
-{
-    local
-    ({
-        fithtlr <- get (load (fithtlrfile))
-        return (fithtlr)
-    })
-}
+# reload_fithtlr <- function (fithtlrfile)
+# {
+#     local
+#     ({
+#         fithtlr <- get (load (fithtlrfile))
+#         return (fithtlr)
+#     })
+# }
 
 
 log_sum_exp <- function(lx)
@@ -52,10 +52,10 @@ comp_lsl <- function (lv)
     apply (cbind (0,lv), 1, log_sum_exp)
 }
 
-spl_sgm_ig <- function (alpha, K, w, vardeltas)
-{
-  1 / rgamma (length (vardeltas), (alpha + K)/2) * (alpha * w + vardeltas) / 2
-}
+# spl_sgm_ig <- function (alpha, K, w, vardeltas)
+# {
+#   1 / rgamma (length (vardeltas), (alpha + K)/2) * (alpha * w + vardeltas) / 2
+# }
 
 get_ix <- function (sub, whole, digits= 0)
 {
