@@ -338,19 +338,15 @@ void Fit::UpdateSigmasT()
     for (int j = 1; j < nvar_; j++)
     {
       GetRNGstate();
-      sigmasbt_[j] =
+      sigmasbt_(j) =
           1.0 / R::rgamma(alpha_post, 1.0) * (alpha_ * exp(logw_) + var_deltas_[j]) / 2.0;
       PutRNGstate();
     }
   }
   else
   {
-    sigmasbt_ = copy(var_deltas_);
-    sigmasbt_.for_each([this, alpha_post](arma::vec::elem_type &val) {
-      GetRNGstate();
-      val = 1.0 / R::rgamma(alpha_post, 1.0) * (alpha_ * exp(logw_) + val) / 2.0;
-      PutRNGstate();
-    });
+    arma::vec var_deltas_p = var_deltas_.tail(p_); 
+    sigmasbt_.tail(p_) = spl_sgm_ig(alpha_, K_, exp(logw_), var_deltas_p);
   }
 
   UpdateLogw();
@@ -466,7 +462,7 @@ double Fit::CompNegEnergy()
 // Modified: momt
 void Fit::GenMomt()
 {
-  if (legacy_)
+  if (true)
   {
     for (int j : iup_)
     {
@@ -478,7 +474,7 @@ void Fit::GenMomt()
       }
     }
   }
-  else
+  else // might have problem
   {
     arma::vec rn = Rcpp::rnorm(nuvar_ * K_);
     momt_.rows(iup_) = arma::reshape(rn, nuvar_, K_);
