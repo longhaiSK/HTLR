@@ -22,7 +22,7 @@
 #' @param initial_state The initial state of Markov Chain; can be NULL, 
 #' or a gived parameter vector, or a previous markov chain results.
 #' 
-#' @param ptype The prior to be applied to the model. Either "t" (default), "ghs" (horseshoe), 
+#' @param ptype The prior to be applied to the model. Either "t" (student-t, default), "ghs" (horseshoe), 
 #' or "neg" (normal-exponential-gamma).
 #' 
 #' @param sigmab0 The \code{sd} of the normal prior for the intercept.
@@ -69,7 +69,8 @@
 #'   leap_L_h = 5, leap_L = 50, leap_step = 0.5, hmc_sgmcut = 0.05, 
 #'   initial_state = "bcbcsfrda", silence = F)
 #' }
-#'
+#' 
+#' @seealso htlr
 htlr_fit <- function (
     y_tr, X_tr, X_ts = NULL, fsel = 1:ncol(X_tr), stdzx = TRUE, ## data
     sigmab0 = 2000, ptype = "t", alpha = 1, s = -10, eta = 0,  ## prior
@@ -78,7 +79,7 @@ htlr_fit <- function (
     initial_state = "lasso", alpha.rda = 0.2, silence = TRUE, pre.legacy = TRUE, ## initial state
     predburn = NULL, predthin = 1) ## prediction
 {
-  #.Deprecated("htlr")
+  .Deprecated("htlr")
   
   ## checking prior types
   if (!(ptype %in% c("t", "ghs", "neg"))) 
@@ -150,25 +151,25 @@ htlr_fit <- function (
     deltas <- matrix(rnorm((p + 1) * K) * 2, p + 1, K)
     logw <- s
   }
-  if (nrow (deltas) != p + 1 || ncol (deltas) != K)
-    stop("Initial `deltas' Mismatch Data")
+  if (nrow(deltas) != p + 1 || ncol(deltas) != K)
+    stop("initial `deltas' mismatch data")
   
   if (!exists("sigmasbt"))
   {
     vardeltas <- comp_vardeltas(deltas)[-1]
-    sigmasbt <- c(sigmab0, spl_sgm_ig (alpha, K, exp(logw), vardeltas))
+    sigmasbt <- c(sigmab0, spl_sgm_ig(alpha, K, exp(logw), vardeltas))
   }
     
   #################### Do Gibbs sampling ####################
 
-  fit <- HtlrFit(
+  fit <- HtlrFitHelper(
       ## data
       p = p, K = K, n = n,
       X = as.matrix(X_addint), 
       ymat = as.matrix(ymat), 
       ybase = as.vector(ybase),
       ## prior
-      ptype = ptype, alpha = alpha, s = s, eta = eta, sigmab0 = sigmab0,
+      ptype = ptype, alpha = alpha, s = s, eta = eta,
       ## sampling
       iters_rmc = iters_rmc, iters_h = iters_h, thin = thin, 
       leap_L = leap_L, leap_L_h = leap_L_h, leap_step = leap_step, 
@@ -178,8 +179,14 @@ htlr_fit <- function (
       ## other control
       silence = as.integer(silence), legacy = pre.legacy)
   
-  # adding data preprocessing information
-  fit <- c(fit, list(fsel = fsel, nuj = nuj, sdj = sdj, y = y_tr))
+  # add prior hyperparameter information
+  fit$prior <- config_prior(ptype, alpha, s, eta, sigmab0)
+  
+  # add data preprocessing information
+  fit$feature <- list("fsel" = fsel, "nuj" = nuj, "sdj" = sdj, "y" = y)
+  
+  # register S3
+  attr(fit, "class") <- "htlrfit"
         
   ################## Prediction for test cases #########################
   if (!is.null (X_ts))
@@ -191,8 +198,6 @@ htlr_fit <- function (
       thin = predthin
     )
   }
-  else
-    fit$probs_pred <- NULL
   
   ############## Htlr fitting and prediction results #################
   return(fit)
@@ -241,10 +246,10 @@ htlr_predict <- function(X_ts, fithtlr = NULL, deltas = NULL, burn = NULL, thin 
     longdeltas <- matrix(fithtlr$mcdeltas[, , usedmc], nrow = p + 1)
     
     ## selecting features and standardizing
-    fsel <- fithtlr$fsel
+    fsel <- fithtlr$feature$fsel
     X_ts <- X_ts[, fsel, drop = FALSE]
-    nuj <- fithtlr$nuj
-    sdj <- fithtlr$sdj
+    nuj <- fithtlr$feature$nuj
+    sdj <- fithtlr$feature$sdj
     X_ts <- sweep(X_ts, 2, nuj, "-")
     X_ts <- sweep(X_ts, 2, sdj, "/")
   }
