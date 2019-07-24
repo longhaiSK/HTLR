@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Fitting HTLR Models and Making Predictions — htlr • HTLR</title>
+<title>Fit a HTLR Model — htlr • HTLR</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,10 +30,9 @@
 
 
 
-<meta property="og:title" content="Fitting HTLR Models and Making Predictions — htlr" />
+<meta property="og:title" content="Fit a HTLR Model — htlr" />
 
-<meta property="og:description" content="This function trains linear logistic regression models with HMC in restricted Gibbs sampling. 
-It also makes predictions for test cases if X_ts are provided." />
+<meta property="og:description" content="This function trains linear logistic regression models with HMC in restricted Gibbs sampling." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -100,23 +99,21 @@ It also makes predictions for test cases if X_ts are provided." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Fitting HTLR Models and Making Predictions</h1>
+    <h1>Fit a HTLR Model</h1>
     <small class="dont-index">Source: <a href='https://github.com/longhaiSK/HTLR/blob/master/R/htlr.R'><code>R/htlr.R</code></a></small>
     <div class="hidden name"><code>htlr.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>This function trains linear logistic regression models with HMC in restricted Gibbs sampling. 
-It also makes predictions for test cases if <code>X_ts</code> are provided.</p>
+    <p>This function trains linear logistic regression models with HMC in restricted Gibbs sampling.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>htlr</span>(<span class='no'>X</span>, <span class='no'>y</span>, <span class='kw'>fsel</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>ncol</a></span>(<span class='no'>x</span>), <span class='kw'>stdzx</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>prior</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"t"</span>, <span class='st'>"neg"</span>,
-  <span class='st'>"ghs"</span>), <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>2000</span>, <span class='kw'>warmup</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Round'>floor</a></span>(<span class='no'>iter</span>/<span class='fl'>2</span>), <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>init</span> <span class='kw'>=</span> <span class='st'>"lasso"</span>, <span class='kw'>leap</span> <span class='kw'>=</span> <span class='fl'>50</span>, <span class='kw'>leap.warm</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Round'>floor</a></span>(<span class='no'>iter</span>/<span class='fl'>10</span>),
-  <span class='kw'>leap.size</span> <span class='kw'>=</span> <span class='fl'>0.3</span>, <span class='kw'>sgmcut</span> <span class='kw'>=</span> <span class='fl'>0.05</span>, <span class='kw'>sigmab0</span> <span class='kw'>=</span> <span class='fl'>2000</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>s</span> <span class='kw'>=</span> -<span class='fl'>10</span>, <span class='kw'>eta</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>.legacy</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>htlr</span>(<span class='no'>X</span>, <span class='no'>y</span>, <span class='kw'>fsel</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>ncol</a></span>(<span class='no'>X</span>), <span class='kw'>stdzx</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>prior</span> <span class='kw'>=</span> <span class='st'>"t"</span>,
+  <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>2000</span>, <span class='kw'>warmup</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Round'>floor</a></span>(<span class='no'>iter</span>/<span class='fl'>2</span>), <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>init</span> <span class='kw'>=</span> <span class='st'>"lasso"</span>,
+  <span class='kw'>leap</span> <span class='kw'>=</span> <span class='fl'>50</span>, <span class='kw'>leap.warm</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Round'>floor</a></span>(<span class='no'>leap</span>/<span class='fl'>10</span>), <span class='kw'>leap.step</span> <span class='kw'>=</span> <span class='fl'>0.3</span>,
+  <span class='kw'>cut</span> <span class='kw'>=</span> <span class='fl'>0.05</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>pre.legacy</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -137,7 +134,13 @@ Must be coded as non-negative integers, e.g., 1,2,&#8230;,C for C classes.</p></
     </tr>
     <tr>
       <th>stdzx</th>
-      <td><p>If TRUE, the original features values are standardized to have mean = 0 and sd = 1.</p></td>
+      <td><p>Logical; if <code>TRUE</code>, the original feature values are standardized to have <code>mean</code> = 0 
+and <code>sd</code> = 1.</p></td>
+    </tr>
+    <tr>
+      <th>prior</th>
+      <td><p>The prior to be applied to the model. Either "t" (default), "ghs" (horseshoe), 
+or "neg" (normal-exponential-gamma).</p></td>
     </tr>
     <tr>
       <th>iter</th>
@@ -158,10 +161,39 @@ The number of warmup iterations should not be larger than iter and the default i
 or a gived parameter vector, or a previous markov chain results.</p></td>
     </tr>
     <tr>
+      <th>leap</th>
+      <td><p>The length of leapfrog trajectory in sampling phase.</p></td>
+    </tr>
+    <tr>
+      <th>leap.warm</th>
+      <td><p>The length of leapfrog trajectory in burnin phase.</p></td>
+    </tr>
+    <tr>
+      <th>leap.step</th>
+      <td><p>The stepsize adjustment multiplied to the second-order partial derivatives of log posterior.</p></td>
+    </tr>
+    <tr>
+      <th>cut</th>
+      <td><p>The coefficients smaller than this criteria will be fixed in each HMC updating step.</p></td>
+    </tr>
+    <tr>
+      <th>alpha</th>
+      <td><p>The degree freedom of t/ghs/neg prior for coefficients.</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>Logical; setting it to <code>TRUE</code> for tracking MCMC sampling iterations.</p></td>
+    </tr>
+    <tr>
+      <th>pre.legacy</th>
+      <td><p>Logical; if <code>TRUE</code>, the output produced in <code>HTLR</code> versions up to 
+legacy-3.1-1 is reproduced.</p></td>
+    </tr>
+    <tr>
       <th>...</th>
       <td><p>Other optional parameters:</p><ul>
-<li><p>alpha.rda - A user supplied alpha value for <code>bcbcsf_deltas</code>. The default is 0.2.</p></li>
-<li><p>lasso.lambda - A user supplied lambda value for <code>lasso_deltas</code>. The default is 0.01.
+<li><p>alpha.rda - A user supplied alpha value for <code>bcbcsf_deltas</code>. Default: 0.2.</p></li>
+<li><p>lasso.lambda - A user supplied lambda value for <code>lasso_deltas</code>. Default: 0.01.
   Will be ignored if .legacy is set to TRUE.</p></li>
 </ul></td>
     </tr>

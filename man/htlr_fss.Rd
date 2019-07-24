@@ -11,12 +11,9 @@ htlr_fss(fithtlr, threshold = NULL, mfreq = NULL, print = TRUE)
 }
 \value{
 \itemize{
-  \item ftab - The fitting results of \code{htlr_fitpred} are a mixture of subpools (posterior modes) of 
-  Markov chain samples for different feature subsets. \code{htlr_fss} divides the Markov chain samples into 
-  different subpools associated with different feature subsets (posterior modes). The rows of \code{ftab} 
-  are different feature subsets, with the 1st column showing the indices of feature subset, 
-  the 2nd column showing the relative frequency of Markov chain iterations in the subpool, 
-  and the 3rd column showing the coefficients estimated by median with the subpool.
+  \item ftab - The rows of \code{ftab} are different feature subsets, with the 1st column showing 
+  the indices of feature subset, the 2nd column showing the relative frequency of Markov chain 
+  iterations in the subpool, and the 3rd column showing the coefficients estimated by median with the subpool.
   \item mcids - A list of vectors containing the indices of Markov chain iterations associated with 
   different feature subsets.
   \item wsdbs - Weighted average of sdbs in all feature subsets found. 
@@ -27,6 +24,11 @@ htlr_fss(fithtlr, threshold = NULL, mfreq = NULL, print = TRUE)
 \description{
 This function divides all of the Markov chain samples into a certain number of subpools, 
 each representing a feature subset.
+}
+\details{
+The fitting results of \code{htlr_fitpred} are a mixture of subpools (posterior modes) of 
+Markov chain samples for different feature subsets. \code{htlr_fss} divides the Markov chain samples into 
+different subpools associated with different feature subsets (posterior modes).
 }
 \seealso{
 htlr_fitpred

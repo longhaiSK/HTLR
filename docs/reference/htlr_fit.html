@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Fitting HTLR Models and Making Predictions — htlr_fit • HTLR</title>
+<title>Fit a HTLR models and make predictions — htlr_fit • HTLR</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,7 +30,7 @@
 
 
 
-<meta property="og:title" content="Fitting HTLR Models and Making Predictions — htlr_fit" />
+<meta property="og:title" content="Fit a HTLR models and make predictions — htlr_fit" />
 
 <meta property="og:description" content="This function trains linear logistic regression models with HMC in restricted Gibbs sampling. 
 It also makes predictions for test cases if X_ts are provided." />
@@ -100,7 +100,7 @@ It also makes predictions for test cases if X_ts are provided." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Fitting HTLR Models and Making Predictions</h1>
+    <h1>Fit a HTLR models and make predictions</h1>
     <small class="dont-index">Source: <a href='https://github.com/longhaiSK/HTLR/blob/master/R/bplrhmc.r'><code>R/bplrhmc.r</code></a></small>
     <div class="hidden name"><code>htlr_fit.Rd</code></div>
     </div>
@@ -117,7 +117,7 @@ It also makes predictions for test cases if <code>X_ts</code> are provided.</p>
   <span class='kw'>iters_h</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>iters_rmc</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>leap_L</span> <span class='kw'>=</span> <span class='fl'>50</span>,
   <span class='kw'>leap_L_h</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>leap_step</span> <span class='kw'>=</span> <span class='fl'>0.3</span>, <span class='kw'>hmc_sgmcut</span> <span class='kw'>=</span> <span class='fl'>0.05</span>,
   <span class='kw'>initial_state</span> <span class='kw'>=</span> <span class='st'>"lasso"</span>, <span class='kw'>alpha.rda</span> <span class='kw'>=</span> <span class='fl'>0.2</span>, <span class='kw'>silence</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>.legacy</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>predburn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>predthin</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
+  <span class='kw'>pre.legacy</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>predburn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>predthin</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -138,7 +138,30 @@ rows should be for the cases, and columns for different features.</p></td>
     </tr>
     <tr>
       <th>stdzx</th>
-      <td><p>If TRUE, the original features values are standardized to have mean = 0 and sd = 1.</p></td>
+      <td><p>Logical; if <code>TRUE</code>, the original feature values are standardized to have <code>mean</code> = 0 
+and <code>sd</code> = 1.</p></td>
+    </tr>
+    <tr>
+      <th>sigmab0</th>
+      <td><p>The <code>sd</code> of the normal prior for the intercept.</p></td>
+    </tr>
+    <tr>
+      <th>ptype</th>
+      <td><p>The prior to be applied to the model. Either "t" (default), "ghs" (horseshoe), 
+or "neg" (normal-exponential-gamma).</p></td>
+    </tr>
+    <tr>
+      <th>alpha</th>
+      <td><p>The degree freedom of t/ghs/neg prior for coefficients.</p></td>
+    </tr>
+    <tr>
+      <th>s</th>
+      <td><p>The log scale of priors (logw) for coefficients.</p></td>
+    </tr>
+    <tr>
+      <th>eta</th>
+      <td><p>The <code>sd</code> of the normal prior for logw. When it is set to 0, logw is fixed. 
+Otherwise, logw is assigned with a normal prior and it will be updated during sampling.</p></td>
     </tr>
     <tr>
       <th>iters_rmc</th>
@@ -149,9 +172,38 @@ rows should be for the cases, and columns for different features.</p></td>
       <td><p>A positive integer specifying the period for saving samples.</p></td>
     </tr>
     <tr>
+      <th>leap_L</th>
+      <td><p>The length of leapfrog trajectory in sampling phase.</p></td>
+    </tr>
+    <tr>
+      <th>leap_L_h</th>
+      <td><p>The length of leapfrog trajectory in burnin phase.</p></td>
+    </tr>
+    <tr>
+      <th>leap_step</th>
+      <td><p>The stepsize adjustment multiplied to the second-order partial derivatives of log posterior.</p></td>
+    </tr>
+    <tr>
+      <th>hmc_sgmcut</th>
+      <td><p>The coefficients smaller than this criteria will be fixed in each HMC updating step.</p></td>
+    </tr>
+    <tr>
       <th>initial_state</th>
       <td><p>The initial state of Markov Chain; can be NULL, 
 or a gived parameter vector, or a previous markov chain results.</p></td>
+    </tr>
+    <tr>
+      <th>alpha.rda</th>
+      <td><p>A user supplied alpha value for <code>bcbcsf_deltas</code>. The default is 0.2.</p></td>
+    </tr>
+    <tr>
+      <th>silence</th>
+      <td><p>Setting it to <code>FALSE</code> for tracking MCMC sampling iterations.</p></td>
+    </tr>
+    <tr>
+      <th>pre.legacy</th>
+      <td><p>Logical; if <code>TRUE</code>, the output produced in <code>HTLR</code> versions up to 
+legacy-3.1-1 is reproduced.</p></td>
     </tr>
     <tr>
       <th>iter_h</th>
@@ -168,6 +220,10 @@ or a gived parameter vector, or a previous markov chain results.</p></td>
     <p>Longhai Li and Weixin Yao. (2018). Fully Bayesian Logistic Regression 
 with Hyper-Lasso Priors for High-dimensional Feature Selection.
 <em>Journal of Statistical Computation and Simulation</em> 2018, 88:14, 2827-2851.</p>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p>htlr</p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -197,6 +253,8 @@ with Hyper-Lasso Priors for High-dimensional Feature Selection.
       <li><a href="#value">Value</a></li>
 
       <li><a href="#references">References</a></li>
+
+      <li><a href="#see-also">See also</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

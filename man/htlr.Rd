@@ -4,11 +4,10 @@
 \alias{htlr}
 \title{Fit a HTLR Model}
 \usage{
-htlr(X, y, fsel = 1:ncol(x), stdzx = TRUE, prior = c("t", "neg",
-  "ghs"), iter = 2000, warmup = floor(iter/2), thin = 1,
-  init = "lasso", leap = 50, leap.warm = floor(iter/10),
-  leap.step = 0.3, sgmcut = 0.05, alpha = 1, logw = -10, eta = 0,
-  sigmab0 = 2000, verbose = FALSE, pre.legacy = FALSE, ...)
+htlr(X, y, fsel = 1:ncol(X), stdzx = TRUE, prior = "t",
+  iter = 2000, warmup = floor(iter/2), thin = 1, init = "lasso",
+  leap = 50, leap.warm = floor(leap/10), leap.step = 0.3,
+  cut = 0.05, alpha = 1, verbose = FALSE, pre.legacy = FALSE, ...)
 }
 \arguments{
 \item{X}{Design matrix of traning data; 
@@ -41,14 +40,9 @@ or a gived parameter vector, or a previous markov chain results.}
 
 \item{leap.step}{The stepsize adjustment multiplied to the second-order partial derivatives of log posterior.}
 
+\item{cut}{The coefficients smaller than this criteria will be fixed in each HMC updating step.}
+
 \item{alpha}{The degree freedom of t/ghs/neg prior for coefficients.}
-
-\item{logw}{The log scale of priors for coefficients.}
-
-\item{eta}{The \code{sd} of the normal prior for logw. When it is set to 0, logw is fixed. 
-Otherwise, logw is assigned with a normal prior and it will be updated during sampling.}
-
-\item{sigmab0}{The \code{sd} of the normal prior for the intercept.}
 
 \item{verbose}{Logical; setting it to \code{TRUE} for tracking MCMC sampling iterations.}
 
@@ -61,8 +55,6 @@ legacy-3.1-1 is reproduced.}
   \item lasso.lambda - A user supplied lambda value for \code{lasso_deltas}. Default: 0.01.
   Will be ignored if .legacy is set to TRUE. 
 }}
-
-\item{cut}{The coefficients smaller than this criteria will be fixed in each HMC updating step.}
 }
 \value{
 A list of fitting results.
@@ -74,4 +66,7 @@ This function trains linear logistic regression models with HMC in restricted Gi
 Longhai Li and Weixin Yao. (2018). Fully Bayesian Logistic Regression 
 with Hyper-Lasso Priors for High-dimensional Feature Selection.
 \emph{Journal of Statistical Computation and Simulation} 2018, 88:14, 2827-2851.
+}
+\seealso{
+config_prior
 }
