@@ -26,6 +26,7 @@ double log_sum_exp(const arma::vec &a)
   return log(accu(arma::exp(a - m))) + m;
 }
 
+// [[Rcpp::export]]
 arma::vec log_sum_exp(const arma::mat &A)
 {
   arma::colvec m = arma::max(A, 1);
