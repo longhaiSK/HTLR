@@ -9,7 +9,7 @@ htlr_fit(y_tr, X_tr, X_ts = NULL, fsel = 1:ncol(X_tr), stdzx = TRUE,
   iters_h = 1000, iters_rmc = 1000, thin = 1, leap_L = 50,
   leap_L_h = 5, leap_step = 0.3, hmc_sgmcut = 0.05,
   initial_state = "lasso", alpha.rda = 0.2, silence = TRUE,
-  pre.legacy = TRUE, predburn = NULL, predthin = 1)
+  pre.legacy = TRUE, predburn = NULL, predthin = 1, ...)
 }
 \arguments{
 \item{y_tr}{Vector of class labels in training or test data set. 
@@ -25,7 +25,7 @@ and \code{sd} = 1.}
 
 \item{sigmab0}{The \code{sd} of the normal prior for the intercept.}
 
-\item{ptype}{The prior to be applied to the model. Either "t" (default), "ghs" (horseshoe), 
+\item{ptype}{The prior to be applied to the model. Either "t" (student-t, default), "ghs" (horseshoe), 
 or "neg" (normal-exponential-gamma).}
 
 \item{alpha}{The degree freedom of t/ghs/neg prior for coefficients.}
@@ -50,12 +50,17 @@ Otherwise, logw is assigned with a normal prior and it will be updated during sa
 \item{initial_state}{The initial state of Markov Chain; can be NULL, 
 or a gived parameter vector, or a previous markov chain results.}
 
-\item{alpha.rda}{A user supplied alpha value for \code{bcbcsf_deltas}. The default is 0.2.}
-
 \item{silence}{Setting it to \code{FALSE} for tracking MCMC sampling iterations.}
 
 \item{pre.legacy}{Logical; if \code{TRUE}, the output produced in \code{HTLR} versions up to 
 legacy-3.1-1 is reproduced.}
+
+\item{...}{Other optional parameters:
+\itemize{
+  \item alpha.rda - A user supplied alpha value for \code{bcbcsf_deltas}. Default: 0.2.
+  \item lasso.lambda - A user supplied lambda sequence for \code{lasso_deltas}. 
+  Default: {.01, .02, \ldots, .05}. Will be ignored if .legacy is set to TRUE.
+}}
 
 \item{iter_h}{A positive integer specifying the number of warmup (aka burnin).}
 }

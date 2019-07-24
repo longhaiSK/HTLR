@@ -33,11 +33,16 @@
 #' 
 #' @param hmc_sgmcut The coefficients smaller than this criteria will be fixed in each HMC updating step.
 #' 
-#' @param alpha.rda A user supplied alpha value for \code{bcbcsf_deltas}. The default is 0.2.
-#' 
 #' @param silence Setting it to \code{FALSE} for tracking MCMC sampling iterations. 
 #' @param pre.legacy Logical; if \code{TRUE}, the output produced in \code{HTLR} versions up to 
 #' legacy-3.1-1 is reproduced. 
+#' 
+#' @param ... Other optional parameters:
+#' \itemize{
+#'   \item alpha.rda - A user supplied alpha value for \code{bcbcsf_deltas}. Default: 0.2.
+#'   \item lasso.lambda - A user supplied lambda sequence for \code{lasso_deltas}. 
+#'   Default: \{.01, .02, \ldots, .05\}. Will be ignored if .legacy is set to TRUE.
+#' } 
 #' 
 #' @return A list of fitting results.  
 #' 
@@ -77,7 +82,7 @@ htlr_fit <- function (
     iters_h = 1000, iters_rmc = 1000, thin = 1,  ## mc iterations
     leap_L = 50, leap_L_h = 5, leap_step = 0.3,  hmc_sgmcut = 0.05, ## hmc
     initial_state = "lasso", alpha.rda = 0.2, silence = TRUE, pre.legacy = TRUE, ## initial state
-    predburn = NULL, predthin = 1) ## prediction
+    predburn = NULL, predthin = 1, ...) ## prediction
 {
   .Deprecated("htlr")
   
@@ -138,11 +143,18 @@ htlr_fit <- function (
   else if (initial_state == "lasso")
   {
     lambda <- ifelse(pre.legacy, NA, .01)
-    deltas <- lasso_deltas(X = X, y = y_tr, lambda)
+    if (pre.legacy) 
+      lasso.lambda <- NULL # will be chosen by CV
+    else if (!exists("lasso.lambda"))
+      lasso.lambda <- seq(.05, .01, by = -.01)
+    # else lambda is supplied via optional arg
+    deltas <- lasso_deltas(X = X, y = y_tr, lasso.lambda, !silence)
     logw <- s
   }
   else if (initial_state == "bcbcsfrda")
   {
+    if (!exists("alpha.rda"))
+      alpha.rda <- .2
     deltas <- bcbcsf_deltas(X, y_tr, alpha = alpha.rda)
     logw <- s
   }
@@ -183,7 +195,7 @@ htlr_fit <- function (
   fit$prior <- config_prior(ptype, alpha, s, eta, sigmab0)
   
   # add data preprocessing information
-  fit$feature <- list("fsel" = fsel, "nuj" = nuj, "sdj" = sdj, "y" = y)
+  fit$feature <- list("fsel" = fsel, "nuj" = nuj, "sdj" = sdj, "y" = y_tr)
   
   # register S3
   attr(fit, "class") <- "htlrfit"

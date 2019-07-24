@@ -21,7 +21,7 @@ Must be coded as non-negative integers, e.g., 1,2,\ldots,C for C classes.}
 \item{stdzx}{Logical; if \code{TRUE}, the original feature values are standardized to have \code{mean} = 0 
 and \code{sd} = 1.}
 
-\item{prior}{The prior to be applied to the model. Either "t" (default), "ghs" (horseshoe), 
+\item{prior}{The prior to be applied to the model. Either "t" (student-t, default), "ghs" (horseshoe), 
 or "neg" (normal-exponential-gamma).}
 
 \item{iter}{A positive integer specifying the number of iterations (including warmup).}
@@ -52,8 +52,8 @@ legacy-3.1-1 is reproduced.}
 \item{...}{Other optional parameters:
 \itemize{
   \item alpha.rda - A user supplied alpha value for \code{bcbcsf_deltas}. Default: 0.2.
-  \item lasso.lambda - A user supplied lambda value for \code{lasso_deltas}. Default: 0.01.
-  Will be ignored if .legacy is set to TRUE. 
+  \item lasso.lambda - A user supplied lambda sequence for \code{lasso_deltas}. 
+  Default: \{.01, .02, \ldots, .05\}. Will be ignored if .legacy is set to TRUE. 
 }}
 }
 \value{

@@ -139,7 +139,7 @@ and <code>sd</code> = 1.</p></td>
     </tr>
     <tr>
       <th>prior</th>
-      <td><p>The prior to be applied to the model. Either "t" (default), "ghs" (horseshoe), 
+      <td><p>The prior to be applied to the model. Either "t" (student-t, default), "ghs" (horseshoe), 
 or "neg" (normal-exponential-gamma).</p></td>
     </tr>
     <tr>
@@ -193,8 +193,8 @@ legacy-3.1-1 is reproduced.</p></td>
       <th>...</th>
       <td><p>Other optional parameters:</p><ul>
 <li><p>alpha.rda - A user supplied alpha value for <code>bcbcsf_deltas</code>. Default: 0.2.</p></li>
-<li><p>lasso.lambda - A user supplied lambda value for <code>lasso_deltas</code>. Default: 0.01.
-  Will be ignored if .legacy is set to TRUE.</p></li>
+<li><p>lasso.lambda - A user supplied lambda sequence for <code>lasso_deltas</code>. 
+  Default: {.01, .02, &#8230;, .05}. Will be ignored if .legacy is set to TRUE.</p></li>
 </ul></td>
     </tr>
     </table>
@@ -209,6 +209,10 @@ legacy-3.1-1 is reproduced.</p></td>
 with Hyper-Lasso Priors for High-dimensional Feature Selection.
 <em>Journal of Statistical Computation and Simulation</em> 2018, 88:14, 2827-2851.</p>
     
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p>config_prior</p></div>
+    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -219,6 +223,8 @@ with Hyper-Lasso Priors for High-dimensional Feature Selection.
       <li><a href="#value">Value</a></li>
 
       <li><a href="#references">References</a></li>
+
+      <li><a href="#see-also">See also</a></li>
           </ul>
 
   </div>

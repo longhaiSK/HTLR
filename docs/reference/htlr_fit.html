@@ -117,7 +117,7 @@ It also makes predictions for test cases if <code>X_ts</code> are provided.</p>
   <span class='kw'>iters_h</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>iters_rmc</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>leap_L</span> <span class='kw'>=</span> <span class='fl'>50</span>,
   <span class='kw'>leap_L_h</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>leap_step</span> <span class='kw'>=</span> <span class='fl'>0.3</span>, <span class='kw'>hmc_sgmcut</span> <span class='kw'>=</span> <span class='fl'>0.05</span>,
   <span class='kw'>initial_state</span> <span class='kw'>=</span> <span class='st'>"lasso"</span>, <span class='kw'>alpha.rda</span> <span class='kw'>=</span> <span class='fl'>0.2</span>, <span class='kw'>silence</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>pre.legacy</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>predburn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>predthin</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
+  <span class='kw'>pre.legacy</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>predburn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>predthin</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -147,7 +147,7 @@ and <code>sd</code> = 1.</p></td>
     </tr>
     <tr>
       <th>ptype</th>
-      <td><p>The prior to be applied to the model. Either "t" (default), "ghs" (horseshoe), 
+      <td><p>The prior to be applied to the model. Either "t" (student-t, default), "ghs" (horseshoe), 
 or "neg" (normal-exponential-gamma).</p></td>
     </tr>
     <tr>
@@ -193,10 +193,6 @@ Otherwise, logw is assigned with a normal prior and it will be updated during sa
 or a gived parameter vector, or a previous markov chain results.</p></td>
     </tr>
     <tr>
-      <th>alpha.rda</th>
-      <td><p>A user supplied alpha value for <code>bcbcsf_deltas</code>. The default is 0.2.</p></td>
-    </tr>
-    <tr>
       <th>silence</th>
       <td><p>Setting it to <code>FALSE</code> for tracking MCMC sampling iterations.</p></td>
     </tr>
@@ -204,6 +200,14 @@ or a gived parameter vector, or a previous markov chain results.</p></td>
       <th>pre.legacy</th>
       <td><p>Logical; if <code>TRUE</code>, the output produced in <code>HTLR</code> versions up to 
 legacy-3.1-1 is reproduced.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Other optional parameters:</p><ul>
+<li><p>alpha.rda - A user supplied alpha value for <code>bcbcsf_deltas</code>. Default: 0.2.</p></li>
+<li><p>lasso.lambda - A user supplied lambda sequence for <code>lasso_deltas</code>. 
+  Default: .01, .02, &#8230;, .05. Will be ignored if .legacy is set to TRUE.</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>iter_h</th>

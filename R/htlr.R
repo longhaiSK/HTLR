@@ -40,8 +40,8 @@
 #' @param ... Other optional parameters:
 #' \itemize{
 #'   \item alpha.rda - A user supplied alpha value for \code{bcbcsf_deltas}. Default: 0.2.
-#'   \item lasso.lambda - A user supplied lambda value for \code{lasso_deltas}. Default: 0.01.
-#'   Will be ignored if .legacy is set to TRUE. 
+#'   \item lasso.lambda - A user supplied lambda sequence for \code{lasso_deltas}. 
+#'   Default: \{.01, .02, \ldots, .05\}. Will be ignored if .legacy is set to TRUE. 
 #' } 
 #' 
 #' @return A list of fitting results.  
@@ -159,11 +159,11 @@ htlr <-
     else if (init == "lasso")
     {
       if (pre.legacy) 
-        lasso.lambda <- NA # will be chosen by CV
+        lasso.lambda <- NULL # will be chosen by CV
       else if (!exists("lasso.lambda"))
-        lasso.lambda <- .01
+        lasso.lambda <- seq(.05, .01, by = -.01)
       # else lambda is supplied via optional arg
-      deltas <- lasso_deltas(X, y, lasso.lambda)
+      deltas <- lasso_deltas(X, y, lasso.lambda, verbose)
     }
     else if (init == "bcbc")
     {
