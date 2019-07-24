@@ -1,5 +1,6 @@
 #ifndef GIBBS_H
 #define GIBBS_H 
+//#define ARMA_NO_DEBUG
 
 #include "RcppArmadillo.h"
 #include "utils.h"
@@ -15,7 +16,7 @@ class Fit
 
   // prior
   std::string ptype_; 
-  const double alpha_, s_, eta_, sigmab0_;
+  const double alpha_, s_, eta_;
 
   // sampling
   const int iters_rmc_, iters_h_, thin_, leap_L_, leap_L_h_; 
@@ -83,7 +84,7 @@ class Fit
 
   Fit(int p, int K, int n,
       arma::mat &X, arma::mat &ymat, arma::uvec &ybase,
-      std::string ptype, double alpha, double s, double eta, double sigmab0,
+      std::string ptype, double alpha, double s, double eta,
       int iters_rmc, int iters_h, int thin, 
       int leap_L, int leap_L_h, double leap_step,
       double hmc_sgmcut, arma::vec &DDNloglike,

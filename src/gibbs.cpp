@@ -3,14 +3,14 @@
 
 Fit::Fit(int p, int K, int n,
          arma::mat &X, arma::mat &ymat, arma::uvec &ybase,
-         std::string ptype, double alpha, double s, double eta, double sigmab0,
+         std::string ptype, double alpha, double s, double eta,
          int iters_rmc, int iters_h, int thin,
          int leap_L, int leap_L_h, double leap_step,
          double hmc_sgmcut, arma::vec &DDNloglike_,
          arma::mat &deltas, double logw, arma::vec &sigmasbt,
          int silence, bool legacy)
     : p_(p), K_(K), C_(K + 1), n_(n), X_(X), ymat_(ymat), ybase_(ybase),
-      ptype_(ptype), alpha_(alpha), s_(s), eta_(eta), sigmab0_(sigmab0),
+      ptype_(ptype), alpha_(alpha), s_(s), eta_(eta),
       iters_rmc_(iters_rmc), iters_h_(iters_h), thin_(thin),
       leap_L_(leap_L), leap_L_h_(leap_L_h), leap_step_(leap_step),
       DDNloglike_(DDNloglike_), silence_(silence), 
@@ -129,13 +129,6 @@ void Fit::StartSampling()
 
 Rcpp::List Fit::OutputR()
 {
-  auto prior_param = Rcpp::List::create(
-      Rcpp::Named("ptype") = ptype_,
-      Rcpp::Named("alpha") = alpha_,
-      Rcpp::Named("logw") = s_,
-      Rcpp::Named("eta") = eta_,
-      Rcpp::Named("sigmab0") = sigmab0_);
-
   auto mc_param = Rcpp::List::create(
       Rcpp::Named("iter.rmc") = iters_rmc_,
       Rcpp::Named("iter.warm") = iters_h_,
@@ -150,7 +143,6 @@ Rcpp::List Fit::OutputR()
       Rcpp::Named("p") = p_,
       Rcpp::Named("n") = n_,
       Rcpp::Named("K") = K_,
-      Rcpp::Named("prior") = prior_param,
       Rcpp::Named("mc.param") = mc_param,
       Rcpp::Named("mcdeltas") = mc_deltas_,
       Rcpp::Named("mclogw") = mc_logw_,
