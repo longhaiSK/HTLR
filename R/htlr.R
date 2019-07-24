@@ -27,14 +27,10 @@
 #' @param init The initial state of Markov Chain; can be NULL, 
 #' or a gived parameter vector, or a previous markov chain results.
 #' 
-#' @param prior The prior to be applied to the model. Either "t" (default), "ghs" (horseshoe), 
+#' @param prior The prior to be applied to the model. Either "t" (student-t, default), "ghs" (horseshoe), 
 #' or "neg" (normal-exponential-gamma).
 #' 
-#' @param sigmab0 The \code{sd} of the normal prior for the intercept.
 #' @param alpha The degree freedom of t/ghs/neg prior for coefficients.
-#' @param logw The log scale of priors for coefficients.
-#' @param eta The \code{sd} of the normal prior for logw. When it is set to 0, logw is fixed. 
-#' Otherwise, logw is assigned with a normal prior and it will be updated during sampling.  
 #' 
 #' @param verbose Logical; setting it to \code{TRUE} for tracking MCMC sampling iterations.
 #' 
@@ -61,11 +57,12 @@
 #' 
 #' @export
 #' 
+#' @seealso config_prior
 htlr <-
   function (X, y,
             fsel = 1:ncol(X),
             stdzx = TRUE,
-            prior = c("t", "neg", "ghs"),
+            prior = "t",
             iter = 2000,
             warmup = floor(iter/2), 
             thin = 1,
@@ -74,20 +71,13 @@ htlr <-
             leap.warm = floor(leap/10),
             leap.step = 0.3,
             cut = 0.05,
-            #prior.param = list(),
             alpha = 1,
-            logw = -10,
-            eta = 0,
-            sigmab0 = 2000,
             verbose = FALSE,
             pre.legacy = FALSE,
             ...
   )
 {
   #------------------------------- Input Checking -------------------------------#
-    
-  stopifnot(iter > warmup, warmup > 0, thin > 0, leap > 0, leap.warm > 0,
-            alpha > 0)
   
   if (length (y) != nrow (X) ) 
     stop ("'y' and 'X' mismatch")
@@ -98,7 +88,19 @@ htlr <-
   if (any(yfreq < 2)) 
     stop("less than 2 cases in some group")
   
-  prior <- match.arg(prior)
+  if (is.character(prior))
+  {
+    prior <- config_prior(prior, alpha)
+  }
+  
+  ptype <- prior$ptype
+  alpha <- prior$alpha
+  logw <- prior$logw
+  eta <- prior$eta
+  sigmab0 <- prior$sigmab0
+  
+  stopifnot(iter > warmup, warmup > 0, thin > 0, leap > 0, leap.warm > 0,
+            alpha > 0, eta >= 0, sigmab0 >= 0)
   
   #----------------------------- Data preprocessing -----------------------------#
   
@@ -181,14 +183,14 @@ htlr <-
   
   #-------------------------- Do Gibbs sampling --------------------------#
   
-  fit <- HtlrFit(
+  fit <- HtlrFitHelper(
     ## data
     p = p, K = K, n = n,
     X = as.matrix(X.addint), 
     ymat = as.matrix(ymat), 
     ybase = as.vector(ybase),
     ## prior
-    ptype = prior, alpha = alpha, s = logw, eta = eta, sigmab0 = sigmab0,
+    ptype = ptype, alpha = alpha, s = logw, eta = eta,
     ## sampling
     iters_rmc = (iter - warmup), iters_h = warmup, thin = thin, 
     leap_L = leap, leap_L_h = leap.warm, leap_step = leap.step, 
@@ -198,8 +200,13 @@ htlr <-
     ## other control
     silence = as.integer(!verbose), legacy = pre.legacy)
   
-  # adding data preprocessing information
-  fit <- c(fit, list(fsel = fsel, nuj = nuj, sdj = sdj, y = y))
-  attr(fit, "class") <- "htlr"
-  fit
+  # add prior hyperparameter information
+  fit$prior <- prior
+  
+  # add data preprocessing information
+  fit$feature <- list("fsel" = fsel, "nuj" = nuj, "sdj" = sdj, "y" = y)
+  
+  # register S3
+  attr(fit, "class") <- "htlrfit"
+  return(fit)
 }
