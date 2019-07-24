@@ -13,7 +13,7 @@ htlr_gendata <- function (n, p, NC = 3, nu = 2, w = 1, X = NULL, betas = NULL )
   }
   deltas <- betas[,-1, drop = FALSE] - betas[,1]  
   lv <- cbind(1,X) %*% betas
-  probs <- exp (lv - apply (lv, 1, log_sum_exp) )
+  probs <- exp (lv - as.vector(log_sum_exp(lv)))
 
   y <- apply (probs, 1, function (prob) sample (1:NC, 1, TRUE, prob))
 

@@ -57,13 +57,6 @@ htlr_map <- function (fithtlr, usedmc = NULL, tol = 1e-2, debug = FALSE)
     fithtlr_mode
 }
 
-
-
-log_normcons <- function (lv)
-{
-    sum (apply (cbind(0,lv), 1, log_sum_exp))
-}
-
 ## y_tr is coded by 0, ..., K (=C-1)
 ## X_addint must be a matrix with rows for cases, columns for variables
 optim_logit <- function (deltas, X_addint, y_tr, alpha, s, sigmab0, tol = 1e-2,
@@ -101,8 +94,8 @@ optim_logit <- function (deltas, X_addint, y_tr, alpha, s, sigmab0, tol = 1e-2,
        }
        if (length (j_vars) > 0) 
        {
-           logprior <- logprior -  (alpha + K ) / 2 * sum (
-             apply( cbind(log_aw, log(vardeltas[j_vars])), 1, log_sum_exp ) ) 
+           logprior <- logprior -  (alpha + K ) / 2 * 
+             sum (log_sum_exp(cbind(log_aw, log(vardeltas[j_vars])))) 
        }
        ## return negative log posterior
        - (loglike + logprior)
@@ -157,16 +150,17 @@ optim_logit <- function (deltas, X_addint, y_tr, alpha, s, sigmab0, tol = 1e-2,
 #' This function divides all of the Markov chain samples into a certain number of subpools, 
 #' each representing a feature subset.
 #' 
+#' The fitting results of \code{htlr_fitpred} are a mixture of subpools (posterior modes) of 
+#' Markov chain samples for different feature subsets. \code{htlr_fss} divides the Markov chain samples into 
+#' different subpools associated with different feature subsets (posterior modes).
+#' 
 #' @param fithtlr A list containing fitting results by \code{htlr_fitpred}.
 #' 
 #' @return 
 #' \itemize{
-#'   \item ftab - The fitting results of \code{htlr_fitpred} are a mixture of subpools (posterior modes) of 
-#'   Markov chain samples for different feature subsets. \code{htlr_fss} divides the Markov chain samples into 
-#'   different subpools associated with different feature subsets (posterior modes). The rows of \code{ftab} 
-#'   are different feature subsets, with the 1st column showing the indices of feature subset, 
-#'   the 2nd column showing the relative frequency of Markov chain iterations in the subpool, 
-#'   and the 3rd column showing the coefficients estimated by median with the subpool.
+#'   \item ftab - The rows of \code{ftab} are different feature subsets, with the 1st column showing 
+#'   the indices of feature subset, the 2nd column showing the relative frequency of Markov chain 
+#'   iterations in the subpool, and the 3rd column showing the coefficients estimated by median with the subpool.
 #'   \item mcids - A list of vectors containing the indices of Markov chain iterations associated with 
 #'   different feature subsets.
 #'   \item wsdbs - Weighted average of sdbs in all feature subsets found. 
