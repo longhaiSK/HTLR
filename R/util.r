@@ -1,6 +1,47 @@
-
-########################### utility functions ###############################
-
+#' Generate prior configuration
+#' 
+#' Configure prior hyper-parameters for HTLR model fitting
+#' 
+#' The output is a configuration list which is to be passed to \code{prior} argument of \code{htlr}.     
+#' For naive users, you only need to specify the prior type and degree freedom, then the other hyper-parameters
+#' will be chosen automatically. For advanced users, you can supply each prior hyper-parameters by yourself.
+#' For suggestion of picking hyper-parameters, see \code{references}.  
+#'
+#' @param ptype The prior to be applied to the model. Either "t" (student-t, default), "ghs" (horseshoe), 
+#' or "neg" (normal-exponential-gamma).
+#' @param df The degree freedom (aka alpha) of t/ghs/neg prior for coefficients.
+#' @param logw The log scale of priors for coefficients.
+#' @param eta The \code{sd} of the normal prior for logw. When it is set to 0, logw is fixed. 
+#' Otherwise, logw is assigned with a normal prior and it will be updated during sampling.
+#' @param sigmab0 The \code{sd} of the normal prior for the intercept.
+#' 
+#' @return A configuration list containing \code{ptype}, \code{alpha}, \code{logw}, \code{eta}, and \code{sigmab0}.    
+#' 
+#' @references
+#' Longhai Li and Weixin Yao. (2018). Fully Bayesian Logistic Regression 
+#' with Hyper-Lasso Priors for High-dimensional Feature Selection.
+#' \emph{Journal of Statistical Computation and Simulation} 2018, 88:14, 2827-2851.
+#' 
+#' @export
+#' 
+#' @seealso htlr
+config_prior <- function(ptype = c("t", "ghs", "neg"), 
+                         df = 1,
+                         logw = -(1 / df) * 10,
+                         eta = (df > 2) * 100,
+                         sigmab0 = 2000)
+{
+  ptype <- match.arg(ptype)
+  if (ptype != "t" & eta != 0)
+    warning("random logw currently only supports t prior")
+  list(
+    "ptype" = ptype,
+    "alpha" = df,
+    "logw" = logw,
+    "eta" = eta,
+    "sigmab0" = sigmab0
+  )
+}
 
 ## a function for retrieve fithtlr objs saved in a RData file
 # reload_fithtlr <- function (fithtlrfile)
@@ -11,13 +52,6 @@
 #         return (fithtlr)
 #     })
 # }
-
-
-log_sum_exp <- function(lx)
-{  
-  mlx <- max(lx)
-  log(sum(exp(lx - mlx))) + mlx
-}
 
 ## compute V (delta)
 comp_vardeltas <- function (deltas)
@@ -47,15 +81,15 @@ comp_sdb <- function (deltas, removeint = TRUE, normalize = FALSE)
 }
 
 
-comp_lsl <- function (lv)
+comp_lsl <- function(lv)
 {
-    apply (cbind (0,lv), 1, log_sum_exp)
+  log_sum_exp(cbind(0, lv))
 }
 
-# spl_sgm_ig <- function (alpha, K, w, vardeltas)
-# {
-#   1 / rgamma (length (vardeltas), (alpha + K)/2) * (alpha * w + vardeltas) / 2
-# }
+log_normcons <- function(lv)
+{
+  sum(comp_lsl(lv))
+}
 
 get_ix <- function (sub, whole, digits= 0)
 {
@@ -64,6 +98,7 @@ get_ix <- function (sub, whole, digits= 0)
     names (wix) <- as.character (round(whole, digits))
     wix [as.character (round(sub, digits))]
 }
+
 
 
 #' Plots feature importance scores
@@ -109,6 +144,7 @@ plot_fscore <- function (fscores, fsel=1:length (fscores), show_ix = 0.1, do.plo
     
 }
 
+## try to install suggested packages when needed
 try_require <- function(pkg, f = NULL) {
   if (is.null(f)) {
     f <- "this action"

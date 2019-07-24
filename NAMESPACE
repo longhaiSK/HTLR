@@ -2,6 +2,7 @@
 exportPattern("^[[:alpha:]]+")
 export(bcbcsf_deltas)
 export(comp_sdb)
+export(config_prior)
 export(htlr)
 export(htlr_fit)
 export(htlr_fss)
