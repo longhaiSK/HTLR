@@ -22,5 +22,6 @@ Imports: Rcpp (>= 0.12.0), BCBCSF, glmnet
 LinkingTo: Rcpp (>= 0.12.0), RcppArmadillo
 NeedsCompilation: yes
 SystemRequirements: C++11
+LazyData: true
 Encoding: UTF-8
 RoxygenNote: 6.1.1
