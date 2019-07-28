@@ -25,7 +25,7 @@
 #' @export
 #' 
 #' @seealso htlr
-config_prior <- function(ptype = c("t", "ghs", "neg"), 
+htlr_prior <- function(ptype = c("t", "ghs", "neg"), 
                          df = 1,
                          logw = -(1 / df) * 10,
                          eta = (df > 2) * 100,
