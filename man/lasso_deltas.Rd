@@ -30,6 +30,6 @@ Regularization Paths for Generalized Linear Models via Coordinate
 Descent. \emph{Journal of Statistical Software}, 33(1), 1-22.
 }
 \seealso{
-htlr htlr_fit bcbcsf_deltas
+\code{\link{bcbcsf_deltas}}
 }
 \keyword{internal}

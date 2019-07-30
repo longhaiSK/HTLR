@@ -8,7 +8,7 @@ htlr_mccoef(fithtlr, features = 1, class = 2, usedmc = "all",
   symlim = FALSE, drawq = c(0, 1), truedeltas = NULL)
 }
 \arguments{
-\item{fithtlr}{A list containing fitting results by \code{htlr_fitpred}.}
+\item{fithtlr}{A list containing fitting results by \code{\link{htlr_fitpred}}.}
 
 \item{features}{A vector of 1 or 2 numbers representing 1 or 2 features one wishes to look.}
 
@@ -16,7 +16,7 @@ htlr_mccoef(fithtlr, features = 1, class = 2, usedmc = "all",
 
 \item{usedmc}{Indices of Markov chain iterations used in plottings; one can set it to the 
 indices of Markov chain iterations belonging to the ith feature subset, \code{mcids[[i]]}, 
-found by \code{htlr_fss}.}
+found by \code{\link{htlr_fss}}.}
 }
 \value{
 A vector of Markov chain sample of 1 coefficient, 
@@ -25,7 +25,4 @@ or an array of Markov chain samples of 2 coefficients.
 \description{
 This function plots Markov chain samples of 1 or 2 features. In plotting for 2 features, 
 gray lines show Markov chain transitions.
-}
-\seealso{
-htlr_fitpred htlr_fss
 }
