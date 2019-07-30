@@ -13,7 +13,7 @@ htlr_mdcoef <- function (fithtlr, usedmc = "all", features = "all", method = med
     else if (features [1] == "all")  ix.f <- 1:p
     else        
     {
-        ix.f <- get_ix (features, fithtlr$fsel)
+        ix.f <- get_ix (features, fithtlr$feature$fsel)
     }
     
     mcdeltas <- fithtlr$mcdeltas[c(1,ix.f + 1),, usedmc, drop = FALSE]
@@ -30,19 +30,18 @@ htlr_mdcoef <- function (fithtlr, usedmc = "all", features = "all", method = med
 #' This function plots Markov chain samples of 1 or 2 features. In plotting for 2 features, 
 #' gray lines show Markov chain transitions.
 #' 
-#' @param fithtlr A list containing fitting results by \code{htlr_fitpred}.
+#' @param fithtlr A list containing fitting results by \code{\link{htlr_fitpred}}.
 #' @param features A vector of 1 or 2 numbers representing 1 or 2 features one wishes to look.
 #' @param class Coefficients associated with \code{class} will be drawn.
 #' @param usedmc Indices of Markov chain iterations used in plottings; one can set it to the 
 #' indices of Markov chain iterations belonging to the ith feature subset, \code{mcids[[i]]}, 
-#' found by \code{htlr_fss}.
+#' found by \code{\link{htlr_fss}}.
 #' 
 #' @return A vector of Markov chain sample of 1 coefficient, 
 #' or an array of Markov chain samples of 2 coefficients.
 #' 
 #' @export
 #' 
-#' @seealso htlr_fitpred htlr_fss  
 htlr_mccoef <-  function (
     fithtlr, features = 1, class = 2,  usedmc = "all", 
     symlim = FALSE, drawq = c(0,1), truedeltas = NULL)
@@ -57,7 +56,7 @@ htlr_mccoef <-  function (
     if (length (features) == 1)
     {
         if (features == 0) j <- 1
-        else  j <- which(fithtlr$fsel == features) + 1
+        else  j <- which(fithtlr$feature$fsel == features) + 1
         k <- class - 1
         deltas <- fithtlr$mcdeltas[j, k,usedmc, drop = FALSE]
         
@@ -81,9 +80,9 @@ htlr_mccoef <-  function (
     {
         j <- 1:2
         if (features[1] == 0) j[1] <- 1 else
-            j[1] <- which (fithtlr$fsel == features[1]) + 1
+            j[1] <- which (fithtlr$feature$fsel == features[1]) + 1
         if (features[2] == 0) j[2] <- 1 else        
-            j[2] <- which (fithtlr$fsel == features[2]) + 1
+            j[2] <- which (fithtlr$feature$fsel == features[2]) + 1
         k <- class - 1
         deltas <- fithtlr$mcdeltas[j, k,usedmc, drop = TRUE]
         
