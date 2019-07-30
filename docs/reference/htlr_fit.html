@@ -113,11 +113,11 @@ It also makes predictions for test cases if <code>X_ts</code> are provided.</p>
     </div>
 
     <pre class="usage"><span class='fu'>htlr_fit</span>(<span class='no'>y_tr</span>, <span class='no'>X_tr</span>, <span class='kw'>X_ts</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>fsel</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>ncol</a></span>(<span class='no'>X_tr</span>), <span class='kw'>stdzx</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>sigmab0</span> <span class='kw'>=</span> <span class='fl'>2000</span>, <span class='kw'>ptype</span> <span class='kw'>=</span> <span class='st'>"t"</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>s</span> <span class='kw'>=</span> -<span class='fl'>10</span>, <span class='kw'>eta</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>iters_h</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>iters_rmc</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>leap_L</span> <span class='kw'>=</span> <span class='fl'>50</span>,
-  <span class='kw'>leap_L_h</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>leap_step</span> <span class='kw'>=</span> <span class='fl'>0.3</span>, <span class='kw'>hmc_sgmcut</span> <span class='kw'>=</span> <span class='fl'>0.05</span>,
-  <span class='kw'>initial_state</span> <span class='kw'>=</span> <span class='st'>"lasso"</span>, <span class='kw'>alpha.rda</span> <span class='kw'>=</span> <span class='fl'>0.2</span>, <span class='kw'>silence</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>pre.legacy</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>predburn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>predthin</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>sigmab0</span> <span class='kw'>=</span> <span class='fl'>2000</span>, <span class='kw'>ptype</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"t"</span>, <span class='st'>"ghs"</span>, <span class='st'>"neg"</span>), <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>s</span> <span class='kw'>=</span> -<span class='fl'>10</span>,
+  <span class='kw'>eta</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>iters_h</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>iters_rmc</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>leap_L</span> <span class='kw'>=</span> <span class='fl'>50</span>, <span class='kw'>leap_L_h</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>leap_step</span> <span class='kw'>=</span> <span class='fl'>0.3</span>, <span class='kw'>hmc_sgmcut</span> <span class='kw'>=</span> <span class='fl'>0.05</span>,
+  <span class='kw'>initial_state</span> <span class='kw'>=</span> <span class='st'>"lasso"</span>, <span class='kw'>silence</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>pre.legacy</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>predburn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>predthin</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -147,8 +147,8 @@ and <code>sd</code> = 1.</p></td>
     </tr>
     <tr>
       <th>ptype</th>
-      <td><p>The prior to be applied to the model. Either "t" (student-t, default), "ghs" (horseshoe), 
-or "neg" (normal-exponential-gamma).</p></td>
+      <td><p>The prior to be applied to the model. Either "t" (student-t, default), 
+"ghs" (horseshoe), or "neg" (normal-exponential-gamma).</p></td>
     </tr>
     <tr>
       <th>alpha</th>
@@ -162,6 +162,10 @@ or "neg" (normal-exponential-gamma).</p></td>
       <th>eta</th>
       <td><p>The <code>sd</code> of the normal prior for logw. When it is set to 0, logw is fixed. 
 Otherwise, logw is assigned with a normal prior and it will be updated during sampling.</p></td>
+    </tr>
+    <tr>
+      <th>iters_h</th>
+      <td><p>A positive integer specifying the number of warmup (aka burnin).</p></td>
     </tr>
     <tr>
       <th>iters_rmc</th>
@@ -185,12 +189,25 @@ Otherwise, logw is assigned with a normal prior and it will be updated during sa
     </tr>
     <tr>
       <th>hmc_sgmcut</th>
-      <td><p>The coefficients smaller than this criteria will be fixed in each HMC updating step.</p></td>
+      <td><p>The coefficients smaller than this criteria will be fixed in 
+each HMC updating step.</p></td>
     </tr>
     <tr>
       <th>initial_state</th>
-      <td><p>The initial state of Markov Chain; can be NULL, 
-or a gived parameter vector, or a previous markov chain results.</p></td>
+      <td><p>The initial state of Markov Chain; can be a previously 
+fitted <code>fithtlr</code> object, or a user supplied initial state vector, or 
+a character string matches the following:</p><ul>
+<li><p>"lasso" - (Default) Use Lasso initial state with <code>lambda</code> chosen by 
+  cross-validation. Users may specify their own candidate <code>lambda</code> values via 
+  optional argument <code>lasso.lambda</code>. Further customized Lasso initial 
+  states can be generated by <code><a href='lasso_deltas.html'>lasso_deltas</a></code>.</p></li>
+<li><p>"bcbcsfrda" - Use initial state generated by package <code>BCBCSF</code> 
+  (Bias-corrected Bayesian classification). Further customized BCBCSF initial 
+  states can be generated by <code><a href='bcbcsf_deltas.html'>bcbcsf_deltas</a></code>. WARNING: This type of 
+  initial states can be used for continuous features such as gene expression profiles, 
+  but it should not be used for categorical features such as SNP profiles.</p></li>
+<li><p>"random" - Use random initial values sampled from N(0, 1).</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>silence</th>
@@ -199,19 +216,16 @@ or a gived parameter vector, or a previous markov chain results.</p></td>
     <tr>
       <th>pre.legacy</th>
       <td><p>Logical; if <code>TRUE</code>, the output produced in <code>HTLR</code> versions up to 
-legacy-3.1-1 is reproduced.</p></td>
+legacy-3.1-1 is reproduced. The speed would be typically slower than non-legacy mode on
+multi-core machine.</p></td>
     </tr>
     <tr>
       <th>...</th>
       <td><p>Other optional parameters:</p><ul>
-<li><p>alpha.rda - A user supplied alpha value for <code>bcbcsf_deltas</code>. Default: 0.2.</p></li>
-<li><p>lasso.lambda - A user supplied lambda sequence for <code>lasso_deltas</code>. 
-  Default: .01, .02, &#8230;, .05. Will be ignored if .legacy is set to TRUE.</p></li>
+<li><p>alpha.rda A user supplied alpha value for <code><a href='bcbcsf_deltas.html'>bcbcsf_deltas</a></code>. Default: 0.2.</p></li>
+<li><p>lasso.lambda - A user supplied lambda sequence for <code><a href='lasso_deltas.html'>lasso_deltas</a></code>. 
+  Default: {.01, .02, &#8230;, .05}. Will be ignored if <code>pre.legacy</code> is set to <code>TRUE</code>.</p></li>
 </ul></td>
-    </tr>
-    <tr>
-      <th>iter_h</th>
-      <td><p>A positive integer specifying the number of warmup (aka burnin).</p></td>
     </tr>
     </table>
     
@@ -221,32 +235,42 @@ legacy-3.1-1 is reproduced.</p></td>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p>Longhai Li and Weixin Yao. (2018). Fully Bayesian Logistic Regression 
+    <p>Longhai Li and Weixin Yao (2018). Fully Bayesian Logistic Regression 
 with Hyper-Lasso Priors for High-dimensional Feature Selection.
 <em>Journal of Statistical Computation and Simulation</em> 2018, 88:14, 2827-2851.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>htlr</p></div>
+    <div class='dont-index'><p><code><a href='htlr.html'>htlr</a></code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span> (<span class='no'>gen_grpcor_data</span>)
-<span class='co'>## creating training and test data sets</span>
-<span class='no'>tr</span> <span class='kw'>&lt;-</span> <span class='fl'>200</span>
-<span class='no'>X_tr</span> <span class='kw'>&lt;-</span> <span class='no'>data</span>$<span class='no'>X</span>[<span class='fl'>1</span>:<span class='no'>tr</span>,]
-<span class='no'>y_tr</span> <span class='kw'>&lt;-</span> <span class='no'>data</span>$<span class='no'>y</span>[<span class='fl'>1</span>:<span class='no'>tr</span>]
-<span class='no'>X_ts</span> <span class='kw'>&lt;-</span> <span class='no'>data</span>$<span class='no'>X</span>[-(<span class='fl'>1</span>:<span class='no'>tr</span>), ]
-<span class='no'>y_ts</span> <span class='kw'>&lt;-</span> <span class='no'>data</span>$<span class='no'>y</span>[-(<span class='fl'>1</span>:<span class='no'>tr</span>)]
-<span class='co'>## fit htlr models</span>
-<span class='no'>fithtlr</span> <span class='kw'>&lt;-</span> <span class='fu'>htlr_fitpred</span> (
-  <span class='kw'>y_tr</span> <span class='kw'>=</span> <span class='no'>y_tr</span>, <span class='kw'>X_tr</span> <span class='kw'>=</span> <span class='no'>X_tr</span>, <span class='kw'>stdzx</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='co'>#fsel = c (1,51,101),</span>
-  <span class='kw'>pty</span> <span class='kw'>=</span> <span class='st'>"t"</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>s</span> <span class='kw'>=</span> -<span class='fl'>15</span>,
-  <span class='kw'>iters_h</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>iters_rmc</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>50</span>,
-  <span class='kw'>leap_L_h</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>leap_L</span> <span class='kw'>=</span> <span class='fl'>50</span>, <span class='kw'>leap_step</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>hmc_sgmcut</span> <span class='kw'>=</span> <span class='fl'>0.05</span>,
-  <span class='kw'>initial_state</span> <span class='kw'>=</span> <span class='st'>"bcbcsfrda"</span>, <span class='kw'>silence</span> <span class='kw'>=</span> <span class='no'>F</span>)
-<span class='co'># }</span><div class='input'>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span>(<span class='fl'>12345</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='st'>"colon"</span>)
+
+<span class='co'>## fit HTLR models with selected features, note that the chain length setting is for demo only</span>
+
+<span class='co'>## using t prior with 1 df and log-scale ~ N(-10, 10) </span>
+<span class='no'>fit.t</span> <span class='kw'>&lt;-</span> <span class='fu'>htlr_fit</span>(<span class='kw'>X_tr</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>X</span>, <span class='kw'>y_tr</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>y</span>, <span class='kw'>fsel</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>100</span>,
+                  <span class='kw'>ptype</span> <span class='kw'>=</span> <span class='st'>"t"</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>s</span> <span class='kw'>=</span> -<span class='fl'>10</span>, <span class='kw'>eta</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+                  <span class='kw'>initial_state</span> <span class='kw'>=</span> <span class='st'>"bcbcsfrda"</span>,
+                  <span class='kw'>iters_h</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>iters_rmc</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: 'htlr_fit' is deprecated.</span>
+#&gt; <span class='warning'>Use 'htlr' instead.</span>
+#&gt; <span class='warning'>See help("Deprecated")</span></div><div class='input'>
+<span class='co'>## using NEG prior with 1 df and log-scale fixed to -10 </span>
+<span class='no'>fit.neg</span> <span class='kw'>&lt;-</span> <span class='fu'>htlr_fit</span>(<span class='kw'>X_tr</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>X</span>, <span class='kw'>y_tr</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>y</span>, <span class='kw'>fsel</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>100</span>,
+                    <span class='kw'>ptype</span> <span class='kw'>=</span> <span class='st'>"neg"</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>s</span> <span class='kw'>=</span> -<span class='fl'>10</span>,
+                    <span class='kw'>initial_state</span> <span class='kw'>=</span> <span class='st'>"bcbcsfrda"</span>,
+                    <span class='kw'>iters_h</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>iters_rmc</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: 'htlr_fit' is deprecated.</span>
+#&gt; <span class='warning'>Use 'htlr' instead.</span>
+#&gt; <span class='warning'>See help("Deprecated")</span></div><div class='input'>
+<span class='co'>## using horseshoe prior with 1 df and log-scale fixed to -10 </span>
+<span class='no'>fit.ghs</span> <span class='kw'>&lt;-</span> <span class='fu'>htlr_fit</span>(<span class='kw'>X_tr</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>X</span>, <span class='kw'>y_tr</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>y</span>, <span class='kw'>fsel</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>100</span>,
+                    <span class='kw'>ptype</span> <span class='kw'>=</span> <span class='st'>"ghs"</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>s</span> <span class='kw'>=</span> -<span class='fl'>10</span>,
+                    <span class='kw'>initial_state</span> <span class='kw'>=</span> <span class='st'>"bcbcsfrda"</span>,
+                    <span class='kw'>iters_h</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>iters_rmc</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: 'htlr_fit' is deprecated.</span>
+#&gt; <span class='warning'>Use 'htlr' instead.</span>
+#&gt; <span class='warning'>See help("Deprecated")</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
