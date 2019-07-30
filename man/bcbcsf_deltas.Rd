@@ -34,6 +34,6 @@ with a selected subset of high-dimensional features.
 \emph{Journal of the American Statistical Association}, 107(497), 120-134.
 }
 \seealso{
-htlr htlr_fit lasso_deltas
+\code{\link{lasso_deltas}}
 }
 \keyword{internal}

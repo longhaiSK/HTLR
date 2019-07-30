@@ -28,16 +28,18 @@
 #' 
 #' @keywords internal
 #' 
-#' @seealso htlr htlr_fit lasso_deltas 
-bcbcsf_deltas <- function (X, y, alpha = 0)
+#' @seealso \code{\link{lasso_deltas}} 
+#' 
+bcbcsf_deltas <- function(X, y, alpha = 0)
 {
-  n <- nrow (X) ## numbers of obs
-  p <- ncol (X)
-  ## find number of observations in each group
-  nos_g <- as.vector (tapply (rep(1, n), INDEX = y, sum))
-  G <- length (nos_g)
+  n <- nrow(X)
+  p <- ncol(X)
+  G <- length(unique(y))
   
-  muj <- matrix (0, p, G)
+  if (alpha >= 1 & n - G <= p)
+    stop ("'alpha' must be less than 1")
+  
+  muj <- matrix(0, p, G)
   ## estimate centroids
   fit_bcbcsf <- bcbcsf_fitpred(
     X_tr = X,
@@ -52,38 +54,27 @@ bcbcsf_deltas <- function (X, y, alpha = 0)
     monitor = F
   )$fit_bcbcsf
   
-  muj [fit_bcbcsf$fsel, ] <-
-    bcbcsf_sumfit (fit_bcbcsf = fit_bcbcsf)$muj
+  muj[fit_bcbcsf$fsel, ] <- bcbcsf_sumfit(fit_bcbcsf = fit_bcbcsf)$muj
   
   ## transform X
-  tX_tr <- t (X)
-  rm (X)
-  
-  if (any(nos_g < 2))
-    stop ("Less than 2 cases in some group")
-  
-  if (alpha >= 1 & n - G <= p)
-    stop ("'alpha' must be less than 1")
+  tX_tr <- t(X)
   
   ## proportions of groups
-  gprior <- table (y) / n
+  gprior <- table(y) / n
   
   for (g in 1:G)
   {
     ## subtract muj[,g] from data in gth group
-    tX_tr[, y == g] <-
-      sweep (tX_tr[, y == g, drop = FALSE], 1, muj[, g])
+    tX_tr[, y == g] <- sweep(tX_tr[, y == g, drop = FALSE], 1, muj[, g])
   }
-  X <- t (tX_tr)
+  X <- t(tX_tr)
   
   ## estimate inverse of covariance matrix
   lambda <- alpha / (1 - alpha) / n
   inv_SGM <- 1 / (1 - alpha) * 
-    (diag (1, p) - lambda * tX_tr %*% solve (diag (1, n) + lambda * X %*% tX_tr) %*% X)
+    (diag(1, p) - lambda * tX_tr %*% solve(diag(1, n) + lambda * X %*% tX_tr) %*% X)
   
-  deltas_bc_inv (muj = muj,
-                 inv_SGM = inv_SGM,
-                 gprior = gprior)
+  deltas_bc_inv(muj = muj, inv_SGM = inv_SGM, gprior = gprior)
 }
 
 deltas_bc_inv <- function (muj, inv_SGM, gprior = rep(1, ncol (muj)))
