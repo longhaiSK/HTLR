@@ -1,3 +1,29 @@
+#' Create a matrix of Markov chain samples
+#' 
+#' The Markov chain samples (without warmup) included in a \code{htlrfit} object will be coerced to a matrix.
+#' 
+#' @param x An object of S3 class \code{htlrfit}.
+#' @param k Coefficients associated with class \code{k} will be drawn. Must be a positive integer in 
+#' 1,2,\ldots,C for C-class traning labels. By default the last class will be chosen.
+#' 
+#' @return A matrix with \code{(p + 1)} columns and \code{i} rows, where \code{p} is the number of features 
+#' excluding intercept, and \code{i} is the number of iterations after burnin.
+#' 
+#' @export
+#' 
+#' @examples 
+#' ## No. of features used: 100; No. of iterations after burnin: 15 
+#' fit <- htlr(X = colon$X, y = colon$y, fsel = 1:100, iter = 20, warmup = 5)
+#' 
+#' dim(as.matrix(fit))
+#'   
+as.matrix.htlrfit <- function(x, k = x$K, ...)
+{
+  mcdeltas <- t(x$mcdeltas[ , k, -1])
+  colnames(mcdeltas) <- colnames(x$feature$X)
+  mcdeltas
+}
+
 ## This function find summary of deltas over markov chain.
 htlr_mdcoef <- function (fithtlr, usedmc = "all", features = "all", method = median)
 {
@@ -32,7 +58,8 @@ htlr_mdcoef <- function (fithtlr, usedmc = "all", features = "all", method = med
 #' 
 #' @param fithtlr A list containing fitting results by \code{\link{htlr_fitpred}}.
 #' @param features A vector of 1 or 2 numbers representing 1 or 2 features one wishes to look.
-#' @param class Coefficients associated with \code{class} will be drawn.
+#' @param class Coefficients associated with \code{class} will be drawn. Must be a positive integer in 
+#' 1,2,\ldots,C for C-class traning labels.
 #' @param usedmc Indices of Markov chain iterations used in plottings; one can set it to the 
 #' indices of Markov chain iterations belonging to the ith feature subset, \code{mcids[[i]]}, 
 #' found by \code{\link{htlr_fss}}.
@@ -132,4 +159,3 @@ htlr_sdb <- function (fitbplr,usedmc = NULL, burn = NULL, thin = NULL)
     sdbs <- comp_sdb (deltas, removeint = T, normalize = F)
         
 }
-
