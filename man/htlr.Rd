@@ -14,7 +14,7 @@ htlr(X, y, fsel = 1:ncol(X), stdzx = TRUE, prior = "t", df = 1,
 rows should be for the cases, and columns for different features.}
 
 \item{y}{Vector of class labels in training or test data set. 
-Must be coded as non-negative integers, e.g., 1,2,\ldots,C for C classes.}
+Must be coded as non-negative integers, e.g., 1,2,\ldots,C for C classes, label 0 is also allowed.}
 
 \item{fsel}{Subsets of features selected before fitting, such as by univariate screening.}
 

@@ -4,7 +4,7 @@
 #' It also makes predictions for test cases if \code{X_ts} are provided.
 #'
 #' @param y_tr Vector of class labels in training or test data set. 
-#' Must be coded as non-negative integers, e.g., 1,2,\ldots,C for C classes.
+#' Must be coded as non-negative integers, e.g., 1,2,\ldots,C for C classes, label 0 is also allowed.
 #' @param X_tr Design matrix of traning data; 
 #' rows should be for the cases, and columns for different features.
 #' @param fsel Subsets of features selected before fitting, such as by univariate screening.
@@ -129,10 +129,12 @@ htlr_fit <- function (
   ymat <- model.matrix( ~ factor(y_tr) - 1)[, -1]
   C <- length(unique(ybase))
   K <- C - 1
+  
   ## feature selection
   X <- X_tr[, fsel, drop = FALSE]
   p <- length(fsel)
   n <- nrow(X)
+  
   ## standardize selected features
   nuj <- rep(0, length(fsel))
   sdj <- rep(1, length(fsel))
@@ -143,12 +145,16 @@ htlr_fit <- function (
     X <- sweep(X, 2, nuj, "-")
     X <- sweep(X, 2, sdj, "/")
   }
+  
   ## add intercept
   X_addint <- cbind(1, X)
+  colnames(X_addint) <- c("Intercept", colnames(X))
+  
   ## stepsize for HMC from data
   DDNloglike <- 1 / 4 * colSums(X_addint ^ 2)
 
   #################### Markov chain state initialization ####################
+  
   ## starting from a given deltas
   if (is.list(initial_state)) # use the last iteration of markov chain
   {
@@ -217,7 +223,10 @@ htlr_fit <- function (
   fit$prior <- htlr_prior(ptype, alpha, s, eta, sigmab0)
   
   # add data preprocessing information
-  fit$feature <- list("fsel" = fsel, "nuj" = nuj, "sdj" = sdj, "y" = y_tr)
+  fit$feature <- list("fsel" = fsel, "nuj" = nuj, "sdj" = sdj, "y" = y_tr, "X" = X_addint)
+  
+  # add call
+  fit$call <- match.call()
   
   # register S3
   attr(fit, "class") <- "htlrfit"

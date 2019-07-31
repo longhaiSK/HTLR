@@ -6,7 +6,7 @@
 #' rows should be for the cases, and columns for different features.
 #' 
 #' @param y Vector of class labels in training or test data set. 
-#' Must be coded as non-negative integers, e.g., 1,2,\ldots,C for C classes.
+#' Must be coded as non-negative integers, e.g., 1,2,\ldots,C for C classes, label 0 is also allowed.
 #' 
 #' @param fsel Subsets of features selected before fitting, such as by univariate screening.
 #' @param stdzx Logical; if \code{TRUE}, the original feature values are standardized to have \code{mean} = 0 
@@ -92,8 +92,6 @@
 #' fit.ghs <- htlr(X = colon$X, y = colon$y, fsel = 1:100,
 #'                 prior = "ghs", df = 1, init = "bcbc",
 #'                 iter = 20, thin = 1)
-#'
-#' @seealso htlr_prior
 #' 
 htlr <-
   function (X, y,
@@ -166,6 +164,7 @@ htlr <-
   
   ## add intercept
   X.addint <- cbind(1, X)
+  colnames(X.addint) <- c("Intercept", colnames(X))
   
   ## stepsize for HMC from data
   DDNloglike <- 1 / 4 * colSums(X.addint ^ 2)
@@ -241,7 +240,10 @@ htlr <-
   fit$prior <- prior
   
   # add data preprocessing information
-  fit$feature <- list("fsel" = fsel, "nuj" = nuj, "sdj" = sdj, "y" = y)
+  fit$feature <- list("fsel" = fsel, "nuj" = nuj, "sdj" = sdj, "y" = y, "X" = X.addint)
+  
+  # add call
+  fit$call <- match.call()
   
   # register S3
   attr(fit, "class") <- "htlrfit"

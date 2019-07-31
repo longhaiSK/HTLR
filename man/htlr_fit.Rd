@@ -13,7 +13,7 @@ htlr_fit(y_tr, X_tr, X_ts = NULL, fsel = 1:ncol(X_tr), stdzx = TRUE,
 }
 \arguments{
 \item{y_tr}{Vector of class labels in training or test data set. 
-Must be coded as non-negative integers, e.g., 1,2,\ldots,C for C classes.}
+Must be coded as non-negative integers, e.g., 1,2,\ldots,C for C classes, label 0 is also allowed.}
 
 \item{X_tr}{Design matrix of traning data; 
 rows should be for the cases, and columns for different features.}
