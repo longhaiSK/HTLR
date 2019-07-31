@@ -12,7 +12,8 @@ htlr_mccoef(fithtlr, features = 1, class = 2, usedmc = "all",
 
 \item{features}{A vector of 1 or 2 numbers representing 1 or 2 features one wishes to look.}
 
-\item{class}{Coefficients associated with \code{class} will be drawn.}
+\item{class}{Coefficients associated with \code{class} will be drawn. Must be a positive integer in 
+1,2,\ldots,C for C-class traning labels.}
 
 \item{usedmc}{Indices of Markov chain iterations used in plottings; one can set it to the 
 indices of Markov chain iterations belonging to the ith feature subset, \code{mcids[[i]]}, 
