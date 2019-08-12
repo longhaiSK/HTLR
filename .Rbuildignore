@@ -3,3 +3,6 @@
 ^docs$
 ^\.travis\.yml$
 ^README\.Rmd$
+^tmp$
+^.vscode$
+^data-raw$
