@@ -142,11 +142,16 @@ optional supplied <code>X</code> using a multinomial logistic regression model.<
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list contains design matrix <code>X</code>, response variables <code>y</code>, and regression coefficients <code>deltas</code>.</p>
+    <p>A list contains input matrix <code>X</code>, response variables <code>y</code>, and regression coefficients <code>deltas</code>.</p>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='htlr_gendata_FAM.html'>htlr_gendata_FAM</a></code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>dat</span> <span class='kw'>&lt;-</span> <span class='fu'>htlr_gendata_MLR</span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>p</span> <span class='kw'>=</span> <span class='fl'>10</span>)
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span>(<span class='fl'>12345</span>)
+<span class='no'>dat</span> <span class='kw'>&lt;-</span> <span class='fu'>htlr_gendata_MLR</span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>p</span> <span class='kw'>=</span> <span class='fl'>10</span>)
 <span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/qplot.html'>qplot</a></span>(<span class='no'>dat</span>$<span class='no'>y</span>, <span class='kw'>bins</span> <span class='kw'>=</span> <span class='fl'>6</span>)</div><div class='img'><img src='htlr_gendata_MLR-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='kw pkg'>corrplot</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/corrplot/topics/corrplot'>corrplot</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/cor'>cor</a></span>(<span class='no'>dat</span>$<span class='no'>X</span>))</div><div class='img'><img src='htlr_gendata_MLR-2.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
@@ -156,6 +161,8 @@ optional supplied <code>X</code> using a multinomial logistic regression model.<
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#see-also">See also</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

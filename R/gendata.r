@@ -14,6 +14,7 @@
 #' @export
 #' 
 #' @examples
+#' set.seed(12345)
 #' dat <- htlr_gendata_MLR(n = 100, p = 10)
 #' ggplot2::qplot(dat$y, bins = 6)
 #' corrplot::corrplot(cor(dat$X))
@@ -68,6 +69,7 @@ htlr_gendata_MLR <- function(n, p, NC = 3, nu = 2, w = 1, X = NULL, betas = NULL
 #' ## feature #3-5: marginally related features and also internally correlated
 #' ## feature #6-10: noise features without relationship with the y
 #' 
+#' set.seed(12345)
 #' n <- 100
 #' p <- 10
 #' 

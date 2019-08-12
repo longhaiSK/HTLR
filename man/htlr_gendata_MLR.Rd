@@ -19,15 +19,19 @@ htlr_gendata_MLR(n, p, NC = 3, nu = 2, w = 1, X = NULL,
 \item{X}{The design matrix; will be generated from standard normal distribution if not supplied.}
 }
 \value{
-A list contains design matrix \code{X}, response variables \code{y}, and regression coefficients \code{deltas}.
+A list contains input matrix \code{X}, response variables \code{y}, and regression coefficients \code{deltas}.
 }
 \description{
 This function generates the response variables \code{y} given 
 optional supplied \code{X} using a multinomial logistic regression model.
 }
 \examples{
+set.seed(12345)
 dat <- htlr_gendata_MLR(n = 100, p = 10)
 ggplot2::qplot(dat$y, bins = 6)
 corrplot::corrplot(cor(dat$X))
 
+}
+\seealso{
+\code{\link{htlr_gendata_FAM}}
 }

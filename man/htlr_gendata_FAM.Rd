@@ -38,6 +38,7 @@ and \eqn{\delta} is the noise level.
 ## feature #3-5: marginally related features and also internally correlated
 ## feature #6-10: noise features without relationship with the y
 
+set.seed(12345)
 n <- 100
 p <- 10
 
