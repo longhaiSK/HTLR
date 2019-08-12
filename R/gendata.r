@@ -9,7 +9,7 @@
 #' @param nu,w The regression coefficients are generated with t prior with df = \code{nu}, scale = \code{sqrt(w)}.
 #' @param X The design matrix; will be generated from standard normal distribution if not supplied.
 #' 
-#' @return A list contains design matrix \code{X}, response variables \code{y}, and regression coefficients \code{deltas}.      
+#' @return A list contains input matrix \code{X}, response variables \code{y}, and regression coefficients \code{deltas}.      
 #'
 #' @export
 #' 
@@ -17,6 +17,8 @@
 #' dat <- htlr_gendata_MLR(n = 100, p = 10)
 #' ggplot2::qplot(dat$y, bins = 6)
 #' corrplot::corrplot(cor(dat$X))
+#' 
+#' @seealso \code{\link{htlr_gendata_FAM}}
 #' 
 htlr_gendata_MLR <- function(n, p, NC = 3, nu = 2, w = 1, X = NULL, betas = NULL)
 {
@@ -38,29 +40,82 @@ htlr_gendata_MLR <- function(n, p, NC = 3, nu = 2, w = 1, X = NULL, betas = NULL
   list("X" = X, "y" = y, "deltas" = deltas)
 }
 
-htlr_gendata_FAM <- function (n, muj, A, sd_g = 0, stdx = FALSE)
+#' Generate simulated data with factor analysis model 
+#' 
+#' This function generates inputs \code{X} given by the response variable \code{y} 
+#' using a multivariate normal model. 
+#' 
+#' The means of each covariate \eqn{x_j} depend on \code{y} specified by the 
+#' matrix \code{muj}; the covariate matrix \eqn{\Sigma} of the multivariate normal 
+#' is equal to \eqn{AA^t\delta^2I}, where \code{A} is the factor loading matrix
+#' and \eqn{\delta} is the noise level.  
+#' 
+#' @param n Number of observations.
+#' @param muj C by p matrix, with row c representing y = c, and column j representing \eqn{x_j}.
+#' Used to specify \code{y}. 
+#' @param A The factor loading matrix, see details.
+#' @param sd_g Noise level \eqn{\delta}, see details.
+#' @param stdzx Logical; if \code{TRUE}, data \code{X} is standardized to have \code{mean = 0} and \code{sd = 1}.
+#'
+#' @return A list contains input matrix \code{X}, response variables \code{y},
+#' covariate matrix \code{SGM} and \code{muj} (standardized if \code{stdx = TRUE}).
+#' 
+#' @export
+#' 
+#' @examples 
+#' ## feature #1: marginally related feature
+#' ## feature #2: marginally unrelated feature, but feature #2 is correlated with feature #1
+#' ## feature #3-5: marginally related features and also internally correlated
+#' ## feature #6-10: noise features without relationship with the y
+#' 
+#' n <- 100
+#' p <- 10
+#' 
+#' means <- rbind(
+#'   c(0, 1, 0),
+#'   c(0, 0, 0),
+#'   c(0, 0, 1),
+#'   c(0, 0, 1),
+#'   c(0, 0, 1)
+#' ) * 2
+#' 
+#' means <- rbind(means, matrix(0, p - 5, 3))
+#' 
+#' A <- diag(1, p)
+#' A[1:5, 1:3] <- rbind(
+#'   c(1, 0, 0),
+#'   c(2, 1, 0),
+#'   c(0, 0, 1),
+#'   c(0, 0, 1),
+#'   c(0, 0, 1)
+#' )
+#' 
+#' dat <- htlr_gendata_FAM(n, means, A, sd_g = 0.5, stdx = TRUE)
+#' ggplot2::qplot(dat$y, bins = 6)
+#' corrplot::corrplot(cor(dat$X))
+#' 
+#' @seealso \code{\link{htlr_gendata_MLR}}
+#'      
+htlr_gendata_FAM <- function(n, muj, A, sd_g = 0, stdx = FALSE)
 {
-  p <- nrow (muj)
-  C <- ncol (muj)
-  k <- ncol (A)
+  p <- nrow(muj)
+  C <- ncol(muj)
+  k <- ncol(A)
 
-#  y <- sample (1:C, n, replace = T)
-  y <- rep (1:C, len = n)
-  X <- A %*% matrix (rnorm (n*k), k, n) + muj[,y] + rnorm (n * p) * sd_g 
-  SGM <- A %*% t (A) + diag (sd_g^2,p)
+  y <- rep(1:C, len = n)
+  X <- A %*% matrix(rnorm(n * k), k, n) + muj[, y] + rnorm(n * p) * sd_g 
+  SGM <- A %*% t(A) + diag(sd_g^2, p)
   
   if (stdx == TRUE)
   {
-     mux <- rowMeans (muj)
-     sdx <- sqrt ( diag (SGM) + apply (muj,1, var) * (C-1)/C )
+     mux <- rowMeans(muj)
+     sdx <- sqrt(diag(SGM) + apply (muj, 1, var) * (C - 1) / C)
      muj <- (muj - mux) / sdx
-     SGM <- sweep (SGM, 1, sdx, "/")
-     SGM <- sweep (SGM, 2, sdx, "/")
+     SGM <- sweep(SGM, 1, sdx, "/")
+     SGM <- sweep(SGM, 2, sdx, "/")
      X <- (X - mux) / sdx
-     
   }
 
-  list (X = t(X), y = y, muj = muj, SGM = SGM)
-
+  list("X" = t(X), "y" = y, "muj" = muj, "SGM" = SGM)
 }
 
