@@ -42,7 +42,7 @@ htlr_map <- function (fithtlr, usedmc = NULL, tol = 1e-2, debug = FALSE)
    	fithtlr_mode <- fithtlr; fithtlr_mode$mode <- TRUE
    	
    	finish <- 0
-   	pb <- txtProgressBar(min = 0,  max = length (usedmc), style = 3)
+   	pb <- utils::txtProgressBar(min = 0,  max = length (usedmc), style = 3)
    	
    	
    	for (i in 1:length (usedmc)){
@@ -51,7 +51,7 @@ htlr_map <- function (fithtlr, usedmc = NULL, tol = 1e-2, debug = FALSE)
 		    X_addint = X_addint, y_tr = y_tr, s = s, alpha = alpha, 
     			sigmab0 = sigmab0, tol = tol, debug = debug)
     		finish <- finish + 1
-    		setTxtProgressBar(pb, finish)
+    		utils::setTxtProgressBar(pb, finish)
  	}
  	cat ("\n")
     fithtlr_mode
@@ -145,32 +145,32 @@ optim_logit <- function (deltas, X_addint, y_tr, alpha, s, sigmab0, tol = 1e-2,
 }
 
 
-#' Feature subsets selection with MCMC Samples
-#' 
-#' This function divides all of the Markov chain samples into a certain number of subpools, 
-#' each representing a feature subset.
-#' 
-#' The fitting results of \code{htlr_fitpred} are a mixture of subpools (posterior modes) of 
-#' Markov chain samples for different feature subsets. \code{htlr_fss} divides the Markov chain samples into 
-#' different subpools associated with different feature subsets (posterior modes).
-#' 
-#' @param fithtlr A list containing fitting results by \code{htlr_fitpred}.
-#' 
-#' @return 
-#' \itemize{
-#'   \item ftab - The rows of \code{ftab} are different feature subsets, with the 1st column showing 
-#'   the indices of feature subset, the 2nd column showing the relative frequency of Markov chain 
-#'   iterations in the subpool, and the 3rd column showing the coefficients estimated by median with the subpool.
-#'   \item mcids - A list of vectors containing the indices of Markov chain iterations associated with 
-#'   different feature subsets.
-#'   \item wsdbs - Weighted average of sdbs in all feature subsets found. 
-#'   The weights are the relative frequencies of Markov chain samples for different feature subsets.
-#'   \item msdbs - The maximum of sdbs in all feature subsets, for discovering features used in feature subsets with small frequencies.
-#' }
-#' 
-#' @export
-#' 
-#' @seealso htlr_fitpred 
+# Feature subsets selection with MCMC Samples
+# 
+# This function divides all of the Markov chain samples into a certain number of subpools, 
+# each representing a feature subset.
+# 
+# The fitting results of \code{htlr_fitpred} are a mixture of subpools (posterior modes) of 
+# Markov chain samples for different feature subsets. \code{htlr_fss} divides the Markov chain samples into 
+# different subpools associated with different feature subsets (posterior modes).
+# 
+# @param fithtlr A list containing fitting results by \code{htlr_fitpred}.
+# 
+# @return 
+# \itemize{
+#   \item ftab - The rows of \code{ftab} are different feature subsets, with the 1st column showing 
+#   the indices of feature subset, the 2nd column showing the relative frequency of Markov chain 
+#   iterations in the subpool, and the 3rd column showing the coefficients estimated by median with the subpool.
+#   \item mcids - A list of vectors containing the indices of Markov chain iterations associated with 
+#   different feature subsets.
+#   \item wsdbs - Weighted average of sdbs in all feature subsets found. 
+#   The weights are the relative frequencies of Markov chain samples for different feature subsets.
+#   \item msdbs - The maximum of sdbs in all feature subsets, for discovering features used in feature subsets with small frequencies.
+# }
+# 
+# @export
+# 
+# @seealso htlr_fitpred 
 htlr_fss <- function  (fithtlr, threshold = NULL, mfreq = NULL, print = TRUE)
 {
     if (is.null (threshold) | is.null (mfreq)) {
@@ -320,13 +320,13 @@ htlr_mapfss <- function (fithtlr, threshold = 0.01, mfreq = 0.01,
 
 }
 
-loocv_fss <- function (fss, X, y, sfreq = 0.01)
-{
-	nsubsets_sel <- max(length(which(fss$freqs >= sfreq)),1)
-    freqs <- fss$freqs [1:nsubsets_sel]
-    cfreq <- fss$cfreqs [nsubsets_sel]
-    cveval <- cv_table (fss$fsubsets[1:nsubsets_sel], x_total = X, y_total = y - 1)
-    cbind (fss$ftab[1:nsubsets_sel,], cveval[,-1])
-
-}
+# loocv_fss <- function (fss, X, y, sfreq = 0.01)
+# {
+# 	nsubsets_sel <- max(length(which(fss$freqs >= sfreq)),1)
+#     freqs <- fss$freqs [1:nsubsets_sel]
+#     cfreq <- fss$cfreqs [nsubsets_sel]
+#     cveval <- cv_table (fss$fsubsets[1:nsubsets_sel], x_total = X, y_total = y - 1)
+#     cbind (fss$ftab[1:nsubsets_sel,], cveval[,-1])
+# 
+# }
 

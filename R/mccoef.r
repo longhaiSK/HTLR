@@ -5,6 +5,7 @@
 #' @param x An object of S3 class \code{htlrfit}.
 #' @param k Coefficients associated with class \code{k} will be drawn. Must be a positive integer in 
 #' 1,2,\ldots,C for C-class traning labels. By default the last class will be chosen.
+#' @param ... Not used.
 #' 
 #' @return A matrix with \code{(p + 1)} columns and \code{i} rows, where \code{p} is the number of features 
 #' excluding intercept, and \code{i} is the number of iterations after burnin.
@@ -51,24 +52,24 @@ htlr_mdcoef <- function (fithtlr, usedmc = "all", features = "all", method = med
 }
 
 
-#' Plots Markov chain trace or scatterplot
-#' 
-#' This function plots Markov chain samples of 1 or 2 features. In plotting for 2 features, 
-#' gray lines show Markov chain transitions.
-#' 
-#' @param fithtlr A list containing fitting results by \code{\link{htlr_fitpred}}.
-#' @param features A vector of 1 or 2 numbers representing 1 or 2 features one wishes to look.
-#' @param class Coefficients associated with \code{class} will be drawn. Must be a positive integer in 
-#' 1,2,\ldots,C for C-class traning labels.
-#' @param usedmc Indices of Markov chain iterations used in plottings; one can set it to the 
-#' indices of Markov chain iterations belonging to the ith feature subset, \code{mcids[[i]]}, 
-#' found by \code{\link{htlr_fss}}.
-#' 
-#' @return A vector of Markov chain sample of 1 coefficient, 
-#' or an array of Markov chain samples of 2 coefficients.
-#' 
-#' @export
-#' 
+# Plots Markov chain trace or scatterplot
+# 
+# This function plots Markov chain samples of 1 or 2 features. In plotting for 2 features, 
+# gray lines show Markov chain transitions.
+# 
+# @param fithtlr A list containing fitting results by \code{\link{htlr_fit}}.
+# @param features A vector of 1 or 2 numbers representing 1 or 2 features one wishes to look.
+# @param class Coefficients associated with \code{class} will be drawn. Must be a positive integer in 
+# 1,2,\ldots,C for C-class traning labels.
+# @param usedmc Indices of Markov chain iterations used in plottings; one can set it to the 
+# indices of Markov chain iterations belonging to the ith feature subset, \code{mcids[[i]]}, 
+# found by \code{\link{htlr_fss}}.
+# 
+# @return A vector of Markov chain sample of 1 coefficient, 
+# or an array of Markov chain samples of 2 coefficients.
+# 
+# @export
+# 
 htlr_mccoef <-  function (
     fithtlr, features = 1, class = 2,  usedmc = "all", 
     symlim = FALSE, drawq = c(0,1), truedeltas = NULL)
@@ -139,7 +140,7 @@ htlr_mccoef <-  function (
 }
 
 
-#' @export
+# @export
 htlr_sdb <- function (fitbplr,usedmc = NULL, burn = NULL, thin = NULL)
 {
     
