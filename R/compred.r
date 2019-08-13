@@ -25,7 +25,7 @@ eval_tab_pred <- function (table_eval, showplot = TRUE, method = "Prediction", .
 {
    if (is.character (table_eval)) 
    {
-     table_eval <- as.matrix (read.table (table_eval))
+     table_eval <- as.matrix (utils::read.table (table_eval))
    }
    
    C <- ncol (table_eval) - 3
@@ -72,72 +72,73 @@ eval_tab_pred <- function (table_eval, showplot = TRUE, method = "Prediction", .
          amlp = amlp, er = er, which.wrong = which.wrong )
 }
 
-plot_features <- function (X, features, predfile = NULL, colcases = NULL, ...)
-{
-    n <- nrow (X)
+# plot_features <- function (X, features, predfile = NULL, colcases = NULL, ...)
+# {
+#     n <- nrow (X)
+# 
+# 	if (is.null (colcases)) {
+# 		if (!is.null (predfile))
+# 		{
+# 		    which.wrong <- eval_pred (predfile, showplot = FALSE)$which.wrong
+# 		    colcases <- rep (1, n)
+# 		    colcases [which.wrong] <- 2
+# 		}
+# 		else 
+# 		{
+# 		    which.wrong <- NULL
+# 		    colcases <- rep (1,n)
+# 		      
+# 		}
+#     }
+#     if (length (features) == 2)
+#     {
+#         plot (X[,features], col = colcases, xlab = "", ylab = "", ...)
+#     
+#         title (xlab = sprintf ("Expression Level of Gene %d", features[1])) 
+#         title (ylab = sprintf ("Expression Level of Gene %d", features[2])) 
+#          
+#         title( main = sprintf("Scatterplot of Genes %d and %d", 
+#                               features[1],features[2]), line = 0.5)
+#         for (i in which.wrong)
+#         {
+#             text (X[i,features[1]], X[i, features[2]], i, 
+#             srt =90, adj = 1.5, col = "red",  cex = 0.8)
+#         }
+#     }
+#     
+#     if (length (features) == 1)
+#     {
+#         plot (X[,features],col = colcases, xlab = "", ylab = "", ...)
+# 
+#         title (xlab = "Case Index", line = 2)
+#         title (ylab = sprintf ("Expression Level of Gene %d", features))
+#         
+#         for (i in which.wrong)
+#         {
+#             text (i,X[i,features],i,srt=90,adj = -0.4,col="red",cex = 0.8)
+#         }
+#     }
+#     
+#     if (length (features) == 3)
+#     {
+#       scatterplot3d (X[,features[1]], X[,features[2]], X[,features[3]],
+#       xlab = paste ("Gene", features[1]), 
+#       ylab = paste ("Gene", features[2]), 
+#       zlab = paste ("Gene", features[3]), 
+#       main = sprintf("3D Scatterplot of Genes %d, %d and %d", 
+#                      features [1], features [2], features [3] ),
+#       color = colcases,...)
+#     }
+#     
+# }
 
-	if (is.null (colcases)) {
-		if (!is.null (predfile))
-		{
-		    which.wrong <- eval_pred (predfile, showplot = FALSE)$which.wrong
-		    colcases <- rep (1, n)
-		    colcases [which.wrong] <- 2
-		}
-		else 
-		{
-		    which.wrong <- NULL
-		    colcases <- rep (1,n)
-		      
-		}
-    }
-    if (length (features) == 2)
-    {
-        plot (X[,features], col = colcases, xlab = "", ylab = "", ...)
-    
-        title (xlab = sprintf ("Expression Level of Gene %d", features[1])) 
-        title (ylab = sprintf ("Expression Level of Gene %d", features[2])) 
-         
-        title( main = sprintf("Scatterplot of Genes %d and %d", 
-                              features[1],features[2]), line = 0.5)
-        for (i in which.wrong)
-        {
-            text (X[i,features[1]], X[i, features[2]], i, 
-            srt =90, adj = 1.5, col = "red",  cex = 0.8)
-        }
-    }
-    
-    if (length (features) == 1)
-    {
-        plot (X[,features],col = colcases, xlab = "", ylab = "", ...)
-
-        title (xlab = "Case Index", line = 2)
-        title (ylab = sprintf ("Expression Level of Gene %d", features))
-        
-        for (i in which.wrong)
-        {
-            text (i,X[i,features],i,srt=90,adj = -0.4,col="red",cex = 0.8)
-        }
-    }
-    
-    if (length (features) == 3)
-    {
-      scatterplot3d (X[,features[1]], X[,features[2]], X[,features[3]],
-      xlab = paste ("Gene", features[1]), 
-      ylab = paste ("Gene", features[2]), 
-      zlab = paste ("Gene", features[3]), 
-      main = sprintf("3D Scatterplot of Genes %d, %d and %d", 
-                     features [1], features [2], features [3] ),
-      color = colcases,...)
-    }
-    
-}
-
+#' @import grDevices
 compare2 <- function (a1, a2, m1, m2, item, filename = item, sign = FALSE, ...)
 {
     psfile <- sprintf ("%s.ps", filename)
 
     postscript (file = psfile, title = psfile,
-                paper = "special", width = 5, height = 5, horiz = F)
+                paper = "special", width = 5, height = 5, horizontal = F)
     par (mar = c(4,4,2,0.5))
     if (!sign)  xlim <- range (a1, a2)
     else {
