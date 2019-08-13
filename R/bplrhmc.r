@@ -1,15 +1,13 @@
-#' Fit a HTLR models and make predictions
+#' Fit a HTLR model (old API)
 #'
 #' This function trains linear logistic regression models with HMC in restricted Gibbs sampling. 
-#' It also makes predictions for test cases if \code{X_ts} are provided.
 #'
-#' @param y_tr Vector of class labels in training or test data set. 
-#' Must be coded as non-negative integers, e.g., 1,2,\ldots,C for C classes, label 0 is also allowed.
-#' @param X_tr Design matrix of traning data; 
-#' rows should be for the cases, and columns for different features.
+#' @param y_tr Vector of response variables. Must be coded as non-negative integers, 
+#' e.g., 1,2,\ldots,C for C classes, label 0 is also allowed.
+#' @param X_tr Input matrix, of dimension nobs by nvars; each row is an observation vector.
 #' @param fsel Subsets of features selected before fitting, such as by univariate screening.
-#' @param stdzx Logical; if \code{TRUE}, the original feature values are standardized to have \code{mean} = 0 
-#' and \code{sd} = 1.
+#' @param stdzx Logical; if \code{TRUE}, the original feature values are standardized to have \code{mean = 0} 
+#' and \code{sd = 1}.
 #' 
 #' @param iters_h A positive integer specifying the number of warmup (aka burnin).
 #' @param iters_rmc A positive integer specifying the number of iterations after warmup.
@@ -72,39 +70,14 @@
 #' 
 #' @export
 #' 
-#' @examples
-#' set.seed(12345)
-#' data("colon")
-#' 
-#' ## fit HTLR models with selected features, note that the chain length setting is for demo only
-#'
-#' ## using t prior with 1 df and log-scale ~ N(-10, 10) 
-#' fit.t <- htlr_fit(X_tr = colon$X, y_tr = colon$y, fsel = 1:100,
-#'                   ptype = "t", alpha = 1, s = -10, eta = 10, 
-#'                   initial_state = "bcbcsfrda",
-#'                   iters_h = 10, iters_rmc = 10, thin = 1)
-#'
-#' ## using NEG prior with 1 df and log-scale fixed to -10 
-#' fit.neg <- htlr_fit(X_tr = colon$X, y_tr = colon$y, fsel = 1:100,
-#'                     ptype = "neg", alpha = 1, s = -10, 
-#'                     initial_state = "bcbcsfrda",
-#'                     iters_h = 10, iters_rmc = 10, thin = 1)
-#'
-#' ## using horseshoe prior with 1 df and log-scale fixed to -10 
-#' fit.ghs <- htlr_fit(X_tr = colon$X, y_tr = colon$y, fsel = 1:100,
-#'                     ptype = "ghs", alpha = 1, s = -10, 
-#'                     initial_state = "bcbcsfrda",
-#'                     iters_h = 10, iters_rmc = 10, thin = 1)
-#' 
 #' @seealso \code{\link{htlr}}
 #' 
 htlr_fit <- function (
-    y_tr, X_tr, X_ts = NULL, fsel = 1:ncol(X_tr), stdzx = TRUE, ## data
+    y_tr, X_tr, fsel = 1:ncol(X_tr), stdzx = TRUE, ## data
     sigmab0 = 2000, ptype = c("t", "ghs", "neg"), alpha = 1, s = -10, eta = 0,  ## prior
     iters_h = 1000, iters_rmc = 1000, thin = 1,  ## mc iterations
     leap_L = 50, leap_L_h = 5, leap_step = 0.3,  hmc_sgmcut = 0.05, ## hmc
-    initial_state = "lasso", silence = TRUE, pre.legacy = TRUE, ## initial state
-    predburn = NULL, predthin = 1, ...) ## prediction
+    initial_state = "lasso", silence = TRUE, pre.legacy = TRUE, ...)
 {
   .Deprecated("htlr")
   
@@ -148,7 +121,8 @@ htlr_fit <- function (
   
   ## add intercept
   X_addint <- cbind(1, X)
-  colnames(X_addint) <- c("Intercept", colnames(X))
+  if (!is.null(colnames(X)))
+    colnames(X_addint) <- c("Intercept", colnames(X))
   
   ## stepsize for HMC from data
   DDNloglike <- 1 / 4 * colSums(X_addint ^ 2)
@@ -232,98 +206,19 @@ htlr_fit <- function (
   attr(fit, "class") <- "htlrfit"
         
   ################## Prediction for test cases #########################
-  if (!is.null (X_ts))
-  {
-    fit$probs_pred <- htlr_predict(
-      X_ts = X_ts,
-      fithtlr = fit,
-      burn = predburn,
-      thin = predthin
-    )
-  }
+  # if (!is.null (X_ts))
+  # {
+  #   fit$probs_pred <- htlr_predict(
+  #     X_ts = X_ts,
+  #     fithtlr = fit,
+  #     burn = pred.burn,
+  #     thin = pred.thin
+  #   )
+  # }
   
   ############## Htlr fitting and prediction results #################
   return(fit)
 }
-
-#' Make prediction on new data
-#' 
-#' This function uses MCMC samples returned by \code{htlr_fit} to predict the class labels of test cases. 
-#' 
-#' @param X_ts Matrix of values at which predictions are to be made.
-#' @param fithtlr Fitted HTLR model object.
-#' @param deltas The values of deltas (for example true deltas) used to prediction. 
-#' 
-#' @return A matrix of predictive probabilities, with rows for cases, cols for classes.
-#' 
-#' @export
-#' 
-#' @seealso htlr_fit  
-htlr_predict <- function(X_ts, fithtlr = NULL, deltas = NULL, burn = NULL, thin = NULL, usedmc = NULL)
-{
-  ## chaning X_ts as needed
-  if (is.vector(X_ts))
-    X_ts <- matrix(X_ts, 1)
-  no_ts <- nrow(X_ts)
-  
-  if (is.null(deltas) & !is.null(fithtlr))
-  {
-    mcdims <- dim(fithtlr$mcdeltas)
-    p <- mcdims[1] - 1
-    K <- mcdims[2]
-    no_mcspl <- mcdims[3]
-    
-    ## index of mc iters used for inference
-    if (is.null(usedmc))
-    {
-      if (is.null(burn))
-        burn <- floor(no_mcspl * 0.1)
-      if (is.null(thin))
-        thin <- 1
-      usedmc <- seq(burn + 1, no_mcspl, by = thin)
-    }
-    
-    no_used <- length(usedmc)
-    
-    ## read deltas for prediction
-    longdeltas <- matrix(fithtlr$mcdeltas[, , usedmc], nrow = p + 1)
-    
-    ## selecting features and standardizing
-    fsel <- fithtlr$feature$fsel
-    X_ts <- X_ts[, fsel, drop = FALSE]
-    nuj <- fithtlr$feature$nuj
-    sdj <- fithtlr$feature$sdj
-    X_ts <- sweep(X_ts, 2, nuj, "-")
-    X_ts <- sweep(X_ts, 2, sdj, "/")
-  }
-  else
-  {
-    if (is.vector(deltas) | is.matrix (deltas)) 
-    {
-      deltas <- matrix(deltas, nrow = ncol (X_ts) + 1)
-      p <- nrow(deltas) - 1
-      K <- 1
-      longdeltas <- deltas
-      no_used <- 1
-    }
-  }
-  
-  ## add intercept to all cases
-  X_addint_ts <- cbind(1, X_ts)
-  
-  longlv <- X_addint_ts %*% longdeltas
-  arraylv <- array(longlv, dim = c(no_ts, K, no_used))
-  logsumlv <- apply(arraylv, 3, comp_lsl)
-  array_normlv <- sweep(arraylv, c(1, 3), logsumlv)
-  array_predprobs <- exp(array_normlv)
-  probs_pred <- apply(array_predprobs, c(1, 2), mean)
-  
-  predprobs_c1 <- pmax(0, 1 - apply(probs_pred, 1, sum))
-  probs_pred <- cbind(predprobs_c1, probs_pred)
-  
-  return(probs_pred)
-}
-
 
 ######################## some functions not used currently ###################
 
