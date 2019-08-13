@@ -14,9 +14,12 @@ htlr_gendata_MLR(n, p, NC = 3, nu = 2, w = 1, X = NULL,
 
 \item{NC}{Number of classes for response variables.}
 
-\item{nu, w}{The regression coefficients are generated with t prior with df = \code{nu}, scale = \code{sqrt(w)}.}
+\item{nu, w}{If \code{betas} is not supplied (default), the regression coefficients are generated with 
+t prior with df = \code{nu}, scale = \code{sqrt(w)}; will be ignored if \code{betas} is supplied.}
 
 \item{X}{The design matrix; will be generated from standard normal distribution if not supplied.}
+
+\item{betas}{User supplied regression coefficients.}
 }
 \value{
 A list contains input matrix \code{X}, response variables \code{y}, and regression coefficients \code{deltas}.

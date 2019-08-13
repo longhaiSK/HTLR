@@ -6,8 +6,10 @@
 #' @param n Number of observations.
 #' @param p Number of features.
 #' @param NC Number of classes for response variables.
-#' @param nu,w The regression coefficients are generated with t prior with df = \code{nu}, scale = \code{sqrt(w)}.
+#' @param nu,w If \code{betas} is not supplied (default), the regression coefficients are generated with 
+#' t prior with df = \code{nu}, scale = \code{sqrt(w)}; will be ignored if \code{betas} is supplied.
 #' @param X The design matrix; will be generated from standard normal distribution if not supplied.
+#' @param betas User supplied regression coefficients.  
 #' 
 #' @return A list contains input matrix \code{X}, response variables \code{y}, and regression coefficients \code{deltas}.      
 #'
@@ -23,8 +25,10 @@
 #' 
 htlr_gendata_MLR <- function(n, p, NC = 3, nu = 2, w = 1, X = NULL, betas = NULL)
 {
-  if (is.null(X))
-	  X <- matrix(rnorm (n * p), n, p)
+  if (is.null(X)) {
+    X <- matrix(rnorm (n * p), n, p)
+    colnames(X) <- paste0("V", 1:p)
+  }
 
   if (is.null(betas))
   {
@@ -92,13 +96,13 @@ htlr_gendata_MLR <- function(n, p, NC = 3, nu = 2, w = 1, X = NULL, betas = NULL
 #'   c(0, 0, 1)
 #' )
 #' 
-#' dat <- htlr_gendata_FAM(n, means, A, sd_g = 0.5, stdx = TRUE)
+#' dat <- htlr_gendata_FAM(n, means, A, sd_g = 0.5, stdzx = TRUE)
 #' ggplot2::qplot(dat$y, bins = 6)
 #' corrplot::corrplot(cor(dat$X))
 #' 
 #' @seealso \code{\link{htlr_gendata_MLR}}
 #'      
-htlr_gendata_FAM <- function(n, muj, A, sd_g = 0, stdx = FALSE)
+htlr_gendata_FAM <- function(n, muj, A, sd_g = 0, stdzx = FALSE)
 {
   p <- nrow(muj)
   C <- ncol(muj)
@@ -108,7 +112,7 @@ htlr_gendata_FAM <- function(n, muj, A, sd_g = 0, stdx = FALSE)
   X <- A %*% matrix(rnorm(n * k), k, n) + muj[, y] + rnorm(n * p) * sd_g 
   SGM <- A %*% t(A) + diag(sd_g^2, p)
   
-  if (stdx == TRUE)
+  if (stdzx == TRUE)
   {
      mux <- rowMeans(muj)
      sdx <- sqrt(diag(SGM) + apply (muj, 1, var) * (C - 1) / C)
@@ -117,7 +121,10 @@ htlr_gendata_FAM <- function(n, muj, A, sd_g = 0, stdx = FALSE)
      SGM <- sweep(SGM, 2, sdx, "/")
      X <- (X - mux) / sdx
   }
+  
+  X <- t(X)
+  colnames(X) <- paste0("V", 1:p)
 
-  list("X" = t(X), "y" = y, "muj" = muj, "SGM" = SGM)
+  list("X" = X, "y" = y, "muj" = muj, "SGM" = SGM)
 }
 

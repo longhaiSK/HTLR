@@ -132,11 +132,16 @@ optional supplied <code>X</code> using a multinomial logistic regression model.<
     </tr>
     <tr>
       <th>nu, w</th>
-      <td><p>The regression coefficients are generated with t prior with df = <code>nu</code>, scale = <code><a href='https://www.rdocumentation.org/packages/base/topics/MathFun'>sqrt(w)</a></code>.</p></td>
+      <td><p>If <code>betas</code> is not supplied (default), the regression coefficients are generated with 
+t prior with df = <code>nu</code>, scale = <code><a href='https://www.rdocumentation.org/packages/base/topics/MathFun'>sqrt(w)</a></code>; will be ignored if <code>betas</code> is supplied.</p></td>
     </tr>
     <tr>
       <th>X</th>
       <td><p>The design matrix; will be generated from standard normal distribution if not supplied.</p></td>
+    </tr>
+    <tr>
+      <th>betas</th>
+      <td><p>User supplied regression coefficients.</p></td>
     </tr>
     </table>
     

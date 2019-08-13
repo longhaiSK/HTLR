@@ -4,7 +4,7 @@
 \alias{htlr_gendata_FAM}
 \title{Generate simulated data with factor analysis model}
 \usage{
-htlr_gendata_FAM(n, muj, A, sd_g = 0, stdx = FALSE)
+htlr_gendata_FAM(n, muj, A, sd_g = 0, stdzx = FALSE)
 }
 \arguments{
 \item{n}{Number of observations.}
@@ -61,7 +61,7 @@ A[1:5, 1:3] <- rbind(
   c(0, 0, 1)
 )
 
-dat <- htlr_gendata_FAM(n, means, A, sd_g = 0.5, stdx = TRUE)
+dat <- htlr_gendata_FAM(n, means, A, sd_g = 0.5, stdzx = TRUE)
 ggplot2::qplot(dat$y, bins = 6)
 corrplot::corrplot(cor(dat$X))
 
