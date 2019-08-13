@@ -24,7 +24,6 @@
 #' 
 #' @export
 #' 
-#' @seealso htlr
 htlr_prior <- function(ptype = c("t", "ghs", "neg"), 
                          df = 1,
                          logw = -(1 / df) * 10,
@@ -43,15 +42,45 @@ htlr_prior <- function(ptype = c("t", "ghs", "neg"),
   )
 }
 
-## a function for retrieve fithtlr objs saved in a RData file
-# reload_fithtlr <- function (fithtlrfile)
-# {
-#     local
-#     ({
-#         fithtlr <- get (load (fithtlrfile))
-#         return (fithtlr)
-#     })
-# }
+#' Split data into train and test partitions
+#' 
+#' This function splits the input data and response variables into training and testing parts.
+#' 
+#' @param X Input matrix, of dimension nobs by nvars; each row is an observation vector.
+#' 
+#' @param y Vector of response variables.
+#' 
+#' @param p.train Percentage of training set.
+#' 
+#' @return List of training data \code{x.tr}, \code{y.tr} and testing data \code{x.te}, \code{y.te}.
+#' 
+#' @export
+#' 
+#' @examples 
+#' dat <- htlr_gendata_MLR(n = 100, p = 10)
+#' dat <- split_data(dat$X, dat$y, p.train = 0.7)
+#' dim(dat$x.tr)
+#' dim(dat$x.te)
+#'    
+split_data <- function(X, y, p.train = 0.7)
+{
+  stopifnot(nrow(X) == length(y))
+  n <- nrow(X)
+  
+  tr.row <- sample(1L:n, round(n * p.train), replace = FALSE)
+  
+  x.tr <- X[tr.row, , drop = FALSE]
+  y.tr <- y[tr.row]
+  x.te <- X[-tr.row, , drop = FALSE]
+  y.te <- y[-tr.row]
+  
+  list(
+    "x.tr" = x.tr, 
+    "y.tr" = y.tr,
+    "x.te" = x.te, 
+    "y.te" = y.te
+  )
+}
 
 ## compute V (delta)
 comp_vardeltas <- function (deltas)
@@ -63,7 +92,7 @@ comp_vardeltas <- function (deltas)
 }
 
 ## compute sd of betas
-#' @export
+# @export
 comp_sdb <- function (deltas, removeint = TRUE, normalize = FALSE)
 {
     C <- ncol (deltas) + 1
@@ -101,15 +130,16 @@ get_ix <- function (sub, whole, digits= 0)
 
 
 
-#' Plots feature importance scores
-#' 
-#' This function plots feature importance scores or coefficients using histogram line. 
-#' 
-#' @param fscores Scores measuring feature importance, such as \code{wsdbs}, \code{msdbs}, or coefficients values.
-#' 
-#' @export
-#' 
-#' @seealso htlr_fss
+#Plots feature importance scores
+# 
+#This function plots feature importance scores or coefficients using histogram line. 
+# 
+#param fscores Scores measuring feature importance, such as \code{wsdbs}, \code{msdbs}, or coefficients values.
+# 
+#' @import graphics
+#export
+# 
+#seealso htlr_fss
 plot_fscore <- function (fscores, fsel=1:length (fscores), show_ix = 0.1, do.plot = TRUE, ...)
 {
 	if (show_ix > 1) stop ("show_ix must be less than 1")
