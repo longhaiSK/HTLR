@@ -25,7 +25,7 @@
 #' 
 #' @keywords internal
 #' 
-#' @seealso htlr htlr_fit bcbcsf_deltas
+#' @seealso \code{\link{bcbcsf_deltas}}
 lasso_deltas <- function(X, y, lambda = NULL, alpha = 1, verbose = FALSE)
 {
   #try_require("glmnet")
@@ -119,80 +119,80 @@ lasso_fitpred <- function (X_tr, y_tr, X_ts = NULL, rank_fn = rank_plain, k = nc
 }
 
 
-lassocv_fsel_trpr <- function (y_tr, X_tr, X_ts, nos_fsel = ncol (X_tr), rankf = rank_k)
-{
-  no_ts <- nrow (X_ts)
-  rankedf <- rankf (X = X_tr, y = y_tr)
-
-  nfsel <- length (nos_fsel)
-  NC <- length (unique (y_tr))
-  array_probs_pred <- array (0, dim = c(no_ts, NC, nfsel))
-
-  for (i in 1:nfsel)
-  {
-    fsel <- rankedf [1:nos_fsel[i]]
-    array_probs_pred[,,i] <- trpr_lassocv (
-      y_tr = y_tr, X_tr = X_tr[, fsel, drop = FALSE],
-      X_ts = X_ts[, fsel, drop = FALSE])$probs_pred
-  }
-
-  list (nos_fsel = nos_fsel, array_probs_pred = array_probs_pred)
-}
-
-convert_ix <- function (n, nrow, ncol)
-{
-  m <- floor ((n - 1) %/% nrow)
-  r <- n - 1 - m * nrow
-  c (r + 1, m + 1)
-}
-
-trpr_rdacv <- function (X_tr, y_tr, X_ts, nos_fsel = ncol (X_tr), rankf = rank_plain)
-{
-  try_require("rda")
-  
-  topgenes <- rankf (X_tr, y_tr)
-  x_tr <- t (X_tr)
-  x_ts <- t (X_ts)
-
-  n <- ncol (x_ts)
-  C <- length (unique (y_tr))
-
-  K <- length (nos_fsel)
-
-  array_probs_pred <- array (0, dim = c(n, C, K))
-
-  for (k in 1:K)
-  {
-    nofsel <- nos_fsel [k]
-    fsel <- topgenes [1:nofsel]
-    x_tr_sel <- x_tr [fsel,, drop = FALSE]
-    x_ts_sel <- x_ts [fsel,, drop = FALSE]
-
-    fit <- rda::rda (x = x_tr_sel, y = y_tr)
-    fitcv <- rda::rda.cv (fit, x = x_tr_sel, y = y_tr)
-    no_delta <- length (fitcv$delta)
-    no_alpha <- length (fitcv$alpha)
-    ixmin <- which.min(fitcv$cv.err)
-    ixad <- convert_ix (ixmin, no_alpha, no_delta)
-    opt_alpha <- fitcv$alpha[ixad[1]]
-    opt_delta <- fitcv$delta[ixad[2]]
-
-    array_probs_pred[,,k] <- rda::rda (x = x_tr_sel, y = y_tr, xnew = x_ts_sel,
-    alpha = opt_alpha, delta = opt_delta )$posterior[1,1,,]
-
-    array_probs_pred[,,k] <- exp (array_probs_pred[,,k])
-    sumprobs <- apply (array_probs_pred[,,k], 1, sum)
-    array_probs_pred[,,k] <- array_probs_pred[,,k] / sumprobs
-  }
-
-  array_probs_pred
-
-}
-
-
-rdacv_fsel_trpr <- function (X_tr, y_tr, X_ts, nos_fsel = ncol (X_tr),
-    rankf = rank_plain)
-{
-  list (array_probs_pred = trpr_rdacv (X_tr = X_tr, y_tr = y_tr, X_ts = X_ts, nos_fsel = nos_fsel, rankf = rankf), nos_fsel = nos_fsel )
-}
+# lassocv_fsel_trpr <- function (y_tr, X_tr, X_ts, nos_fsel = ncol (X_tr), rankf = rank_k)
+# {
+#   no_ts <- nrow (X_ts)
+#   rankedf <- rankf (X = X_tr, y = y_tr)
+# 
+#   nfsel <- length (nos_fsel)
+#   NC <- length (unique (y_tr))
+#   array_probs_pred <- array (0, dim = c(no_ts, NC, nfsel))
+# 
+#   for (i in 1:nfsel)
+#   {
+#     fsel <- rankedf [1:nos_fsel[i]]
+#     array_probs_pred[,,i] <- trpr_lassocv (
+#       y_tr = y_tr, X_tr = X_tr[, fsel, drop = FALSE],
+#       X_ts = X_ts[, fsel, drop = FALSE])$probs_pred
+#   }
+# 
+#   list (nos_fsel = nos_fsel, array_probs_pred = array_probs_pred)
+# }
+# 
+# convert_ix <- function (n, nrow, ncol)
+# {
+#   m <- floor ((n - 1) %/% nrow)
+#   r <- n - 1 - m * nrow
+#   c (r + 1, m + 1)
+# }
+# 
+# trpr_rdacv <- function (X_tr, y_tr, X_ts, nos_fsel = ncol (X_tr), rankf = rank_plain)
+# {
+#   try_require("rda")
+#   
+#   topgenes <- rankf (X_tr, y_tr)
+#   x_tr <- t (X_tr)
+#   x_ts <- t (X_ts)
+# 
+#   n <- ncol (x_ts)
+#   C <- length (unique (y_tr))
+# 
+#   K <- length (nos_fsel)
+# 
+#   array_probs_pred <- array (0, dim = c(n, C, K))
+# 
+#   for (k in 1:K)
+#   {
+#     nofsel <- nos_fsel [k]
+#     fsel <- topgenes [1:nofsel]
+#     x_tr_sel <- x_tr [fsel,, drop = FALSE]
+#     x_ts_sel <- x_ts [fsel,, drop = FALSE]
+# 
+#     fit <- rda::rda (x = x_tr_sel, y = y_tr)
+#     fitcv <- rda::rda.cv (fit, x = x_tr_sel, y = y_tr)
+#     no_delta <- length (fitcv$delta)
+#     no_alpha <- length (fitcv$alpha)
+#     ixmin <- which.min(fitcv$cv.err)
+#     ixad <- convert_ix (ixmin, no_alpha, no_delta)
+#     opt_alpha <- fitcv$alpha[ixad[1]]
+#     opt_delta <- fitcv$delta[ixad[2]]
+# 
+#     array_probs_pred[,,k] <- rda::rda (x = x_tr_sel, y = y_tr, xnew = x_ts_sel,
+#     alpha = opt_alpha, delta = opt_delta )$posterior[1,1,,]
+# 
+#     array_probs_pred[,,k] <- exp (array_probs_pred[,,k])
+#     sumprobs <- apply (array_probs_pred[,,k], 1, sum)
+#     array_probs_pred[,,k] <- array_probs_pred[,,k] / sumprobs
+#   }
+# 
+#   array_probs_pred
+# 
+# }
+# 
+# 
+# rdacv_fsel_trpr <- function (X_tr, y_tr, X_ts, nos_fsel = ncol (X_tr),
+#     rankf = rank_plain)
+# {
+#   list (array_probs_pred = trpr_rdacv (X_tr = X_tr, y_tr = y_tr, X_ts = X_ts, nos_fsel = nos_fsel, rankf = rankf), nos_fsel = nos_fsel )
+# }
 
