@@ -11,6 +11,8 @@
 
 \item{k}{Coefficients associated with class \code{k} will be drawn. Must be a positive integer in 
 1,2,\ldots,C for C-class traning labels. By default the last class will be chosen.}
+
+\item{...}{Not used.}
 }
 \value{
 A matrix with \code{(p + 1)} columns and \code{i} rows, where \code{p} is the number of features 

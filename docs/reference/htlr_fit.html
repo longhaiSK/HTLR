@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Fit a HTLR models and make predictions — htlr_fit • HTLR</title>
+<title>Fit a HTLR model (old API) — htlr_fit • HTLR</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,10 +30,9 @@
 
 
 
-<meta property="og:title" content="Fit a HTLR models and make predictions — htlr_fit" />
+<meta property="og:title" content="Fit a HTLR model (old API) — htlr_fit" />
 
-<meta property="og:description" content="This function trains linear logistic regression models with HMC in restricted Gibbs sampling. 
-It also makes predictions for test cases if X_ts are provided." />
+<meta property="og:description" content="This function trains linear logistic regression models with HMC in restricted Gibbs sampling." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -100,37 +99,34 @@ It also makes predictions for test cases if X_ts are provided." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Fit a HTLR models and make predictions</h1>
+    <h1>Fit a HTLR model (old API)</h1>
     <small class="dont-index">Source: <a href='https://github.com/longhaiSK/HTLR/blob/master/R/bplrhmc.r'><code>R/bplrhmc.r</code></a></small>
     <div class="hidden name"><code>htlr_fit.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>This function trains linear logistic regression models with HMC in restricted Gibbs sampling. 
-It also makes predictions for test cases if <code>X_ts</code> are provided.</p>
+    <p>This function trains linear logistic regression models with HMC in restricted Gibbs sampling.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>htlr_fit</span>(<span class='no'>y_tr</span>, <span class='no'>X_tr</span>, <span class='kw'>X_ts</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>fsel</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>ncol</a></span>(<span class='no'>X_tr</span>), <span class='kw'>stdzx</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+    <pre class="usage"><span class='fu'>htlr_fit</span>(<span class='no'>y_tr</span>, <span class='no'>X_tr</span>, <span class='kw'>fsel</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>ncol</a></span>(<span class='no'>X_tr</span>), <span class='kw'>stdzx</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>sigmab0</span> <span class='kw'>=</span> <span class='fl'>2000</span>, <span class='kw'>ptype</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"t"</span>, <span class='st'>"ghs"</span>, <span class='st'>"neg"</span>), <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>s</span> <span class='kw'>=</span> -<span class='fl'>10</span>,
   <span class='kw'>eta</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>iters_h</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>iters_rmc</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>1</span>,
   <span class='kw'>leap_L</span> <span class='kw'>=</span> <span class='fl'>50</span>, <span class='kw'>leap_L_h</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>leap_step</span> <span class='kw'>=</span> <span class='fl'>0.3</span>, <span class='kw'>hmc_sgmcut</span> <span class='kw'>=</span> <span class='fl'>0.05</span>,
-  <span class='kw'>initial_state</span> <span class='kw'>=</span> <span class='st'>"lasso"</span>, <span class='kw'>silence</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>pre.legacy</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>predburn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>predthin</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>initial_state</span> <span class='kw'>=</span> <span class='st'>"lasso"</span>, <span class='kw'>silence</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>pre.legacy</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>y_tr</th>
-      <td><p>Vector of class labels in training or test data set. 
-Must be coded as non-negative integers, e.g., 1,2,&#8230;,C for C classes, label 0 is also allowed.</p></td>
+      <td><p>Vector of response variables. Must be coded as non-negative integers, 
+e.g., 1,2,&#8230;,C for C classes, label 0 is also allowed.</p></td>
     </tr>
     <tr>
       <th>X_tr</th>
-      <td><p>Design matrix of traning data; 
-rows should be for the cases, and columns for different features.</p></td>
+      <td><p>Input matrix, of dimension nobs by nvars; each row is an observation vector.</p></td>
     </tr>
     <tr>
       <th>fsel</th>
@@ -138,8 +134,8 @@ rows should be for the cases, and columns for different features.</p></td>
     </tr>
     <tr>
       <th>stdzx</th>
-      <td><p>Logical; if <code>TRUE</code>, the original feature values are standardized to have <code>mean</code> = 0 
-and <code>sd</code> = 1.</p></td>
+      <td><p>Logical; if <code>TRUE</code>, the original feature values are standardized to have <code>mean = 0</code> 
+and <code>sd = 1</code>.</p></td>
     </tr>
     <tr>
       <th>sigmab0</th>
@@ -244,34 +240,6 @@ with Hyper-Lasso Priors for High-dimensional Feature Selection.
     <div class='dont-index'><p><code><a href='htlr.html'>htlr</a></code></p></div>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span>(<span class='fl'>12345</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='st'>"colon"</span>)
-
-<span class='co'>## fit HTLR models with selected features, note that the chain length setting is for demo only</span>
-
-<span class='co'>## using t prior with 1 df and log-scale ~ N(-10, 10) </span>
-<span class='no'>fit.t</span> <span class='kw'>&lt;-</span> <span class='fu'>htlr_fit</span>(<span class='kw'>X_tr</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>X</span>, <span class='kw'>y_tr</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>y</span>, <span class='kw'>fsel</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>100</span>,
-                  <span class='kw'>ptype</span> <span class='kw'>=</span> <span class='st'>"t"</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>s</span> <span class='kw'>=</span> -<span class='fl'>10</span>, <span class='kw'>eta</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-                  <span class='kw'>initial_state</span> <span class='kw'>=</span> <span class='st'>"bcbcsfrda"</span>,
-                  <span class='kw'>iters_h</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>iters_rmc</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: 'htlr_fit' is deprecated.</span>
-#&gt; <span class='warning'>Use 'htlr' instead.</span>
-#&gt; <span class='warning'>See help("Deprecated")</span></div><div class='input'>
-<span class='co'>## using NEG prior with 1 df and log-scale fixed to -10 </span>
-<span class='no'>fit.neg</span> <span class='kw'>&lt;-</span> <span class='fu'>htlr_fit</span>(<span class='kw'>X_tr</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>X</span>, <span class='kw'>y_tr</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>y</span>, <span class='kw'>fsel</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>100</span>,
-                    <span class='kw'>ptype</span> <span class='kw'>=</span> <span class='st'>"neg"</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>s</span> <span class='kw'>=</span> -<span class='fl'>10</span>,
-                    <span class='kw'>initial_state</span> <span class='kw'>=</span> <span class='st'>"bcbcsfrda"</span>,
-                    <span class='kw'>iters_h</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>iters_rmc</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: 'htlr_fit' is deprecated.</span>
-#&gt; <span class='warning'>Use 'htlr' instead.</span>
-#&gt; <span class='warning'>See help("Deprecated")</span></div><div class='input'>
-<span class='co'>## using horseshoe prior with 1 df and log-scale fixed to -10 </span>
-<span class='no'>fit.ghs</span> <span class='kw'>&lt;-</span> <span class='fu'>htlr_fit</span>(<span class='kw'>X_tr</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>X</span>, <span class='kw'>y_tr</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>y</span>, <span class='kw'>fsel</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>100</span>,
-                    <span class='kw'>ptype</span> <span class='kw'>=</span> <span class='st'>"ghs"</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>s</span> <span class='kw'>=</span> -<span class='fl'>10</span>,
-                    <span class='kw'>initial_state</span> <span class='kw'>=</span> <span class='st'>"bcbcsfrda"</span>,
-                    <span class='kw'>iters_h</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>iters_rmc</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: 'htlr_fit' is deprecated.</span>
-#&gt; <span class='warning'>Use 'htlr' instead.</span>
-#&gt; <span class='warning'>See help("Deprecated")</span></div><div class='input'>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -283,9 +251,7 @@ with Hyper-Lasso Priors for High-dimensional Feature Selection.
       <li><a href="#references">References</a></li>
 
       <li><a href="#see-also">See also</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+          </ul>
 
   </div>
 </div>

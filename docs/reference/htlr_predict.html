@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Make prediction on new data — htlr_predict • HTLR</title>
+<title>Make prediction on new data (advanced) — htlr_predict • HTLR</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,10 @@
 
 
 
-<meta property="og:title" content="Make prediction on new data — htlr_predict" />
+<meta property="og:title" content="Make prediction on new data (advanced) — htlr_predict" />
 
-<meta property="og:description" content="This function uses MCMC samples returned by htlr_fit to predict the class labels of test cases." />
+<meta property="og:description" content="This function uses MCMC samples from fitted htlrfit object OR user supplied 
+regression coefficient to predict the class labels of test cases." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -99,14 +100,15 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Make prediction on new data</h1>
-    <small class="dont-index">Source: <a href='https://github.com/longhaiSK/HTLR/blob/master/R/bplrhmc.r'><code>R/bplrhmc.r</code></a></small>
+    <h1>Make prediction on new data (advanced)</h1>
+    <small class="dont-index">Source: <a href='https://github.com/longhaiSK/HTLR/blob/master/R/predict.R'><code>R/predict.R</code></a></small>
     <div class="hidden name"><code>htlr_predict.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>This function uses MCMC samples returned by <code>htlr_fit</code> to predict the class labels of test cases.</p>
+    <p>This function uses MCMC samples from fitted <code>htlrfit</code> object OR user supplied 
+regression coefficient to predict the class labels of test cases.</p>
     
     </div>
 
@@ -126,17 +128,24 @@
     </tr>
     <tr>
       <th>deltas</th>
-      <td><p>The values of deltas (for example true deltas) used to prediction.</p></td>
+      <td><p>The values of deltas (for example true deltas) used to make prediction; 
+will override <code>fithtlr</code> if provided.</p></td>
+    </tr>
+    <tr>
+      <th>burn, thin</th>
+      <td><p><code>burn</code> of Markov chain (super)iterations will be discarded for prediction,
+and only every <code>thin</code> are used.</p></td>
+    </tr>
+    <tr>
+      <th>usedmc</th>
+      <td><p>Indices of Markov chain iterations used for inference. 
+If supplied, <code>burn</code> and <code>thin</code> will be ignored.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A matrix of predictive probabilities, with rows for cases, cols for classes.</p>
-    
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p>htlr_fit</p></div>
     
 
   </div>
@@ -146,8 +155,6 @@
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-
-      <li><a href="#see-also">See also</a></li>
           </ul>
 
   </div>

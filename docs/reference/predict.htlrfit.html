@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create a matrix of Markov chain samples — as.matrix.htlrfit • HTLR</title>
+<title>Make prediction on new data — predict.htlrfit • HTLR</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Create a matrix of Markov chain samples — as.matrix.htlrfit" />
+<meta property="og:title" content="Make prediction on new data — predict.htlrfit" />
 
-<meta property="og:description" content="The Markov chain samples (without warmup) included in a htlrfit object will be coerced to a matrix." />
+<meta property="og:description" content="Similar to other predict methods, this function returns predictions from a fitted htlrfit object." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -99,50 +99,49 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create a matrix of Markov chain samples</h1>
-    <small class="dont-index">Source: <a href='https://github.com/longhaiSK/HTLR/blob/master/R/mccoef.r'><code>R/mccoef.r</code></a></small>
-    <div class="hidden name"><code>as.matrix.htlrfit.Rd</code></div>
+    <h1>Make prediction on new data</h1>
+    <small class="dont-index">Source: <a href='https://github.com/longhaiSK/HTLR/blob/master/R/predict.R'><code>R/predict.R</code></a></small>
+    <div class="hidden name"><code>predict.htlrfit.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>The Markov chain samples (without warmup) included in a <code>htlrfit</code> object will be coerced to a matrix.</p>
+    <p>Similar to other predict methods, this function returns predictions from a fitted <code>htlrfit</code> object.</p>
     
     </div>
 
     <pre class="usage"><span class='co'># S3 method for htlrfit</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>as.matrix</a></span>(<span class='no'>x</span>, <span class='kw'>k</span> <span class='kw'>=</span> <span class='no'>x</span>$<span class='no'>K</span>, <span class='no'>...</span>)</pre>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/predict'>predict</a></span>(<span class='no'>object</span>, <span class='no'>newx</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"response"</span>, <span class='st'>"class"</span>),
+  <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>An object of S3 class <code>htlrfit</code>.</p></td>
+      <th>object</th>
+      <td><p>A fitted model object with S3 class <code>htlrfit</code>.</p></td>
     </tr>
     <tr>
-      <th>k</th>
-      <td><p>Coefficients associated with class <code>k</code> will be drawn. Must be a positive integer in 
-1,2,&#8230;,C for C-class traning labels. By default the last class will be chosen.</p></td>
+      <th>newx</th>
+      <td><p>A Matrix of values at which predictions are to be made.</p></td>
+    </tr>
+    <tr>
+      <th>type</th>
+      <td><p>Type of prediction required. Type "response" gives the fitted probabilities.
+Type "class" produces the class label corresponding to the maximum probability.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Not used.</p></td>
+      <td><p>Advanced options to specify the Markov chain iterations used for inference. 
+See <code><a href='htlr_predict.html'>htlr_predict</a></code>.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A matrix with <code>(p + 1)</code> columns and <code>i</code> rows, where <code>p</code> is the number of features 
-excluding intercept, and <code>i</code> is the number of iterations after burnin.</p>
+    <p>The object returned depends on type.</p>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## No. of features used: 100; No. of iterations after burnin: 15 </span>
-<span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='htlr.html'>htlr</a></span>(<span class='kw'>X</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>X</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>y</span>, <span class='kw'>fsel</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>100</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>warmup</span> <span class='kw'>=</span> <span class='fl'>5</span>)
-
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/dim'>dim</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>as.matrix</a></span>(<span class='no'>fit</span>))</div><div class='output co'>#&gt; [1]  15 101</div><div class='input'>  
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -150,9 +149,7 @@ excluding intercept, and <code>i</code> is the number of iterations after burnin
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+          </ul>
 
   </div>
 </div>
