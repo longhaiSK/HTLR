@@ -2,15 +2,14 @@
 #'
 #' This function trains linear logistic regression models with HMC in restricted Gibbs sampling. 
 #'
-#' @param X Design matrix of traning data; 
-#' rows should be for the cases, and columns for different features.
+#' @param X Input matrix, of dimension nobs by nvars; each row is an observation vector.
 #' 
-#' @param y Vector of class labels in training or test data set. 
-#' Must be coded as non-negative integers, e.g., 1,2,\ldots,C for C classes, label 0 is also allowed.
+#' @param y Vector of response variables. Must be coded as non-negative integers, 
+#' e.g., 1,2,\ldots,C for C classes, label 0 is also allowed.
 #' 
 #' @param fsel Subsets of features selected before fitting, such as by univariate screening.
-#' @param stdzx Logical; if \code{TRUE}, the original feature values are standardized to have \code{mean} = 0 
-#' and \code{sd} = 1.
+#' @param stdzx Logical; if \code{TRUE}, the original feature values are standardized to have \code{mean = 0} 
+#' and \code{sd = 1}.
 #' 
 #' @param iter A positive integer specifying the number of iterations (including warmup).
 #' @param warmup A positive integer specifying the number of warmup (aka burnin). 
@@ -164,7 +163,8 @@ htlr <-
   
   ## add intercept
   X.addint <- cbind(1, X)
-  colnames(X.addint) <- c("Intercept", colnames(X))
+  if (!is.null(colnames(X)))
+    colnames(X.addint) <- c("Intercept", colnames(X))
   
   ## stepsize for HMC from data
   DDNloglike <- 1 / 4 * colSums(X.addint ^ 2)

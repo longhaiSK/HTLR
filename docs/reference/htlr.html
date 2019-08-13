@@ -120,13 +120,12 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>X</th>
-      <td><p>Design matrix of traning data; 
-rows should be for the cases, and columns for different features.</p></td>
+      <td><p>Input matrix, of dimension nobs by nvars; each row is an observation vector.</p></td>
     </tr>
     <tr>
       <th>y</th>
-      <td><p>Vector of class labels in training or test data set. 
-Must be coded as non-negative integers, e.g., 1,2,&#8230;,C for C classes, label 0 is also allowed.</p></td>
+      <td><p>Vector of response variables. Must be coded as non-negative integers, 
+e.g., 1,2,&#8230;,C for C classes, label 0 is also allowed.</p></td>
     </tr>
     <tr>
       <th>fsel</th>
@@ -134,8 +133,8 @@ Must be coded as non-negative integers, e.g., 1,2,&#8230;,C for C classes, label
     </tr>
     <tr>
       <th>stdzx</th>
-      <td><p>Logical; if <code>TRUE</code>, the original feature values are standardized to have <code>mean</code> = 0 
-and <code>sd</code> = 1.</p></td>
+      <td><p>Logical; if <code>TRUE</code>, the original feature values are standardized to have <code>mean = 0</code> 
+and <code>sd = 1</code>.</p></td>
     </tr>
     <tr>
       <th>prior</th>

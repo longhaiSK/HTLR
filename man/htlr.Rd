@@ -10,16 +10,15 @@ htlr(X, y, fsel = 1:ncol(X), stdzx = TRUE, prior = "t", df = 1,
   cut = 0.05, verbose = FALSE, pre.legacy = FALSE, ...)
 }
 \arguments{
-\item{X}{Design matrix of traning data; 
-rows should be for the cases, and columns for different features.}
+\item{X}{Input matrix, of dimension nobs by nvars; each row is an observation vector.}
 
-\item{y}{Vector of class labels in training or test data set. 
-Must be coded as non-negative integers, e.g., 1,2,\ldots,C for C classes, label 0 is also allowed.}
+\item{y}{Vector of response variables. Must be coded as non-negative integers, 
+e.g., 1,2,\ldots,C for C classes, label 0 is also allowed.}
 
 \item{fsel}{Subsets of features selected before fitting, such as by univariate screening.}
 
-\item{stdzx}{Logical; if \code{TRUE}, the original feature values are standardized to have \code{mean} = 0 
-and \code{sd} = 1.}
+\item{stdzx}{Logical; if \code{TRUE}, the original feature values are standardized to have \code{mean = 0} 
+and \code{sd = 1}.}
 
 \item{prior}{The prior to be applied to the model. Either a list of hyperparameter settings 
 returned by \code{\link{htlr_prior}} or a character string from "t" (student-t), "ghs" (horseshoe), 
