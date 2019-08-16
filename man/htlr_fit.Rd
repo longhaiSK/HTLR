@@ -2,29 +2,31 @@
 % Please edit documentation in R/bplrhmc.r
 \name{htlr_fit}
 \alias{htlr_fit}
-\title{Fit a HTLR model (old API)}
+\title{Fit a HTLR model (internal API)}
 \usage{
-htlr_fit(y_tr, X_tr, fsel = 1:ncol(X_tr), stdzx = TRUE,
-  sigmab0 = 2000, ptype = c("t", "ghs", "neg"), alpha = 1, s = -10,
+htlr_fit(X_tr, y_tr, fsel = 1:ncol(X_tr), stdzx = TRUE,
+  ptype = c("t", "ghs", "neg"), sigmab0 = 2000, alpha = 1, s = -10,
   eta = 0, iters_h = 1000, iters_rmc = 1000, thin = 1,
   leap_L = 50, leap_L_h = 5, leap_step = 0.3, hmc_sgmcut = 0.05,
-  initial_state = "lasso", silence = TRUE, pre.legacy = TRUE, ...)
+  initial_state = "lasso", silence = TRUE, pre.legacy = TRUE,
+  alpha.rda = 0.2, lasso.lambda = seq(0.05, 0.01, by = -0.01),
+  X_ts = NULL, predburn = NULL, predthin = 1)
 }
 \arguments{
+\item{X_tr}{Input matrix, of dimension nobs by nvars; each row is an observation vector.}
+
 \item{y_tr}{Vector of response variables. Must be coded as non-negative integers, 
 e.g., 1,2,\ldots,C for C classes, label 0 is also allowed.}
-
-\item{X_tr}{Input matrix, of dimension nobs by nvars; each row is an observation vector.}
 
 \item{fsel}{Subsets of features selected before fitting, such as by univariate screening.}
 
 \item{stdzx}{Logical; if \code{TRUE}, the original feature values are standardized to have \code{mean = 0} 
 and \code{sd = 1}.}
 
-\item{sigmab0}{The \code{sd} of the normal prior for the intercept.}
-
 \item{ptype}{The prior to be applied to the model. Either "t" (student-t, default), 
 "ghs" (horseshoe), or "neg" (normal-exponential-gamma).}
+
+\item{sigmab0}{The \code{sd} of the normal prior for the intercept.}
 
 \item{alpha}{The degree freedom of t/ghs/neg prior for coefficients.}
 
@@ -70,24 +72,28 @@ a character string matches the following:
 legacy-3.1-1 is reproduced. The speed would be typically slower than non-legacy mode on
 multi-core machine.}
 
-\item{...}{Other optional parameters:
-\itemize{
-  \item alpha.rda A user supplied alpha value for \code{\link{bcbcsf_deltas}}. Default: 0.2.
-  \item lasso.lambda - A user supplied lambda sequence for \code{\link{lasso_deltas}}. 
-  Default: \{.01, .02, \ldots, .05\}. Will be ignored if \code{pre.legacy} is set to \code{TRUE}.
-}}
+\item{alpha.rda}{A user supplied alpha value for \code{\link{bcbcsf_deltas}} when
+setting up BCBCSF initial state. Default: 0.2.}
+
+\item{lasso.lambda}{- A user supplied lambda sequence for \code{\link{lasso_deltas}} when 
+setting up Lasso initial state. Default: \{.01, .02, \ldots, .05\}. Will be ignored if 
+\code{pre.legacy} is set to \code{TRUE}.}
+
+\item{X_ts}{Test data which predictions are to be made.}
+
+\item{predburn, predthin}{For prediction base on \code{X_ts} (when supplied), \code{predburn} of 
+Markov chain (super)iterations will be discarded, and only every \code{predthin} are used for inference.}
 }
 \value{
 A list of fitting results.
 }
 \description{
 This function trains linear logistic regression models with HMC in restricted Gibbs sampling.
+It also makes predictions for test cases if \code{X_ts} are provided.
 }
 \references{
 Longhai Li and Weixin Yao (2018). Fully Bayesian Logistic Regression 
 with Hyper-Lasso Priors for High-dimensional Feature Selection.
 \emph{Journal of Statistical Computation and Simulation} 2018, 88:14, 2827-2851.
 }
-\seealso{
-\code{\link{htlr}}
-}
+\keyword{internal}

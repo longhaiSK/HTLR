@@ -30,7 +30,7 @@ configuration list from \code{\link{htlr_prior}} is passed to \code{prior}.}
 \item{iter}{A positive integer specifying the number of iterations (including warmup).}
 
 \item{warmup}{A positive integer specifying the number of warmup (aka burnin). 
-The number of warmup iterations should not be larger than iter and the default is iter/2.}
+The number of warmup iterations should not be larger than iter and the default is \code{iter / 2}.}
 
 \item{thin}{A positive integer specifying the period for saving samples.}
 
@@ -60,8 +60,8 @@ or a user supplied initial state vector, or a character string matches the follo
 \item{verbose}{Logical; setting it to \code{TRUE} for tracking MCMC sampling iterations.}
 
 \item{pre.legacy}{Logical; if \code{TRUE}, the output produced in \code{HTLR} versions up to 
-legacy-3.1-1 is reproduced. The speed would be typically slower than non-legacy mode on
-multi-core machine.}
+legacy-3.1-1 is reproduced. The speed will be typically slower than non-legacy mode on
+multi-core machine. Default is \code{FALSE}.}
 
 \item{...}{Other optional parameters:
 \itemize{

@@ -13,7 +13,7 @@
 #' 
 #' @param iter A positive integer specifying the number of iterations (including warmup).
 #' @param warmup A positive integer specifying the number of warmup (aka burnin). 
-#' The number of warmup iterations should not be larger than iter and the default is iter/2.
+#' The number of warmup iterations should not be larger than iter and the default is \code{iter / 2}.
 #' 
 #' @param thin A positive integer specifying the period for saving samples.
 #' 
@@ -45,11 +45,11 @@
 #' @param df The degree freedom of t/ghs/neg prior for coefficients. Will be ignored if the 
 #' configuration list from \code{\link{htlr_prior}} is passed to \code{prior}. 
 #' 
-#' @param verbose Logical; setting it to \code{TRUE} for tracking MCMC sampling iterations.
+#' @param verbose Logical; setting it to \code{TRUE} for tracking MCMC sampling iterations.  
 #' 
 #' @param pre.legacy Logical; if \code{TRUE}, the output produced in \code{HTLR} versions up to 
-#' legacy-3.1-1 is reproduced. The speed would be typically slower than non-legacy mode on
-#' multi-core machine. 
+#' legacy-3.1-1 is reproduced. The speed will be typically slower than non-legacy mode on
+#' multi-core machine. Default is \code{FALSE}.
 #' 
 #' @param ... Other optional parameters:
 #' \itemize{
@@ -64,10 +64,6 @@
 #' Longhai Li and Weixin Yao (2018). Fully Bayesian Logistic Regression 
 #' with Hyper-Lasso Priors for High-dimensional Feature Selection.
 #' \emph{Journal of Statistical Computation and Simulation} 2018, 88:14, 2827-2851.
-#' 
-#' @useDynLib HTLR
-#' 
-#' @import Rcpp stats
 #' 
 #' @export
 #' 
@@ -111,141 +107,33 @@ htlr <-
             ...
   )
 {
-  #------------------------------- Input Checking -------------------------------#
+  stopifnot(iter > warmup, warmup > 0, thin > 0, leap > 0, leap.warm > 0)  
   
-  if (length (y) != nrow (X) ) 
-    stop ("'y' and 'X' mismatch")
-  
-  yfreq <- table(y)
-  if (length(yfreq) < 2)
-    stop("less than 2 classes of response")
-  if (any(yfreq < 2)) 
-    stop("less than 2 cases in some group")
-  
-  if (is.character(prior))
-  {
-    prior <- htlr_prior(prior, df)
+  if (exists("rda.alpha")) {
+    if (init != "bcbc")
+      warning("not using 'BCBCSF' init, input 'rda.alpha' will be ignored")
+  } else {
+    rda.alpha <- 0.2
   }
   
-  ptype <- prior$ptype
-  alpha <- prior$alpha
-  logw <- prior$logw
-  eta <- prior$eta
-  sigmab0 <- prior$sigmab0
-  
-  stopifnot(iter > warmup, warmup > 0, thin > 0, leap > 0, leap.warm > 0,
-            alpha > 0, eta >= 0, sigmab0 >= 0)
-  
-  #----------------------------- Data preprocessing -----------------------------#
-  
-  if (min(y) == 0) y <- y + 1
-  
-  ybase <- as.integer(y - 1)
-  ymat <- model.matrix( ~ factor(y) - 1)[, -1]
-  C <- length(unique(ybase))
-  K <- C - 1
-  
-  ## feature selection
-  X <- X[, fsel, drop = FALSE]
-  p <- length(fsel)
-  n <- nrow(X)
-  
-  ## standardize selected features
-  nuj <- rep(0, length(fsel))
-  sdj <- rep(1, length(fsel))
-  if (stdzx == TRUE & !is.numeric(init))
-  {
-    nuj <- apply(X, 2, median)
-    sdj <- apply(X, 2, sd)
-    X <- sweep(X, 2, nuj, "-")
-    X <- sweep(X, 2, sdj, "/")
+  if (exists("lasso.lambda")) {
+    if (init != "lasso")
+      warning("not using 'LASSO' init, input 'lasso.lambda' will be ignored")
+    else if (pre.legacy)
+      warning("pre.legacy == TRUE, input 'lasso.lambda' will be ignored")
+  } else {
+    lasso.lambda <- seq(.05, .01, by = -.01)
   }
-  
-  ## add intercept
-  X.addint <- cbind(1, X)
-  if (!is.null(colnames(X)))
-    colnames(X.addint) <- c("Intercept", colnames(X))
-  
-  ## stepsize for HMC from data
-  DDNloglike <- 1 / 4 * colSums(X.addint ^ 2)
-  
-  #---------------------- Markov chain state initialization ----------------------#
-
-  if (is.list(init)) # use the last iteration of markov chain
-  {
-    no.mcspl <- length(init$mclogw)
-    deltas <- matrix(init$mcdeltas[, , no.mcspl], nrow = p + 1)
-    sigmasbt <- init$mcsigmasbt[, no.mcspl]
-    logw <- init$mclogw[no.mcspl]
-  }
-  else
-  {
-    if (is.matrix(init)) # user supplied deltas
-    {
-      deltas <- init
-      if (nrow (deltas) != p + 1 || ncol(deltas) != K)
-      {
-        stop(
-          sprintf(
-            "Initial `deltas' mismatch data. Expected: nrow=%d, ncol=%d; Actual: nrow=%d, ncol=%d.",
-            p + 1, K, nrow(deltas), ncol(deltas))
-        )        
-      }
-    }
-    else if (init == "lasso")
-    {
-      if (pre.legacy) 
-        lasso.lambda <- NULL # will be chosen by CV
-      else if (!exists("lasso.lambda"))
-        lasso.lambda <- seq(.05, .01, by = -.01)
-      # else lambda is supplied via optional arg
-      deltas <- lasso_deltas(X, y, lasso.lambda, verbose)
-    }
-    else if (init == "bcbc")
-    {
-      if (!exists("rda.alpha"))
-        alpha.rda <- .2
-      deltas <- bcbcsf_deltas(X, y, alpha.rda)
-    }
-    else if (init == "random")
-    {
-      deltas <- matrix(rnorm((p + 1) * K) * 2, p + 1, K)
-    }
-    else stop("not supported init type")
     
-    vardeltas <- comp_vardeltas(deltas)[-1]
-    sigmasbt <- c(sigmab0, spl_sgm_ig(alpha, K, exp(logw), vardeltas))
-  }
+  if (is.character(prior))
+    prior <- htlr_prior(prior, df)
   
-  #-------------------------- Do Gibbs sampling --------------------------#
-  
-  fit <- HtlrFitHelper(
-    ## data
-    p = p, K = K, n = n,
-    X = as.matrix(X.addint), 
-    ymat = as.matrix(ymat), 
-    ybase = as.vector(ybase),
-    ## prior
-    ptype = ptype, alpha = alpha, s = logw, eta = eta,
-    ## sampling
-    iters_rmc = (iter - warmup), iters_h = warmup, thin = thin, 
-    leap_L = leap, leap_L_h = leap.warm, leap_step = leap.step, 
-    hmc_sgmcut = cut, DDNloglike = as.vector(DDNloglike),
-    ## fit result
-    deltas = deltas, logw = logw, sigmasbt = sigmasbt,
-    ## other control
-    silence = as.integer(!verbose), legacy = pre.legacy)
-  
-  # add prior hyperparameter information
-  fit$prior <- prior
-  
-  # add data preprocessing information
-  fit$feature <- list("fsel" = fsel, "nuj" = nuj, "sdj" = sdj, "y" = y, "X" = X.addint)
-  
-  # add call
-  fit$call <- match.call()
-  
-  # register S3
-  attr(fit, "class") <- "htlrfit"
-  return(fit)
+  htlr_fit(X_tr = X, y_tr = y, fsel = fsel, stdzx = stdzx, 
+           ptype = prior$ptype, alpha = prior$alpha, s = prior$logw, 
+           eta = prior$eta, sigmab0 = prior$sigmab0, 
+           iters_h = warmup, iters_rmc = (iter - warmup), thin = thin, 
+           leap_L = leap, leap_L_h = leap.warm, leap_step = leap.step, 
+           hmc_sgmcut = cut, initial_state = init, 
+           silence = !verbose, pre.legacy = pre.legacy)
+
 }

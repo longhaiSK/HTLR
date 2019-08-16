@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Fit a HTLR model (old API) — htlr_fit • HTLR</title>
+<title>Fit a HTLR model (internal API) — htlr_fit • HTLR</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,10 @@
 
 
 
-<meta property="og:title" content="Fit a HTLR model (old API) — htlr_fit" />
+<meta property="og:title" content="Fit a HTLR model (internal API) — htlr_fit" />
 
-<meta property="og:description" content="This function trains linear logistic regression models with HMC in restricted Gibbs sampling." />
+<meta property="og:description" content="This function trains linear logistic regression models with HMC in restricted Gibbs sampling.
+It also makes predictions for test cases if X_ts are provided." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -99,34 +100,37 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Fit a HTLR model (old API)</h1>
+    <h1>Fit a HTLR model (internal API)</h1>
     <small class="dont-index">Source: <a href='https://github.com/longhaiSK/HTLR/blob/master/R/bplrhmc.r'><code>R/bplrhmc.r</code></a></small>
     <div class="hidden name"><code>htlr_fit.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>This function trains linear logistic regression models with HMC in restricted Gibbs sampling.</p>
+    <p>This function trains linear logistic regression models with HMC in restricted Gibbs sampling.
+It also makes predictions for test cases if <code>X_ts</code> are provided.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>htlr_fit</span>(<span class='no'>y_tr</span>, <span class='no'>X_tr</span>, <span class='kw'>fsel</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>ncol</a></span>(<span class='no'>X_tr</span>), <span class='kw'>stdzx</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>sigmab0</span> <span class='kw'>=</span> <span class='fl'>2000</span>, <span class='kw'>ptype</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"t"</span>, <span class='st'>"ghs"</span>, <span class='st'>"neg"</span>), <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>s</span> <span class='kw'>=</span> -<span class='fl'>10</span>,
+    <pre class="usage"><span class='fu'>htlr_fit</span>(<span class='no'>X_tr</span>, <span class='no'>y_tr</span>, <span class='kw'>fsel</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>ncol</a></span>(<span class='no'>X_tr</span>), <span class='kw'>stdzx</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>ptype</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"t"</span>, <span class='st'>"ghs"</span>, <span class='st'>"neg"</span>), <span class='kw'>sigmab0</span> <span class='kw'>=</span> <span class='fl'>2000</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>s</span> <span class='kw'>=</span> -<span class='fl'>10</span>,
   <span class='kw'>eta</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>iters_h</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>iters_rmc</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>1</span>,
   <span class='kw'>leap_L</span> <span class='kw'>=</span> <span class='fl'>50</span>, <span class='kw'>leap_L_h</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>leap_step</span> <span class='kw'>=</span> <span class='fl'>0.3</span>, <span class='kw'>hmc_sgmcut</span> <span class='kw'>=</span> <span class='fl'>0.05</span>,
-  <span class='kw'>initial_state</span> <span class='kw'>=</span> <span class='st'>"lasso"</span>, <span class='kw'>silence</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>pre.legacy</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>initial_state</span> <span class='kw'>=</span> <span class='st'>"lasso"</span>, <span class='kw'>silence</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>pre.legacy</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>alpha.rda</span> <span class='kw'>=</span> <span class='fl'>0.2</span>, <span class='kw'>lasso.lambda</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/seq'>seq</a></span>(<span class='fl'>0.05</span>, <span class='fl'>0.01</span>, <span class='kw'>by</span> <span class='kw'>=</span> -<span class='fl'>0.01</span>),
+  <span class='kw'>X_ts</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>predburn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>predthin</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>X_tr</th>
+      <td><p>Input matrix, of dimension nobs by nvars; each row is an observation vector.</p></td>
+    </tr>
+    <tr>
       <th>y_tr</th>
       <td><p>Vector of response variables. Must be coded as non-negative integers, 
 e.g., 1,2,&#8230;,C for C classes, label 0 is also allowed.</p></td>
-    </tr>
-    <tr>
-      <th>X_tr</th>
-      <td><p>Input matrix, of dimension nobs by nvars; each row is an observation vector.</p></td>
     </tr>
     <tr>
       <th>fsel</th>
@@ -138,13 +142,13 @@ e.g., 1,2,&#8230;,C for C classes, label 0 is also allowed.</p></td>
 and <code>sd = 1</code>.</p></td>
     </tr>
     <tr>
-      <th>sigmab0</th>
-      <td><p>The <code>sd</code> of the normal prior for the intercept.</p></td>
-    </tr>
-    <tr>
       <th>ptype</th>
       <td><p>The prior to be applied to the model. Either "t" (student-t, default), 
 "ghs" (horseshoe), or "neg" (normal-exponential-gamma).</p></td>
+    </tr>
+    <tr>
+      <th>sigmab0</th>
+      <td><p>The <code>sd</code> of the normal prior for the intercept.</p></td>
     </tr>
     <tr>
       <th>alpha</th>
@@ -216,12 +220,24 @@ legacy-3.1-1 is reproduced. The speed would be typically slower than non-legacy 
 multi-core machine.</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Other optional parameters:</p><ul>
-<li><p>alpha.rda A user supplied alpha value for <code><a href='bcbcsf_deltas.html'>bcbcsf_deltas</a></code>. Default: 0.2.</p></li>
-<li><p>lasso.lambda - A user supplied lambda sequence for <code><a href='lasso_deltas.html'>lasso_deltas</a></code>. 
-  Default: {.01, .02, &#8230;, .05}. Will be ignored if <code>pre.legacy</code> is set to <code>TRUE</code>.</p></li>
-</ul></td>
+      <th>alpha.rda</th>
+      <td><p>A user supplied alpha value for <code><a href='bcbcsf_deltas.html'>bcbcsf_deltas</a></code> when
+setting up BCBCSF initial state. Default: 0.2.</p></td>
+    </tr>
+    <tr>
+      <th>lasso.lambda</th>
+      <td><p>- A user supplied lambda sequence for <code><a href='lasso_deltas.html'>lasso_deltas</a></code> when 
+setting up Lasso initial state. Default: {.01, .02, &#8230;, .05}. Will be ignored if 
+<code>pre.legacy</code> is set to <code>TRUE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>X_ts</th>
+      <td><p>Test data which predictions are to be made.</p></td>
+    </tr>
+    <tr>
+      <th>predburn, predthin</th>
+      <td><p>For prediction base on <code>X_ts</code> (when supplied), <code>predburn</code> of 
+Markov chain (super)iterations will be discarded, and only every <code>predthin</code> are used for inference.</p></td>
     </tr>
     </table>
     
@@ -235,10 +251,6 @@ multi-core machine.</p></td>
 with Hyper-Lasso Priors for High-dimensional Feature Selection.
 <em>Journal of Statistical Computation and Simulation</em> 2018, 88:14, 2827-2851.</p>
     
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='htlr.html'>htlr</a></code></p></div>
-    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -249,8 +261,6 @@ with Hyper-Lasso Priors for High-dimensional Feature Selection.
       <li><a href="#value">Value</a></li>
 
       <li><a href="#references">References</a></li>
-
-      <li><a href="#see-also">See also</a></li>
           </ul>
 
   </div>
