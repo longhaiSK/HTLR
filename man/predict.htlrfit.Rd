@@ -2,7 +2,7 @@
 % Please edit documentation in R/predict.R
 \name{predict.htlrfit}
 \alias{predict.htlrfit}
-\title{Make prediction on new data}
+\title{Make Prediction on New Data}
 \usage{
 \method{predict}{htlrfit}(object, newx, type = c("response", "class"),
   ...)

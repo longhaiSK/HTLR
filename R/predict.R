@@ -1,4 +1,4 @@
-#' Make prediction on new data (advanced)
+#' Make Prediction on New Data (Advanced)
 #' 
 #' This function uses MCMC samples from fitted \code{htlrfit} object OR user supplied 
 #' regression coefficient to predict the class labels of test cases. 
@@ -61,9 +61,9 @@ htlr_predict <- function(X_ts, fithtlr = NULL, deltas = NULL, burn = NULL, thin 
   }
   else
   {
-    if (is.vector(deltas) | is.matrix (deltas)) 
+    if (is.vector(deltas) | is.matrix(deltas)) 
     {
-      deltas <- matrix(deltas, nrow = ncol (X_ts) + 1)
+      deltas <- matrix(deltas, nrow = ncol(X_ts) + 1)
       p <- nrow(deltas) - 1
       K <- 1
       longdeltas <- deltas
@@ -83,11 +83,12 @@ htlr_predict <- function(X_ts, fithtlr = NULL, deltas = NULL, burn = NULL, thin 
   
   predprobs_c1 <- pmax(0, 1 - apply(probs_pred, 1, sum))
   probs_pred <- cbind(predprobs_c1, probs_pred)
+  colnames(probs_pred) <- paste("class", levels(factor(fithtlr$feature$y)))
   
   return(probs_pred)
 }
 
-#' Make prediction on new data
+#' Make Prediction on New Data
 #' 
 #' Similar to other predict methods, this function returns predictions from a fitted \code{htlrfit} object.
 #' 
@@ -111,11 +112,14 @@ predict.htlrfit <- function(object, newx, type = c("response", "class"), ...)
   if (!exists("thin")) thin <- NULL
   if (!exists("usedmc")) usedmc <- NULL
   
-  htlr_predict(X_ts = newx, fithtlr = object, burn = burn, thin = thin, usedmc = usedmc) 
-}
-
-#' @export
-nobs.htlrfit <- function(object, ...)
-{
-  object$n
+  pred.prob <- htlr_predict(X_ts = newx, fithtlr = object, burn = burn, thin = thin, usedmc = usedmc)
+  
+  type <- match.arg(type)
+  if (type == "response")
+    return(pred.prob)
+  if (type == "class") {
+    newy <- as.matrix(apply(pred.prob, 1, which.max))
+    colnames(newy) <- "y.pred"
+    return(newy)
+  }
 }

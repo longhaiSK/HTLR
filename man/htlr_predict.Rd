@@ -2,7 +2,7 @@
 % Please edit documentation in R/predict.R
 \name{htlr_predict}
 \alias{htlr_predict}
-\title{Make prediction on new data (advanced)}
+\title{Make Prediction on New Data (Advanced)}
 \usage{
 htlr_predict(X_ts, fithtlr = NULL, deltas = NULL, burn = NULL,
   thin = NULL, usedmc = NULL)
