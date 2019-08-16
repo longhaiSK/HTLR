@@ -4,7 +4,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 
 // [[Rcpp::export]]
-Rcpp::List HtlrFitHelper(
+Rcpp::List htlr_fit_helper(
   int p, int K, int n,
   arma::mat &X, arma::mat &ymat, arma::uvec &ybase,
   std::string ptype, double alpha, double s, double eta,

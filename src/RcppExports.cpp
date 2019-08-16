@@ -52,9 +52,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// HtlrFitHelper
-Rcpp::List HtlrFitHelper(int p, int K, int n, arma::mat& X, arma::mat& ymat, arma::uvec& ybase, std::string ptype, double alpha, double s, double eta, int iters_rmc, int iters_h, int thin, int leap_L, int leap_L_h, double leap_step, double hmc_sgmcut, arma::vec& DDNloglike, arma::mat& deltas, double logw, arma::vec& sigmasbt, int silence, bool legacy);
-RcppExport SEXP _HTLR_HtlrFitHelper(SEXP pSEXP, SEXP KSEXP, SEXP nSEXP, SEXP XSEXP, SEXP ymatSEXP, SEXP ybaseSEXP, SEXP ptypeSEXP, SEXP alphaSEXP, SEXP sSEXP, SEXP etaSEXP, SEXP iters_rmcSEXP, SEXP iters_hSEXP, SEXP thinSEXP, SEXP leap_LSEXP, SEXP leap_L_hSEXP, SEXP leap_stepSEXP, SEXP hmc_sgmcutSEXP, SEXP DDNloglikeSEXP, SEXP deltasSEXP, SEXP logwSEXP, SEXP sigmasbtSEXP, SEXP silenceSEXP, SEXP legacySEXP) {
+// htlr_fit_helper
+Rcpp::List htlr_fit_helper(int p, int K, int n, arma::mat& X, arma::mat& ymat, arma::uvec& ybase, std::string ptype, double alpha, double s, double eta, int iters_rmc, int iters_h, int thin, int leap_L, int leap_L_h, double leap_step, double hmc_sgmcut, arma::vec& DDNloglike, arma::mat& deltas, double logw, arma::vec& sigmasbt, int silence, bool legacy);
+RcppExport SEXP _HTLR_htlr_fit_helper(SEXP pSEXP, SEXP KSEXP, SEXP nSEXP, SEXP XSEXP, SEXP ymatSEXP, SEXP ybaseSEXP, SEXP ptypeSEXP, SEXP alphaSEXP, SEXP sSEXP, SEXP etaSEXP, SEXP iters_rmcSEXP, SEXP iters_hSEXP, SEXP thinSEXP, SEXP leap_LSEXP, SEXP leap_L_hSEXP, SEXP leap_stepSEXP, SEXP hmc_sgmcutSEXP, SEXP DDNloglikeSEXP, SEXP deltasSEXP, SEXP logwSEXP, SEXP sigmasbtSEXP, SEXP silenceSEXP, SEXP legacySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -81,7 +81,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec& >::type sigmasbt(sigmasbtSEXP);
     Rcpp::traits::input_parameter< int >::type silence(silenceSEXP);
     Rcpp::traits::input_parameter< bool >::type legacy(legacySEXP);
-    rcpp_result_gen = Rcpp::wrap(HtlrFitHelper(p, K, n, X, ymat, ybase, ptype, alpha, s, eta, iters_rmc, iters_h, thin, leap_L, leap_L_h, leap_step, hmc_sgmcut, DDNloglike, deltas, logw, sigmasbt, silence, legacy));
+    rcpp_result_gen = Rcpp::wrap(htlr_fit_helper(p, K, n, X, ymat, ybase, ptype, alpha, s, eta, iters_rmc, iters_h, thin, leap_L, leap_L_h, leap_step, hmc_sgmcut, DDNloglike, deltas, logw, sigmasbt, silence, legacy));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -115,7 +115,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_HTLR_sample_trunc_norm", (DL_FUNC) &_HTLR_sample_trunc_norm, 4},
     {"_HTLR_sample_post_ichi", (DL_FUNC) &_HTLR_sample_post_ichi, 6},
     {"_HTLR_sample_trunc_beta", (DL_FUNC) &_HTLR_sample_trunc_beta, 6},
-    {"_HTLR_HtlrFitHelper", (DL_FUNC) &_HTLR_HtlrFitHelper, 23},
+    {"_HTLR_htlr_fit_helper", (DL_FUNC) &_HTLR_htlr_fit_helper, 23},
     {"_HTLR_log_sum_exp", (DL_FUNC) &_HTLR_log_sum_exp, 1},
     {"_HTLR_spl_sgm_ig", (DL_FUNC) &_HTLR_spl_sgm_ig, 4},
     {NULL, NULL, 0}
