@@ -128,7 +128,11 @@ get_ix <- function (sub, whole, digits= 0)
     wix [as.character (round(sub, digits))]
 }
 
-
+#' @export
+nobs.htlrfit <- function(object, ...)
+{
+  object$n
+}
 
 #Plots feature importance scores
 # 
