@@ -1,4 +1,4 @@
-#' Fit a HTLR model (internal API)
+#' Fit a HTLR Model (Internal API)
 #'
 #' This function trains linear logistic regression models with HMC in restricted Gibbs sampling.
 #' It also makes predictions for test cases if \code{X_ts} are provided.
@@ -158,9 +158,9 @@ htlr_fit <- function (
     {
       if (pre.legacy) 
         lasso.lambda <- NULL # will be chosen by CV
-      deltas <- lasso_deltas(X_tr, y1, lasso.lambda, !silence)
+      deltas <- lasso_deltas(X_tr, y1, lambda = lasso.lambda, verbose = !silence)
     }
-    else if (initial_state == "bcbc")
+    else if (substr(initial_state, 1, 4) == "bcbc")
     {
       deltas <- bcbcsf_deltas(X_tr, y1, alpha.rda)
     }
