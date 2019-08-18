@@ -16,7 +16,7 @@ expect_equal_htlr <- function(actual, expected)
   expect_equal(unname(actual$probs_pred), unname(expected$probs_pred))
 }
 
-test_that("t(1, -10), eta = 10, lasso, bcbc, bi", {
+test_that("colon500_t1_s10_eta10_bcbc_bi", {
   set.seed(SEED)
   fit <- htlr_fit(X_tr = dat$x.tr, y_tr = dat$y.tr, X_ts = dat$x.te,
                   fsel = 1L:500, ptype = "t", alpha = 1, s = -10, eta = 10,
@@ -24,5 +24,19 @@ test_that("t(1, -10), eta = 10, lasso, bcbc, bi", {
   expect_equal_htlr(fit, colon500_t1_s10_eta10_bcbc_bi)
 })
 
+test_that("colon500_neg1_s10_eta0_bcbc_bi", {
+  set.seed(SEED)
+  fit <- htlr_fit(X_tr = dat$x.tr, y_tr = dat$y.tr, X_ts = dat$x.te,
+                  fsel = 1L:500, ptype = "neg", alpha = 1, s = -10,
+                  initial_state = "bcbcsfrda", iters_h = 10, iters_rmc = 10, thin = 1)
+  expect_equal_htlr(fit, colon500_neg1_s10_eta0_bcbc_bi)
+})
 
+test_that("colon500_ghs1_s10_eta0_bcbc_bi", {
+  set.seed(SEED)
+  fit <- htlr_fit(X_tr = dat$x.tr, y_tr = dat$y.tr, X_ts = dat$x.te,
+                  fsel = 1L:500, ptype = "ghs", alpha = 1, s = -10,
+                  initial_state = "bcbcsfrda", iters_h = 10, iters_rmc = 10, thin = 1)
+  expect_equal_htlr(fit, colon500_ghs1_s10_eta0_bcbc_bi)
+})
 
