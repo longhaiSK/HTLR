@@ -60,7 +60,7 @@ htlr_gendata_MLR <- function(n, p, NC = 3, nu = 2, w = 1, X = NULL, betas = NULL
 #' Used to specify \code{y}. 
 #' @param A The factor loading matrix, see details.
 #' @param sd_g Noise level \eqn{\delta}, see details.
-#' @param stdzx Logical; if \code{TRUE}, data \code{X} is standardized to have \code{mean = 0} and \code{sd = 1}.
+#' @param stdx Logical; if \code{TRUE}, data \code{X} is standardized to have \code{mean = 0} and \code{sd = 1}.
 #'
 #' @return A list contains input matrix \code{X}, response variables \code{y},
 #' covariate matrix \code{SGM} and \code{muj} (standardized if \code{stdx = TRUE}).
@@ -96,13 +96,13 @@ htlr_gendata_MLR <- function(n, p, NC = 3, nu = 2, w = 1, X = NULL, betas = NULL
 #'   c(0, 0, 1)
 #' )
 #' 
-#' dat <- htlr_gendata_FAM(n, means, A, sd_g = 0.5, stdzx = TRUE)
+#' dat <- htlr_gendata_FAM(n, means, A, sd_g = 0.5, stdx = TRUE)
 #' ggplot2::qplot(dat$y, bins = 6)
 #' corrplot::corrplot(cor(dat$X))
 #' 
 #' @seealso \code{\link{htlr_gendata_MLR}}
 #'      
-htlr_gendata_FAM <- function(n, muj, A, sd_g = 0, stdzx = FALSE)
+htlr_gendata_FAM <- function(n, muj, A, sd_g = 0, stdx = FALSE)
 {
   p <- nrow(muj)
   C <- ncol(muj)
@@ -112,7 +112,7 @@ htlr_gendata_FAM <- function(n, muj, A, sd_g = 0, stdzx = FALSE)
   X <- A %*% matrix(rnorm(n * k), k, n) + muj[, y] + rnorm(n * p) * sd_g 
   SGM <- A %*% t(A) + diag(sd_g^2, p)
   
-  if (stdzx == TRUE)
+  if (stdx == TRUE)
   {
      mux <- rowMeans(muj)
      sdx <- sqrt(diag(SGM) + apply (muj, 1, var) * (C - 1) / C)

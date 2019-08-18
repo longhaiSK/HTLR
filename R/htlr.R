@@ -8,7 +8,7 @@
 #' e.g., 1,2,\ldots,C for C classes, label 0 is also allowed.
 #' 
 #' @param fsel Subsets of features selected before fitting, such as by univariate screening.
-#' @param stdzx Logical; if \code{TRUE}, the original feature values are standardized to have \code{mean = 0} 
+#' @param stdx Logical; if \code{TRUE}, the original feature values are standardized to have \code{mean = 0} 
 #' and \code{sd = 1}.
 #' 
 #' @param iter A positive integer specifying the number of iterations (including warmup).
@@ -91,7 +91,7 @@
 htlr <-
   function (X, y,
             fsel = 1:ncol(X),
-            stdzx = TRUE,
+            stdx = TRUE,
             prior = "t",
             df = 1,
             iter = 2000,
@@ -128,7 +128,7 @@ htlr <-
   if (is.character(prior))
     prior <- htlr_prior(prior, df)
   
-  htlr_fit(X_tr = X, y_tr = y, fsel = fsel, stdzx = stdzx, 
+  htlr_fit(X_tr = X, y_tr = y, fsel = fsel, stdzx = stdx, 
            ptype = prior$ptype, alpha = prior$alpha, s = prior$logw, 
            eta = prior$eta, sigmab0 = prior$sigmab0, 
            iters_h = warmup, iters_rmc = (iter - warmup), thin = thin, 
