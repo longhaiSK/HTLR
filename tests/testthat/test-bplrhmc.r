@@ -1,3 +1,5 @@
+skip_on_travis()
+
 load("bplrhmc_expect.rda")
 set.seed(SEED)
 
