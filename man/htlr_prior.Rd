@@ -2,7 +2,7 @@
 % Please edit documentation in R/util.r
 \name{htlr_prior}
 \alias{htlr_prior}
-\title{Generate prior configuration}
+\title{Generate Prior Configuration}
 \usage{
 htlr_prior(ptype = c("t", "ghs", "neg"), df = 1, logw = -(1/df) * 10,
   eta = (df > 2) * 100, sigmab0 = 2000)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/mccoef.r
 \name{as.matrix.htlrfit}
 \alias{as.matrix.htlrfit}
-\title{Create a matrix of Markov chain samples}
+\title{Create a Matrix of Markov Chain Samples}
 \usage{
 \method{as.matrix}{htlrfit}(x, k = x$K, ...)
 }

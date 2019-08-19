@@ -4,7 +4,7 @@
 \alias{htlr}
 \title{Fit a HTLR Model}
 \usage{
-htlr(X, y, fsel = 1:ncol(X), stdzx = TRUE, prior = "t", df = 1,
+htlr(X, y, fsel = 1:ncol(X), stdx = TRUE, prior = "t", df = 1,
   iter = 2000, warmup = floor(iter/2), thin = 1, init = "lasso",
   leap = 50, leap.warm = floor(leap/10), leap.step = 0.3,
   cut = 0.05, verbose = FALSE, pre.legacy = FALSE, ...)
@@ -17,7 +17,7 @@ e.g., 1,2,\ldots,C for C classes, label 0 is also allowed.}
 
 \item{fsel}{Subsets of features selected before fitting, such as by univariate screening.}
 
-\item{stdzx}{Logical; if \code{TRUE}, the original feature values are standardized to have \code{mean = 0} 
+\item{stdx}{Logical; if \code{TRUE}, the original feature values are standardized to have \code{mean = 0} 
 and \code{sd = 1}.}
 
 \item{prior}{The prior to be applied to the model. Either a list of hyperparameter settings 

@@ -1,4 +1,4 @@
-#' Generate prior configuration
+#' Generate Prior Configuration
 #' 
 #' Configure prior hyper-parameters for HTLR model fitting
 #' 

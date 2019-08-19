@@ -1,4 +1,4 @@
-#' Create a matrix of Markov chain samples
+#' Create a Matrix of Markov Chain Samples
 #' 
 #' The Markov chain samples (without warmup) included in a \code{htlrfit} object will be coerced to a matrix.
 #' 

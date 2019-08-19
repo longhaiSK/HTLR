@@ -2,7 +2,7 @@
 % Please edit documentation in R/bplrhmc.r
 \name{htlr_fit}
 \alias{htlr_fit}
-\title{Fit a HTLR model (internal API)}
+\title{Fit a HTLR Model (Internal API)}
 \usage{
 htlr_fit(X_tr, y_tr, fsel = 1:ncol(X_tr), stdzx = TRUE,
   ptype = c("t", "ghs", "neg"), sigmab0 = 2000, alpha = 1, s = -10,

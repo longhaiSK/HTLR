@@ -4,7 +4,7 @@
 \alias{htlr_gendata_FAM}
 \title{Generate simulated data with factor analysis model}
 \usage{
-htlr_gendata_FAM(n, muj, A, sd_g = 0, stdzx = FALSE)
+htlr_gendata_FAM(n, muj, A, sd_g = 0, stdx = FALSE)
 }
 \arguments{
 \item{n}{Number of observations.}
@@ -16,7 +16,7 @@ Used to specify \code{y}.}
 
 \item{sd_g}{Noise level \eqn{\delta}, see details.}
 
-\item{stdzx}{Logical; if \code{TRUE}, data \code{X} is standardized to have \code{mean = 0} and \code{sd = 1}.}
+\item{stdx}{Logical; if \code{TRUE}, data \code{X} is standardized to have \code{mean = 0} and \code{sd = 1}.}
 }
 \value{
 A list contains input matrix \code{X}, response variables \code{y},
@@ -61,7 +61,7 @@ A[1:5, 1:3] <- rbind(
   c(0, 0, 1)
 )
 
-dat <- htlr_gendata_FAM(n, means, A, sd_g = 0.5, stdzx = TRUE)
+dat <- htlr_gendata_FAM(n, means, A, sd_g = 0.5, stdx = TRUE)
 ggplot2::qplot(dat$y, bins = 6)
 corrplot::corrplot(cor(dat$X))
 
