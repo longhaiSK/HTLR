@@ -61,7 +61,8 @@
 #' setting up Lasso initial state. Default: \{.01, .02, \ldots, .05\}. Will be ignored if 
 #' \code{pre.legacy} is set to \code{TRUE}. 
 #' 
-#' @return A list of fitting results.  
+#' @return A list of fitting results. If \code{X_ts} is not provided, the list is an object 
+#' with S3 class \code{htlrfit}.  
 #' 
 #' @references
 #' Longhai Li and Weixin Yao (2018). Fully Bayesian Logistic Regression 

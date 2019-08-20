@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Fit a HTLR model (internal API) — htlr_fit • HTLR</title>
+<title>Fit a HTLR Model (Internal API) — htlr_fit • HTLR</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,7 +30,7 @@
 
 
 
-<meta property="og:title" content="Fit a HTLR model (internal API) — htlr_fit" />
+<meta property="og:title" content="Fit a HTLR Model (Internal API) — htlr_fit" />
 
 <meta property="og:description" content="This function trains linear logistic regression models with HMC in restricted Gibbs sampling.
 It also makes predictions for test cases if X_ts are provided." />
@@ -100,7 +100,7 @@ It also makes predictions for test cases if X_ts are provided." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Fit a HTLR model (internal API)</h1>
+    <h1>Fit a HTLR Model (Internal API)</h1>
     <small class="dont-index">Source: <a href='https://github.com/longhaiSK/HTLR/blob/master/R/bplrhmc.r'><code>R/bplrhmc.r</code></a></small>
     <div class="hidden name"><code>htlr_fit.Rd</code></div>
     </div>
@@ -243,7 +243,8 @@ Markov chain (super)iterations will be discarded, and only every <code>predthin<
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list of fitting results.</p>
+    <p>A list of fitting results. If <code>X_ts</code> is not provided, the list is an object 
+with S3 class <code>htlrfit</code>.</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 

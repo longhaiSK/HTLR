@@ -85,7 +85,8 @@ setting up Lasso initial state. Default: \{.01, .02, \ldots, .05\}. Will be igno
 Markov chain (super)iterations will be discarded, and only every \code{predthin} are used for inference.}
 }
 \value{
-A list of fitting results.
+A list of fitting results. If \code{X_ts} is not provided, the list is an object 
+with S3 class \code{htlrfit}.
 }
 \description{
 This function trains linear logistic regression models with HMC in restricted Gibbs sampling.
