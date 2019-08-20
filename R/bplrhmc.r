@@ -195,7 +195,7 @@ htlr_fit <- function (
       silence = as.integer(silence), legacy = pre.legacy)
   
   # add prior hyperparameter information
-  fit$prior <- htlr_prior(ptype, alpha, s, eta, sigmab0)
+  fit$prior <- htlr_prior(ptype, alpha, s, sigmab0)
   
   # add data preprocessing information
   fit$feature <- list("fsel" = fsel, "nuj" = nuj, "sdj" = sdj, "y" = y_tr, "X" = X_addint)

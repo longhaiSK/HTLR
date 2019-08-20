@@ -82,9 +82,9 @@ data("colon")
 
 ## fit HTLR models with selected features, note that the chain length setting is for demo only
 
-## using t prior with 1 df and log-scale ~ N(-10, 10) 
+## using t prior with 1 df and log-scale fixed to -10 
 fit.t <- htlr(X = colon$X, y = colon$y, fsel = 1:100,
-              prior = htlr_prior("t", df = 1, logw = -10, eta = 10), 
+              prior = htlr_prior("t", df = 1, logw = -10), 
               init = "bcbc", iter = 20, thin = 1)
 
 ## using NEG prior with 1 df and log-scale fixed to -10 
