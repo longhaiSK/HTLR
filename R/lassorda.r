@@ -1,4 +1,4 @@
-#' Lasso initial state
+#' Lasso Initial State
 #' 
 #' Generate initial Markov chain state with Lasso.
 #' 
@@ -26,9 +26,15 @@
 #' @keywords internal
 #' 
 #' @seealso \code{\link{bcbcsf_deltas}}
-lasso_deltas <- function(X, y, lambda = NULL, alpha = 1, verbose = FALSE)
+lasso_deltas <- function(X, y, lambda = NULL, verbose = FALSE, alpha = 1, rank_fn = rank_plain, k = ncol(X))
 {
   #try_require("glmnet")
+
+  if (k < ncol(X))
+  {
+    fsel <- rank_fn(X, y)[1:k]
+    X <- X[, fsel, drop = FALSE]
+  }
   
   if (is.null(lambda)) # pre.legacy == TRUE
   {

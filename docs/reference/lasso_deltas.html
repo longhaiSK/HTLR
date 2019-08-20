@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Lasso initial state — lasso_deltas • HTLR</title>
+<title>Lasso Initial State — lasso_deltas • HTLR</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,7 +30,7 @@
 
 
 
-<meta property="og:title" content="Lasso initial state — lasso_deltas" />
+<meta property="og:title" content="Lasso Initial State — lasso_deltas" />
 
 <meta property="og:description" content="Generate initial Markov chain state with Lasso." />
 <meta name="twitter:card" content="summary" />
@@ -99,7 +99,7 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Lasso initial state</h1>
+    <h1>Lasso Initial State</h1>
     <small class="dont-index">Source: <a href='https://github.com/longhaiSK/HTLR/blob/master/R/lassorda.r'><code>R/lassorda.r</code></a></small>
     <div class="hidden name"><code>lasso_deltas.Rd</code></div>
     </div>
@@ -110,7 +110,8 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>lasso_deltas</span>(<span class='no'>X</span>, <span class='no'>y</span>, <span class='kw'>lambda</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>lasso_deltas</span>(<span class='no'>X</span>, <span class='no'>y</span>, <span class='kw'>lambda</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>rank_fn</span> <span class='kw'>=</span> <span class='no'>rank_plain</span>, <span class='kw'>k</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>ncol</a></span>(<span class='no'>X</span>))</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

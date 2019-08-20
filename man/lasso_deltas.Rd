@@ -2,9 +2,10 @@
 % Please edit documentation in R/lassorda.r
 \name{lasso_deltas}
 \alias{lasso_deltas}
-\title{Lasso initial state}
+\title{Lasso Initial State}
 \usage{
-lasso_deltas(X, y, lambda = NULL, alpha = 1, verbose = FALSE)
+lasso_deltas(X, y, lambda = NULL, verbose = FALSE, alpha = 1,
+  rank_fn = rank_plain, k = ncol(X))
 }
 \arguments{
 \item{X}{Design matrix of traning data; 
