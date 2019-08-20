@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Generate prior configuration — htlr_prior • HTLR</title>
+<title>Generate Prior Configuration — htlr_prior • HTLR</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,7 +30,7 @@
 
 
 
-<meta property="og:title" content="Generate prior configuration — htlr_prior" />
+<meta property="og:title" content="Generate Prior Configuration — htlr_prior" />
 
 <meta property="og:description" content="Configure prior hyper-parameters for HTLR model fitting" />
 <meta name="twitter:card" content="summary" />
@@ -99,7 +99,7 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Generate prior configuration</h1>
+    <h1>Generate Prior Configuration</h1>
     <small class="dont-index">Source: <a href='https://github.com/longhaiSK/HTLR/blob/master/R/util.r'><code>R/util.r</code></a></small>
     <div class="hidden name"><code>htlr_prior.Rd</code></div>
     </div>
@@ -111,7 +111,7 @@
     </div>
 
     <pre class="usage"><span class='fu'>htlr_prior</span>(<span class='kw'>ptype</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"t"</span>, <span class='st'>"ghs"</span>, <span class='st'>"neg"</span>), <span class='kw'>df</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>logw</span> <span class='kw'>=</span> -(<span class='fl'>1</span>/<span class='no'>df</span>) * <span class='fl'>10</span>,
-  <span class='kw'>eta</span> <span class='kw'>=</span> (<span class='no'>df</span> <span class='kw'>&gt;</span> <span class='fl'>2</span>) * <span class='fl'>100</span>, <span class='kw'>sigmab0</span> <span class='kw'>=</span> <span class='fl'>2000</span>)</pre>
+  <span class='kw'>sigmab0</span> <span class='kw'>=</span> <span class='fl'>2000</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -127,11 +127,7 @@ or "neg" (normal-exponential-gamma).</p></td>
     </tr>
     <tr>
       <th>logw</th>
-      <td><p>The log scale of priors for coefficients.</p></td>
-    </tr>
-    <tr>
-      <th>eta</th>
-      <td><p>The <code>sd</code> of the normal prior for logw. When it is set to 0, logw is fixed. 
+      <td><p>The log scale of priors for coefficients.
 Otherwise, logw is assigned with a normal prior and it will be updated during sampling.</p></td>
     </tr>
     <tr>

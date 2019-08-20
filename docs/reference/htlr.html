@@ -110,7 +110,7 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>htlr</span>(<span class='no'>X</span>, <span class='no'>y</span>, <span class='kw'>fsel</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>ncol</a></span>(<span class='no'>X</span>), <span class='kw'>stdzx</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>prior</span> <span class='kw'>=</span> <span class='st'>"t"</span>, <span class='kw'>df</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+    <pre class="usage"><span class='fu'>htlr</span>(<span class='no'>X</span>, <span class='no'>y</span>, <span class='kw'>fsel</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>ncol</a></span>(<span class='no'>X</span>), <span class='kw'>stdx</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>prior</span> <span class='kw'>=</span> <span class='st'>"t"</span>, <span class='kw'>df</span> <span class='kw'>=</span> <span class='fl'>1</span>,
   <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>2000</span>, <span class='kw'>warmup</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Round'>floor</a></span>(<span class='no'>iter</span>/<span class='fl'>2</span>), <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>init</span> <span class='kw'>=</span> <span class='st'>"lasso"</span>,
   <span class='kw'>leap</span> <span class='kw'>=</span> <span class='fl'>50</span>, <span class='kw'>leap.warm</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Round'>floor</a></span>(<span class='no'>leap</span>/<span class='fl'>10</span>), <span class='kw'>leap.step</span> <span class='kw'>=</span> <span class='fl'>0.3</span>,
   <span class='kw'>cut</span> <span class='kw'>=</span> <span class='fl'>0.05</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>pre.legacy</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
@@ -132,7 +132,7 @@ e.g., 1,2,&#8230;,C for C classes, label 0 is also allowed.</p></td>
       <td><p>Subsets of features selected before fitting, such as by univariate screening.</p></td>
     </tr>
     <tr>
-      <th>stdzx</th>
+      <th>stdx</th>
       <td><p>Logical; if <code>TRUE</code>, the original feature values are standardized to have <code>mean = 0</code> 
 and <code>sd = 1</code>.</p></td>
     </tr>
@@ -229,9 +229,9 @@ with Hyper-Lasso Priors for High-dimensional Feature Selection.
 
 <span class='co'>## fit HTLR models with selected features, note that the chain length setting is for demo only</span>
 
-<span class='co'>## using t prior with 1 df and log-scale ~ N(-10, 10) </span>
+<span class='co'>## using t prior with 1 df and log-scale fixed to -10 </span>
 <span class='no'>fit.t</span> <span class='kw'>&lt;-</span> <span class='fu'>htlr</span>(<span class='kw'>X</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>X</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>y</span>, <span class='kw'>fsel</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>100</span>,
-              <span class='kw'>prior</span> <span class='kw'>=</span> <span class='fu'><a href='htlr_prior.html'>htlr_prior</a></span>(<span class='st'>"t"</span>, <span class='kw'>df</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>logw</span> <span class='kw'>=</span> -<span class='fl'>10</span>, <span class='kw'>eta</span> <span class='kw'>=</span> <span class='fl'>10</span>),
+              <span class='kw'>prior</span> <span class='kw'>=</span> <span class='fu'><a href='htlr_prior.html'>htlr_prior</a></span>(<span class='st'>"t"</span>, <span class='kw'>df</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>logw</span> <span class='kw'>=</span> -<span class='fl'>10</span>),
               <span class='kw'>init</span> <span class='kw'>=</span> <span class='st'>"bcbc"</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>1</span>)
 
 <span class='co'>## using NEG prior with 1 df and log-scale fixed to -10 </span>

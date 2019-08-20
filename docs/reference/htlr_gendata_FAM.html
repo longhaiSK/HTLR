@@ -112,7 +112,7 @@ using a multivariate normal model.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>htlr_gendata_FAM</span>(<span class='no'>n</span>, <span class='no'>muj</span>, <span class='no'>A</span>, <span class='kw'>sd_g</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>stdzx</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>htlr_gendata_FAM</span>(<span class='no'>n</span>, <span class='no'>muj</span>, <span class='no'>A</span>, <span class='kw'>sd_g</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>stdx</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -135,7 +135,7 @@ Used to specify <code>y</code>.</p></td>
       <td><p>Noise level \(\delta\), see details.</p></td>
     </tr>
     <tr>
-      <th>stdzx</th>
+      <th>stdx</th>
       <td><p>Logical; if <code>TRUE</code>, data <code>X</code> is standardized to have <code>mean = 0</code> and <code>sd = 1</code>.</p></td>
     </tr>
     </table>
@@ -186,7 +186,7 @@ and \(\delta\) is the noise level.</p>
   <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>)
 )
 
-<span class='no'>dat</span> <span class='kw'>&lt;-</span> <span class='fu'>htlr_gendata_FAM</span>(<span class='no'>n</span>, <span class='no'>means</span>, <span class='no'>A</span>, <span class='kw'>sd_g</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>stdzx</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='no'>dat</span> <span class='kw'>&lt;-</span> <span class='fu'>htlr_gendata_FAM</span>(<span class='no'>n</span>, <span class='no'>means</span>, <span class='no'>A</span>, <span class='kw'>sd_g</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>stdx</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 <span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/qplot.html'>qplot</a></span>(<span class='no'>dat</span>$<span class='no'>y</span>, <span class='kw'>bins</span> <span class='kw'>=</span> <span class='fl'>6</span>)</div><div class='img'><img src='htlr_gendata_FAM-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='kw pkg'>corrplot</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/corrplot/topics/corrplot'>corrplot</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/cor'>cor</a></span>(<span class='no'>dat</span>$<span class='no'>X</span>))</div><div class='img'><img src='htlr_gendata_FAM-2.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
