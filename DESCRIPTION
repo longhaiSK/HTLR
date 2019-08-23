@@ -22,7 +22,11 @@ Suggests:
     corrplot,
     testthat (>= 2.0.0),
     bayesplot
-Imports: Rcpp (>= 0.12.0), BCBCSF, glmnet
+Imports: 
+    Rcpp (>= 0.12.0),
+    BCBCSF,
+    glmnet,
+    magrittr
 LinkingTo: Rcpp (>= 0.12.0), RcppArmadillo
 NeedsCompilation: yes
 SystemRequirements: C++11
