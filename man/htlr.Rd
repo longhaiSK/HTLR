@@ -6,7 +6,7 @@
 \usage{
 htlr(X, y, fsel = 1:ncol(X), stdx = TRUE, prior = "t", df = 1,
   iter = 2000, warmup = floor(iter/2), thin = 1, init = "lasso",
-  leap = 50, leap.warm = floor(leap/10), leap.step = 0.3,
+  leap = 50, leap.warm = floor(leap/10), leap.stepsize = 0.3,
   cut = 0.05, verbose = FALSE, pre.legacy = FALSE, ...)
 }
 \arguments{
@@ -53,7 +53,7 @@ or a user supplied initial state vector, or a character string matches the follo
 
 \item{leap.warm}{The length of leapfrog trajectory in burnin phase.}
 
-\item{leap.step}{The stepsize adjustment multiplied to the second-order partial derivatives of log posterior.}
+\item{leap.stepsize}{The integrator step size used in the Hamiltonian simulation.}
 
 \item{cut}{The coefficients smaller than this criteria will be fixed in each HMC updating step.}
 

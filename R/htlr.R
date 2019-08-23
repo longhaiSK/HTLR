@@ -19,7 +19,7 @@
 #' 
 #' @param leap The length of leapfrog trajectory in sampling phase.
 #' @param leap.warm The length of leapfrog trajectory in burnin phase.
-#' @param leap.step The stepsize adjustment multiplied to the second-order partial derivatives of log posterior.
+#' @param leap.stepsize The integrator step size used in the Hamiltonian simulation.
 #' 
 #' @param cut The coefficients smaller than this criteria will be fixed in each HMC updating step.
 #' 
@@ -100,7 +100,7 @@ htlr <-
             init = "lasso",
             leap = 50,
             leap.warm = floor(leap/10),
-            leap.step = 0.3,
+            leap.stepsize = 0.3,
             cut = 0.05,
             verbose = FALSE,
             pre.legacy = FALSE,
@@ -133,7 +133,7 @@ htlr <-
            #eta = prior$eta, 
            sigmab0 = prior$sigmab0, 
            iters_h = warmup, iters_rmc = (iter - warmup), thin = thin, 
-           leap_L = leap, leap_L_h = leap.warm, leap_step = leap.step, 
+           leap_L = leap, leap_L_h = leap.warm, leap_step = leap.stepsize, 
            hmc_sgmcut = cut, initial_state = init, 
            silence = !verbose, pre.legacy = pre.legacy)
 
