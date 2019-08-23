@@ -118,7 +118,11 @@ predict.htlrfit <- function(object, newx, type = c("response", "class"), ...)
   if (type == "response")
     return(pred.prob)
   if (type == "class") {
-    newy <- as.matrix(apply(pred.prob, 1, which.max))
+    classes <- object$feature$y %>%
+      factor() %>%
+      levels() %>%
+      as.numeric()
+    newy <- classes[apply(pred.prob, 1, which.max)] %>% as.matrix()
     colnames(newy) <- "y.pred"
     return(newy)
   }
