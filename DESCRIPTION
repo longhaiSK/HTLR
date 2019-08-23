@@ -21,7 +21,9 @@ Suggests:
     ggplot2,
     corrplot,
     testthat (>= 2.0.0),
-    bayesplot
+    bayesplot,
+    knitr,
+    rmarkdown
 Imports: 
     Rcpp (>= 0.12.0),
     BCBCSF,
@@ -33,3 +35,4 @@ SystemRequirements: C++11
 LazyData: true
 Encoding: UTF-8
 RoxygenNote: 6.1.1
+VignetteBuilder: knitr
