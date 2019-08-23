@@ -194,3 +194,15 @@ try_require <- function(pkg, f = NULL) {
   stop(paste0("Package `", pkg, "` required for ", f , ".\n",
               "Please install and try again."), call. = FALSE)
 }
+
+#' Pipe operator
+#'
+#' See \code{magrittr::\link[magrittr]{\%>\%}} for details.
+#'
+#' @name %>%
+#' @rdname pipe
+#' @keywords internal
+#' @export
+#' @importFrom magrittr %>%
+#' @usage lhs \%>\% rhs
+NULL
