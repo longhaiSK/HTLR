@@ -52,6 +52,8 @@ htlr_prior <- function(ptype = c("t", "ghs", "neg"),
 #' 
 #' @param p.train Percentage of training set.
 #' 
+#' @param n.train Number of cases for training; will override \code{p.train} if specified.
+#' 
 #' @return List of training data \code{x.tr}, \code{y.tr} and testing data \code{x.te}, \code{y.te}.
 #' 
 #' @export
@@ -62,12 +64,14 @@ htlr_prior <- function(ptype = c("t", "ghs", "neg"),
 #' dim(dat$x.tr)
 #' dim(dat$x.te)
 #'    
-split_data <- function(X, y, p.train = 0.7)
+split_data <- function(X,
+                       y,
+                       p.train = 0.7,
+                       n.train = round(nrow(X) * p.train))
 {
   stopifnot(nrow(X) == length(y))
-  n <- nrow(X)
   
-  tr.row <- sample(1L:n, round(n * p.train), replace = FALSE)
+  tr.row <- sample(1L:nrow(X), n.train, replace = FALSE)
   
   x.tr <- X[tr.row, , drop = FALSE]
   y.tr <- y[tr.row]

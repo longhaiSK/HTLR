@@ -4,7 +4,7 @@
 \alias{split_data}
 \title{Split data into train and test partitions}
 \usage{
-split_data(X, y, p.train = 0.7)
+split_data(X, y, p.train = 0.7, n.train = round(nrow(X) * p.train))
 }
 \arguments{
 \item{X}{Input matrix, of dimension nobs by nvars; each row is an observation vector.}
@@ -12,6 +12,8 @@ split_data(X, y, p.train = 0.7)
 \item{y}{Vector of response variables.}
 
 \item{p.train}{Percentage of training set.}
+
+\item{n.train}{Number of cases for training; will override \code{p.train} if specified.}
 }
 \value{
 List of training data \code{x.tr}, \code{y.tr} and testing data \code{x.te}, \code{y.te}.
