@@ -124,18 +124,21 @@ log_normcons <- function(lv)
   sum(comp_lsl(lv))
 }
 
-get_ix <- function (sub, whole, digits= 0)
-{
-    p <- length (whole)
-    wix <- 1:p
-    names (wix) <- as.character (round(whole, digits))
-    wix [as.character (round(sub, digits))]
-}
-
 #' @export
 nobs.htlrfit <- function(object, ...)
 {
   object$n
+}
+
+print.htlrfit <- function(x, ...)
+{
+  cat(sprintf(
+    "Fitted HTLR Model
+    Data:
+    \t num. classes:\t%d
+    \t observations:\t%d
+    \t predictors:\t%d",
+    x$K + 1, x$n, x$p + 1))
 }
 
 #Plots feature importance scores
