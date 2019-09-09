@@ -1,0 +1,105 @@
+---
+title: "Simulated Data Example"
+author: "Longhai Li and Steven Liu"
+date: "`r Sys.Date()`"
+bibliography: HTLR.bib
+output:
+  rmarkdown::html_document:
+    toc: true
+    toc_float: false
+    toc_depth: 4
+    number_sections: true
+vignette: >
+  %\VignetteIndexEntry{intro}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Data Generation
+
+Load the necessary libraries:
+
+```{r setup}
+library(HTLR)
+library(magrittr)
+library(corrplot)
+```
+
+The description of the dataset generating scheme is found from @li2018fully.
+
+There are 4 groups of features:
+
+* feature #1: marginally related feature
+ 
+* feature #2: marginally unrelated feature, but feature #2 is correlated with feature #1
+
+* feature #3 - #10: marginally related features and also internally correlated
+
+* feature #11 - #2000: noise features without relationship with the y
+
+```{r}
+n <- 2100
+p <- 2000
+
+means <- rbind(
+  c(0, 1, 0),
+  c(0, 0, 0),
+  c(0, 0, 1),
+  c(0, 0, 1),
+  c(0, 0, 1),
+  c(0, 0, 1),
+  c(0, 0, 1),
+  c(0, 0, 1),
+  c(0, 0, 1),
+  c(0, 0, 1)
+) * 2
+
+means <- rbind(means, matrix(0, p - 10, 3))
+
+A <- diag(1, p)
+
+A[1:10, 1:3] <-
+  rbind(
+    c(1, 0, 0),
+    c(2, 1, 0),
+    c(0, 0, 1),
+    c(0, 0, 1),
+    c(0, 0, 1),
+    c(0, 0, 1),
+    c(0, 0, 1),
+    c(0, 0, 1),
+    c(0, 0, 1),
+    c(0, 0, 1)
+  )
+
+dat <- htlr_gendata_FAM(n, means, A, sd_g = 0.5, stdx = TRUE)
+str(dat)
+```
+
+Look at the correlation between features:
+```{r}
+cor(dat$X[ , 1:11]) %>% corrplot(tl.pos = "n")
+```
+
+Split the data into training and testing sets:
+```{r}
+dat <- split_data(dat$X, dat$y, n.train = 100)
+str(dat)
+```
+
+# Model Fitting
+
+Fit a HTLR model with all default settings:
+```{r}
+fit.t <- htlr(X = dat$x.tr, y = dat$y.tr)
+```
+
+
+
