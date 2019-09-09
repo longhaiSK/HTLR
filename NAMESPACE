@@ -3,6 +3,7 @@
 S3method(as.matrix,htlrfit)
 S3method(nobs,htlrfit)
 S3method(predict,htlrfit)
+S3method(summary,htlrfit)
 export("%>%")
 export(bcbcsf_deltas)
 export(evaluate_pred)

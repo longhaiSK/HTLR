@@ -25,32 +25,52 @@ as.matrix.htlrfit <- function(x, k = x$K, ...)
   mcdeltas
 }
 
-## This function find summary of deltas over markov chain.
-htlr_mdcoef <- function (fithtlr, usedmc = "all", features = "all", method = median)
+#' Posterior Summaries  
+#' 
+#' This function gives a summary of posterior of parameters.
+#' 
+#' @param object An object of S3 class \code{htlrfit}.
+#' 
+#' @param usedmc Indices of Markov chain iterations used for inference. By default all iterations are used.
+#' 
+#' @param method A function that is used to aggregate the MCMC samples. The default is \code{median}, 
+#' other built-in/customized statistical functions such as \code{mean}, \code{sd}, and \code{mad}
+#' can also be used. 
+#' 
+#' @param features A vector of indices (int) or names (char) that specify the parameters we will look at.
+#' By default all parameters are selected. 
+#' 
+#' @param ... Not used.  
+#' 
+#' @return A point summary of MCMC samples. 
+#' 
+#' @export
+#'   
+summary.htlrfit <-
+  function (object,
+            method = median,
+            features = 1L:object$p,
+            usedmc = NULL,
+            ...)
 {
-    mcdims <- dim (fithtlr$mcdeltas)
-    p <- mcdims [1] - 1
-    K <- mcdims [2]
-    no_mcspl <- mcdims[3]
-    
-    if (usedmc [1] == "all")  usedmc <- 2:no_mcspl
-    
-    
-    if (is.null(features) || length (features) == 0) ix.f <- c()
-    else if (features [1] == "all")  ix.f <- 1:p
-    else        
-    {
-        ix.f <- get_ix (features, fithtlr$feature$fsel)
-    }
-    
-    mcdeltas <- fithtlr$mcdeltas[c(1,ix.f + 1),, usedmc, drop = FALSE]
-    
-    mddeltas <- apply (mcdeltas, MARGIN = c(1,2), FUN = method)
-    
-    mddeltas
-    
+  if (is.null(usedmc))
+    usedmc <- 2L:dim(object$mcdeltas)[3]
+  
+  ix.f <- object$feature$fsel[features] %>% na.omit()
+  
+  mddeltas <- object$mcdeltas[c(1, ix.f + 1), , usedmc, drop = FALSE] %>%
+    apply(MARGIN = c(1, 2), FUN = method)
+  
+  colnames(mddeltas) <- match.call() %>% 
+    as.list() %>% 
+    extract2("method") %>%
+    as.character()
+  if (is.null(colnames(mddeltas)))
+    colnames(mddeltas) <- "median"
+  rownames(mddeltas) <- c("Intercept", names(ix.f))
+  
+  return(mddeltas)
 }
-
 
 # Plots Markov chain trace or scatterplot
 # 
