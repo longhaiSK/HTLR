@@ -99,7 +99,7 @@ htlr_fit <- function (
     stop("less than 2 cases in some group")
 
   #----------------------------- Data preprocessing -----------------------------#
-  y1 <- y_tr
+  y1 <- as.numeric(y_tr)
   if (min(y1) == 0)
     y1 <- y1 + 1
   
@@ -110,6 +110,7 @@ htlr_fit <- function (
   
   ## feature selection
   X_tr <- X_tr[, fsel, drop = FALSE]
+  names(fsel) <- colnames(X_tr) 
   p <- length(fsel)
   n <- nrow(X_tr)
   
