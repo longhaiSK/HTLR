@@ -141,6 +141,7 @@ htlr_fit <- function (
     deltas <- matrix(initial_state$mcdeltas[, , no.mcspl], nrow = p + 1)
     sigmasbt <- initial_state$mcsigmasbt[, no.mcspl]
     s <- initial_state$mclogw[no.mcspl]
+    init.type <- "htlr"
   }
   else
   {
@@ -155,20 +156,24 @@ htlr_fit <- function (
             p + 1, K, nrow(deltas), ncol(deltas))
         )        
       }
+      init.type <- "customized"
     }
     else if (initial_state == "lasso")
     {
       if (pre.legacy) 
         lasso.lambda <- NULL # will be chosen by CV
       deltas <- lasso_deltas(X_tr, y1, lambda = lasso.lambda, verbose = !silence)
+      init.type <- "lasso"
     }
     else if (substr(initial_state, 1, 4) == "bcbc")
     {
       deltas <- bcbcsf_deltas(X_tr, y1, alpha.rda)
+      init.type <- "bcbc"
     }
     else if (initial_state == "random")
     {
       deltas <- matrix(rnorm((p + 1) * K) * 2, p + 1, K)
+      init.type <- "random"
     }
     else stop("not supported init type")
     
@@ -195,11 +200,15 @@ htlr_fit <- function (
       ## other control
       silence = as.integer(silence), legacy = pre.legacy)
   
-  # add prior hyperparameter information
+  # add prior hyperparameter info
   fit$prior <- htlr_prior(ptype, alpha, s, sigmab0)
   
-  # add data preprocessing information
-  fit$feature <- list("fsel" = fsel, "nuj" = nuj, "sdj" = sdj, "y" = y_tr, "X" = X_addint)
+  # add initial state info
+  fit$mc.param$init <- init.type
+  
+  # add data preprocessing info
+  fit$feature <- list("y" = y_tr, "X" = X_addint, "stdx" = stdzx,
+                      "fsel" = fsel, "nuj" = nuj, "sdj" = sdj)
   
   # add call
   fit$call <- match.call()
