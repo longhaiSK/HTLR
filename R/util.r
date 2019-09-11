@@ -130,16 +130,32 @@ nobs.htlrfit <- function(object, ...)
   object$n
 }
 
+#' @export
 print.htlrfit <- function(x, ...)
 {
-  cat(sprintf(
-    "Fitted HTLR Model
-    Data:
-    \t num. classes:\t%d
-    \t observations:\t%d
-    \t predictors:\t%d",
-    x$K + 1, x$n, x$p + 1))
+  info.data <- sprintf("Data:\n
+  response:\t%d-class
+  observations:\t%d
+  predictors:\t%d (w/ intercept)
+  standardised:\t%s",
+  x$K + 1, x$n, x$p + 1, as.character(x$feature$stdx)) 
+  
+  info.model <- sprintf("Model:\n
+  prior dist:\t%s (df = %d, log(w) = %.1f)
+  init state:\t%s 
+  sample:\t%d (posterior sample size)",
+  x$prior$ptype, x$prior$alpha, x$prior$logw, 
+  x$mc.param$init, x$mc.param$iter.rmc)
+  
+  info.est <- sprintf("Estimates:\n
+  model size:\t%d (w/ intercept)
+  coefficients: see help('summary.htlrfit')",
+  length(nzero_idx(x)) + 1)
+  
+  cat("Fitted HTLR model", "\n\n", info.data, "\n\n", info.model, "\n\n", info.est)
 }
+
+
 
 #Plots feature importance scores
 # 
