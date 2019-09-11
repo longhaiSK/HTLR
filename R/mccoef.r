@@ -3,8 +3,11 @@
 #' The Markov chain samples (without warmup) included in a \code{htlrfit} object will be coerced to a matrix.
 #' 
 #' @param x An object of S3 class \code{htlrfit}.
+#' 
 #' @param k Coefficients associated with class \code{k} will be drawn. Must be a positive integer in 
-#' 1,2,\ldots,C for C-class traning labels. By default the last class will be chosen.
+#' 1,2,\ldots,C-1 for C-class traning labels (base class 0 can not be chosen). By default the last class
+#' is selected. For binary logistic model this argument can be ignored.
+#' 
 #' @param ... Not used.
 #' 
 #' @return A matrix with \code{(p + 1)} columns and \code{i} rows, where \code{p} is the number of features 
@@ -18,8 +21,16 @@
 #' 
 #' dim(as.matrix(fit))
 #'   
-as.matrix.htlrfit <- function(x, k = x$K, ...)
+as.matrix.htlrfit <- function(x, k = NULL, ...)
 {
+  if (is.null(k))
+  {
+    k <- x$K
+    if (k > 1)
+      message(
+        "'k' was not specified, coefficients associated with the last class will be drawn"
+      )
+  }
   mcdeltas <- t(x$mcdeltas[ , k, -1])
   colnames(mcdeltas) <- colnames(x$feature$X)
   mcdeltas
@@ -44,6 +55,8 @@ as.matrix.htlrfit <- function(x, k = x$K, ...)
 #' 
 #' @return A point summary of MCMC samples. 
 #' 
+#' @importFrom magrittr extract2
+#' 
 #' @export
 #'   
 summary.htlrfit <-
@@ -61,13 +74,15 @@ summary.htlrfit <-
   mddeltas <- object$mcdeltas[c(1, ix.f + 1), , usedmc, drop = FALSE] %>%
     apply(MARGIN = c(1, 2), FUN = method)
   
-  colnames(mddeltas) <- match.call() %>% 
+  attr(mddeltas, "stats") <- 
+    match.call() %>% 
     as.list() %>% 
     extract2("method") %>%
     as.character()
   if (is.null(colnames(mddeltas)))
-    colnames(mddeltas) <- "median"
+    attr(mddeltas, "stats") <- "median"
   rownames(mddeltas) <- c("Intercept", names(ix.f))
+  colnames(mddeltas) <- paste("class", levels(factor(object$feature$y)))[-1]
   
   return(mddeltas)
 }
@@ -159,24 +174,38 @@ htlr_mccoef <-  function (
     out <- deltas
 }
 
-
 # @export
-htlr_sdb <- function (fitbplr,usedmc = NULL, burn = NULL, thin = NULL)
+htlr_sdb <- function(fit,
+                     usedmc = NULL,
+                     burn = NULL,
+                     thin = 1)
 {
-    
-    mcdims <- dim (fitbplr$mcdeltas)
-    p <- mcdims [1] - 1
-    K <- mcdims [2]
-    C <- K + 1
-    no_mcspl <- mcdims[3]
-    
-    ## index of mc iters used for inference
-    if (is.null (burn)) burn <- floor(no_mcspl * 0.2)
-    if (is.null (thin)) thin <- 1
-    if (is.null (usedmc)) usedmc <- seq (burn + 1, no_mcspl, by = thin)
-    
-    
-    deltas <- htlr_mdcoef (fitbplr, usedmc = usedmc, method = mean)
-    sdbs <- comp_sdb (deltas, removeint = T, normalize = F)
-        
+  no_mcspl <- dim(fit$mcdeltas)[3]
+  
+  ## index of mc iters used for inference
+  if (is.null(burn))
+    burn <- floor(no_mcspl * 0.2)
+  if (is.null(usedmc))
+    usedmc <- seq(burn + 1, no_mcspl, by = thin)
+  
+  deltas <- summary(fit, usedmc = usedmc, method = mean)
+  comp_sdb(deltas, removeint = T, normalize = F)
+}
+
+#' Get Indices of Non-Zero Coefficients
+#' 
+#' Get the indices of non-zero coefficients from fitted HTLR model objects.
+#' 
+#' @param fit An object of S3 class \code{htlrfit}.
+#' 
+#' @param cut Threshold on relative SDB to distinguish zero coefficients. 
+#' 
+#' @return Indices vector of non-zero coefficients in the model.
+#' 
+#' @export
+#' 
+nzero_idx <- function(fit, cut = 0.1)
+{
+  sdb <- htlr_sdb(fit)
+  which(sdb > cut * max(sdb))
 }
