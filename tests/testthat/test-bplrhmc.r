@@ -7,7 +7,7 @@ data("colon")
 dat <- split_data(colon$X, colon$y, p.train = 0.9)
 
 set.seed(SEED)
-mlr <- htlr_gendata_MLR(n = 50, p = 10)
+mlr <- gendata_MLR(n = 50, p = 10)
 dat3 <- split_data(mlr$X, mlr$y, p.train = 0.8)
 
 expect_equal_htlr <- function(actual, expected)

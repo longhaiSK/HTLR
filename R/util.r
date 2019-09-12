@@ -59,7 +59,7 @@ htlr_prior <- function(ptype = c("t", "ghs", "neg"),
 #' @export
 #' 
 #' @examples 
-#' dat <- htlr_gendata_MLR(n = 100, p = 10)
+#' dat <- gendata_MLR(n = 100, p = 10)
 #' dat <- split_data(dat$X, dat$y, p.train = 0.7)
 #' dim(dat$x.tr)
 #' dim(dat$x.te)

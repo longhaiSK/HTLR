@@ -2,7 +2,7 @@ load("gendata_expect.rda")
 
 test_that("sim MLR works", {
   set.seed(SEED)
-  actual <- htlr_gendata_MLR(n = 50, p = 10)
+  actual <- gendata_MLR(n = 50, p = 10)
   expect_equal(unname(actual$X), dat.mlr$X)
   expect_equal(actual$y, dat.mlr$y)
   expect_equal(actual$deltas, dat.mlr$deltas)
@@ -30,7 +30,7 @@ test_that("sim FAM works", {
     c(0, 0, 1)
   )
   set.seed(SEED)
-  actual <- htlr_gendata_FAM(n, means, A, sd_g = 0.5, stdx = TRUE)
+  actual <- gendata_FAM(n, means, A, sd_g = 0.5, stdx = TRUE)
   
   expect_equal(unname(actual$X), dat.fam$X)
   expect_equal(actual$y, dat.fam$y)
