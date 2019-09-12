@@ -1,6 +1,6 @@
 #ifndef GIBBS_H
 #define GIBBS_H 
-//#define ARMA_NO_DEBUG
+#define ARMA_NO_DEBUG
 
 #include "RcppArmadillo.h"
 #include "utils.h"
