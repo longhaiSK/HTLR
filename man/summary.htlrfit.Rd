@@ -4,18 +4,18 @@
 \alias{summary.htlrfit}
 \title{Posterior Summaries}
 \usage{
-\method{summary}{htlrfit}(object, method = median,
-  features = 1L:object$p, usedmc = NULL, ...)
+\method{summary}{htlrfit}(object, features = 1L:object$p,
+  method = median, usedmc = NULL, ...)
 }
 \arguments{
 \item{object}{An object of S3 class \code{htlrfit}.}
 
+\item{features}{A vector of indices (int) or names (char) that specify the parameters we will look at.
+By default all parameters are selected.}
+
 \item{method}{A function that is used to aggregate the MCMC samples. The default is \code{median}, 
 other built-in/customized statistical functions such as \code{mean}, \code{sd}, and \code{mad}
 can also be used.}
-
-\item{features}{A vector of indices (int) or names (char) that specify the parameters we will look at.
-By default all parameters are selected.}
 
 \item{usedmc}{Indices of Markov chain iterations used for inference. By default all iterations are used.}
 
@@ -26,4 +26,12 @@ A point summary of MCMC samples.
 }
 \description{
 This function gives a summary of posterior of parameters.
+}
+\examples{
+set.seed(12345)
+data("colon")
+
+fit <- htlr(X = colon$X, y = colon$y, fsel = 1:100, iter = 20)
+summary(fit, features = 1:16)
+  
 }

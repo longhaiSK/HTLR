@@ -58,11 +58,18 @@ as.matrix.htlrfit <- function(x, k = NULL, ...)
 #' @importFrom magrittr extract2
 #' 
 #' @export
+#' 
+#' @examples 
+#' set.seed(12345)
+#' data("colon")
+#' 
+#' fit <- htlr(X = colon$X, y = colon$y, fsel = 1:100, iter = 20)
+#' summary(fit, features = 1:16)
 #'   
 summary.htlrfit <-
   function (object,
-            method = median,
             features = 1L:object$p,
+            method = median,
             usedmc = NULL,
             ...)
 {
@@ -203,6 +210,13 @@ htlr_sdb <- function(fit,
 #' @return Indices vector of non-zero coefficients in the model.
 #' 
 #' @export
+#' 
+#' @examples 
+#' set.seed(12345)
+#' data("colon")
+#' 
+#' fit <- htlr(X = colon$X, y = colon$y, fsel = 1:100, iter = 20)
+#' nzero_idx(fit)
 #' 
 nzero_idx <- function(fit, cut = 0.1)
 {

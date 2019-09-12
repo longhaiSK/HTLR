@@ -17,3 +17,11 @@ Indices vector of non-zero coefficients in the model.
 \description{
 Get the indices of non-zero coefficients from fitted HTLR model objects.
 }
+\examples{
+set.seed(12345)
+data("colon")
+
+fit <- htlr(X = colon$X, y = colon$y, fsel = 1:100, iter = 20)
+nzero_idx(fit)
+
+}
