@@ -260,7 +260,7 @@ htlr_fss <- function  (fithtlr, threshold = NULL, mfreq = NULL, print = TRUE)
         fsubsets[[i]] <- fithtlr$fsel[ix_fsubsets] ## original indices
         mcids [[i]] <- which (iclust == i) ## markov chain indices
         ## coefs of all features
-        coefs[[i]] <- htlr_mdcoef (fithtlr, usedmc = mcids[[i]])
+        coefs[[i]] <- summary(fithtlr, usedmc = mcids[[i]])
         ## coefs for selected features        
         coefs_sel [[i]] <- coefs [[i]][c(0,ix_fsubsets) + 1,,drop = FALSE] 
         ## features importance indices 
