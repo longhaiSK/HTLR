@@ -17,13 +17,13 @@
 #' 
 #' @examples
 #' set.seed(12345)
-#' dat <- htlr_gendata_MLR(n = 100, p = 10)
+#' dat <- gendata_MLR(n = 100, p = 10)
 #' ggplot2::qplot(dat$y, bins = 6)
 #' corrplot::corrplot(cor(dat$X))
 #' 
-#' @seealso \code{\link{htlr_gendata_FAM}}
+#' @seealso \code{\link{gendata_FAM}}
 #' 
-htlr_gendata_MLR <- function(n, p, NC = 3, nu = 2, w = 1, X = NULL, betas = NULL)
+gendata_MLR <- function(n, p, NC = 3, nu = 2, w = 1, X = NULL, betas = NULL)
 {
   if (is.null(X)) {
     X <- matrix(rnorm (n * p), n, p)
@@ -96,13 +96,13 @@ htlr_gendata_MLR <- function(n, p, NC = 3, nu = 2, w = 1, X = NULL, betas = NULL
 #'   c(0, 0, 1)
 #' )
 #' 
-#' dat <- htlr_gendata_FAM(n, means, A, sd_g = 0.5, stdx = TRUE)
+#' dat <- gendata_FAM(n, means, A, sd_g = 0.5, stdx = TRUE)
 #' ggplot2::qplot(dat$y, bins = 6)
 #' corrplot::corrplot(cor(dat$X))
 #' 
-#' @seealso \code{\link{htlr_gendata_MLR}}
+#' @seealso \code{\link{gendata_MLR}}
 #'      
-htlr_gendata_FAM <- function(n, muj, A, sd_g = 0, stdx = FALSE)
+gendata_FAM <- function(n, muj, A, sd_g = 0, stdx = FALSE)
 {
   p <- nrow(muj)
   C <- ncol(muj)
