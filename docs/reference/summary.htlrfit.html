@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • HTLR</title>
+<title>Posterior Summaries — summary.htlrfit • HTLR</title>
 
 
 <!-- jquery -->
@@ -35,7 +35,9 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Posterior Summaries — summary.htlrfit" />
+<meta property="og:description" content="This function gives a summary of posterior of parameters." />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -54,7 +56,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -113,102 +115,88 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Posterior Summaries</h1>
+    <small class="dont-index">Source: <a href='https://github.com/longhaiSK/HTLR/blob/master/R/mccoef.r'><code>R/mccoef.r</code></a></small>
+    <div class="hidden name"><code>summary.htlrfit.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>This function gives a summary of posterior of parameters.</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='co'># S3 method for htlrfit</span>
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='no'>object</span>, <span class='kw'>features</span> <span class='kw'>=</span> <span class='fl'>1L</span>:<span class='no'>object</span>$<span class='no'>p</span>,
+  <span class='kw'>method</span> <span class='kw'>=</span> <span class='no'>median</span>, <span class='kw'>usedmc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="as.matrix.htlrfit.html">as.matrix(<i>&lt;htlrfit&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Create a Matrix of Markov Chain Samples</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="colon.html">colon</a></code> </p>
-        </td>
-        <td><p>Colon tissues data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="evaluate_pred.html">evaluate_pred()</a></code> </p>
-        </td>
-        <td><p>Evaluate Prediction Results</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="gendata_FAM.html">gendata_FAM()</a></code> </p>
-        </td>
-        <td><p>Generate simulated data with factor analysis model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="gendata_MLR.html">gendata_MLR()</a></code> </p>
-        </td>
-        <td><p>Generate simulated data with multinomial logistic regression model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="htlr.html">htlr()</a></code> </p>
-        </td>
-        <td><p>Fit a HTLR Model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="htlr_prior.html">htlr_prior()</a></code> </p>
-        </td>
-        <td><p>Generate Prior Configuration</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="nzero_idx.html">nzero_idx()</a></code> </p>
-        </td>
-        <td><p>Get Indices of Non-Zero Coefficients</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="predict.htlrfit.html">predict(<i>&lt;htlrfit&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Make Prediction on New Data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="split_data.html">split_data()</a></code> </p>
-        </td>
-        <td><p>Split data into train and test partitions</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="summary.htlrfit.html">summary(<i>&lt;htlrfit&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Posterior Summaries</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>object</th>
+      <td><p>An object of S3 class <code>htlrfit</code>.</p></td>
+    </tr>
+    <tr>
+      <th>features</th>
+      <td><p>A vector of indices (int) or names (char) that specify the parameters we will look at.
+By default all parameters are selected.</p></td>
+    </tr>
+    <tr>
+      <th>method</th>
+      <td><p>A function that is used to aggregate the MCMC samples. The default is <code>median</code>, 
+other built-in/customized statistical functions such as <code>mean</code>, <code>sd</code>, and <code>mad</code>
+can also be used.</p></td>
+    </tr>
+    <tr>
+      <th>usedmc</th>
+      <td><p>Indices of Markov chain iterations used for inference. By default all iterations are used.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Not used.</p></td>
+    </tr>
     </table>
-  </div>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A point summary of MCMC samples.</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>12345</span>)
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"colon"</span>)
+
+<span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='htlr.html'>htlr</a></span>(<span class='kw'>X</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>X</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>y</span>, <span class='kw'>fsel</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>100</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>20</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='no'>fit</span>, <span class='kw'>features</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>16</span>)</div><div class='output co'>#&gt;                class 1
+#&gt; Intercept  1.335669935
+#&gt; V1         0.000000000
+#&gt; V2         0.000000000
+#&gt; V3         0.000000000
+#&gt; V4         0.000000000
+#&gt; V5         0.000000000
+#&gt; V6         0.000000000
+#&gt; V7         0.000000000
+#&gt; V8         0.000000000
+#&gt; V9         0.000000000
+#&gt; V10        0.000000000
+#&gt; V11        0.000000000
+#&gt; V12        0.000000000
+#&gt; V13        0.000000000
+#&gt; V14       -1.697594259
+#&gt; V15        0.006178324
+#&gt; V16       -0.325748938
+#&gt; attr(,"stats")
+#&gt; [1] "median"</div><div class='input'>  
+</div></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+      <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
+
   </div>
 </div>
 

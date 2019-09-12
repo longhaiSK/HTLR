@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • HTLR</title>
+<title>Evaluate Prediction Results — evaluate_pred • HTLR</title>
 
 
 <!-- jquery -->
@@ -35,7 +35,10 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Evaluate Prediction Results — evaluate_pred" />
+<meta property="og:description" content="This function compares the prediction results returned by a classifier with ground truth, 
+and finally gives a summary of the evaluation." />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -54,7 +57,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -113,102 +116,58 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Evaluate Prediction Results</h1>
+    <small class="dont-index">Source: <a href='https://github.com/longhaiSK/HTLR/blob/master/R/compred.r'><code>R/compred.r</code></a></small>
+    <div class="hidden name"><code>evaluate_pred.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>This function compares the prediction results returned by a classifier with ground truth, 
+and finally gives a summary of the evaluation.</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>evaluate_pred</span>(<span class='no'>y.pred</span>, <span class='no'>y.true</span>, <span class='kw'>caseid</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>y.true</span>), <span class='kw'>showplot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>...</span>)</pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="as.matrix.htlrfit.html">as.matrix(<i>&lt;htlrfit&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Create a Matrix of Markov Chain Samples</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="colon.html">colon</a></code> </p>
-        </td>
-        <td><p>Colon tissues data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="evaluate_pred.html">evaluate_pred()</a></code> </p>
-        </td>
-        <td><p>Evaluate Prediction Results</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="gendata_FAM.html">gendata_FAM()</a></code> </p>
-        </td>
-        <td><p>Generate simulated data with factor analysis model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="gendata_MLR.html">gendata_MLR()</a></code> </p>
-        </td>
-        <td><p>Generate simulated data with multinomial logistic regression model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="htlr.html">htlr()</a></code> </p>
-        </td>
-        <td><p>Fit a HTLR Model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="htlr_prior.html">htlr_prior()</a></code> </p>
-        </td>
-        <td><p>Generate Prior Configuration</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="nzero_idx.html">nzero_idx()</a></code> </p>
-        </td>
-        <td><p>Get Indices of Non-Zero Coefficients</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="predict.htlrfit.html">predict(<i>&lt;htlrfit&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Make Prediction on New Data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="split_data.html">split_data()</a></code> </p>
-        </td>
-        <td><p>Split data into train and test partitions</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="summary.htlrfit.html">summary(<i>&lt;htlrfit&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Posterior Summaries</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>y.pred</th>
+      <td><p>A matrix of predicted probabilities, as returned by a classifier.</p></td>
+    </tr>
+    <tr>
+      <th>y.true</th>
+      <td><p>Ground truth labels vector.</p></td>
+    </tr>
+    <tr>
+      <th>caseid</th>
+      <td><p>The names of test cases which we take account of. By default all test cases are used for evaluation.</p></td>
+    </tr>
+    <tr>
+      <th>showplot</th>
+      <td><p>Logical; if <code>TRUE</code>, a summary plot will be generated.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Not used.</p></td>
+    </tr>
     </table>
-  </div>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A summary of evaluation result.</p>
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+      <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
     </ul>
+
   </div>
 </div>
 
