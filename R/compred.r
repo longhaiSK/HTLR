@@ -42,6 +42,7 @@ probs_attrue_bplr <- function (probs_pred, y)
   tp
 }
 
+#' @importFrom utils read.table
 eval_tab_pred <- function (table_eval, showplot = TRUE, method = "Prediction", ...)
 {
   if (is.character (table_eval)) 
