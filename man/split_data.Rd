@@ -22,7 +22,7 @@ List of training data \code{x.tr}, \code{y.tr} and testing data \code{x.te}, \co
 This function splits the input data and response variables into training and testing parts.
 }
 \examples{
-dat <- htlr_gendata_MLR(n = 100, p = 10)
+dat <- gendata_MLR(n = 100, p = 10)
 dat <- split_data(dat$X, dat$y, p.train = 0.7)
 dim(dat$x.tr)
 dim(dat$x.te)
