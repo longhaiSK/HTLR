@@ -4,13 +4,14 @@
 \alias{as.matrix.htlrfit}
 \title{Create a Matrix of Markov Chain Samples}
 \usage{
-\method{as.matrix}{htlrfit}(x, k = x$K, ...)
+\method{as.matrix}{htlrfit}(x, k = NULL, ...)
 }
 \arguments{
 \item{x}{An object of S3 class \code{htlrfit}.}
 
 \item{k}{Coefficients associated with class \code{k} will be drawn. Must be a positive integer in 
-1,2,\ldots,C for C-class traning labels. By default the last class will be chosen.}
+1,2,\ldots,C-1 for C-class traning labels (base class 0 can not be chosen). By default the last class
+is selected. For binary logistic model this argument can be ignored.}
 
 \item{...}{Not used.}
 }
