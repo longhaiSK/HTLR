@@ -27,7 +27,7 @@ This site focuses mainly on illustrating the usage and syntax of `HTLR`. For mor
 
 ## Installation
 
-~~You can install the released version of HTLR from [CRAN](https://CRAN.R-project.org) with:~~
+You can install the released version of HTLR from [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
 install.packages("HTLR")
