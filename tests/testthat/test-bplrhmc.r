@@ -1,4 +1,5 @@
 skip_on_travis()
+skip_on_cran()
 
 load("bplrhmc_expect.rda")
 
