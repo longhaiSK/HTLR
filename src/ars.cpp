@@ -335,7 +335,7 @@ int sample_disc(const int k, const double *lw)
 {
   // constructing probabilities from log probabilities
   double max_lw = fmaxm(k, lw);
-  double cw[k];
+  double *cw = new double[k];
   cw[0] = exp(lw[0] - max_lw);
   for (int i = 1; i < k; i++)
     cw[i] = cw[i - 1] + exp(lw[i] - max_lw);
@@ -351,6 +351,7 @@ int sample_disc(const int k, const double *lw)
       break;
     i++;
   }
+  delete cw;
   return i;
 }
 
