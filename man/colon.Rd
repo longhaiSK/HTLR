@@ -10,7 +10,7 @@
   \item{y}{A binary vector where 0 indicates normal colon tissues and 1 indicates tumor colon tissues.}
 }}
 \source{
-\url{https://stat.ethz.ch/~dettling/bagboost.html}
+\url{ftp://stat.ethz.ch/Manuscripts/dettling/bagboost.pdf}
 }
 \usage{
 data("colon")
