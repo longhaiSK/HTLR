@@ -55,74 +55,74 @@ lasso_deltas <- function(X, y, lambda = NULL, verbose = FALSE, alpha = 1, rank_f
   return (deltas)
 }
 
-lasso_fitpred <- function (X_tr, y_tr, X_ts = NULL, rank_fn = rank_plain, k = ncol (X_tr))
-{
-  #try_require ("glmnet")
-  ## read information about data
-  n <- nrow (X_tr) ## numbers of obs
-  p <- ncol (X_tr)
-  ## find number of observations in each group
-  nos_g <- as.vector (tapply (rep(1, n), INDEX = y_tr, sum))
-  G <- length (nos_g)
-  if (any(nos_g < 2))
-    stop ("Less than 2 cases in some group")
-  
-  ## feature selection
-  if (k < p)
-  {
-    fsel <- rank_fn (X_tr, y_tr) [1:k]
-    X_tr <- X_tr [, fsel, drop = FALSE]
-    X_ts <- X_ts[, fsel, drop = FALSE]
-  }
-  
-  ## choosing the best lambda
-  cvfit <- cv.glmnet (
-    x = X_tr,
-    y = y_tr,
-    nlambda = 500,
-    family = "multinomial"
-  )
-  lambda <- cvfit$lambda[which.min(cvfit$cvm)]
-  cat ("The best lambda chosen by CV:", lambda, "\n")
-  
-  ## fit lasso with the best lambda
-  lassofit <- glmnet (
-    x = X_tr,
-    y = y_tr,
-    nlambda = 500,
-    family = "multinomial"
-  )
-  
-  betas <- coef (lassofit, s = lambda)
-  
-  mbetas <- matrix (0, p + 1, G)
-  for (g in 1:G)
-  {
-    mbetas[, g] <- as.numeric (betas[[g]])
-  }
-  deltas <- mbetas[,-1, drop = FALSE] - mbetas[, 1]
-  
-  ## predicting for new cases
-  if (is.null (X_ts))
-  {
-    return (deltas)
-  }
-  else
-  {
-    probs_pred <- matrix(predict (
-      lassofit,
-      newx = X_ts,
-      s = lambda,
-      type = "response"
-    )[, , 1],
-    nrow = nrow (X_ts))
-    return (list (
-      probs_pred = probs_pred,
-      values_pred = apply (probs_pred, 1, which.max),
-      deltas = deltas
-    ))
-  }
-}
+# lasso_fitpred <- function (X_tr, y_tr, X_ts = NULL, rank_fn = rank_plain, k = ncol (X_tr))
+# {
+#   #try_require ("glmnet")
+#   ## read information about data
+#   n <- nrow (X_tr) ## numbers of obs
+#   p <- ncol (X_tr)
+#   ## find number of observations in each group
+#   nos_g <- as.vector (tapply (rep(1, n), INDEX = y_tr, sum))
+#   G <- length (nos_g)
+#   if (any(nos_g < 2))
+#     stop ("Less than 2 cases in some group")
+#   
+#   ## feature selection
+#   if (k < p)
+#   {
+#     fsel <- rank_fn (X_tr, y_tr) [1:k]
+#     X_tr <- X_tr [, fsel, drop = FALSE]
+#     X_ts <- X_ts[, fsel, drop = FALSE]
+#   }
+#   
+#   ## choosing the best lambda
+#   cvfit <- cv.glmnet (
+#     x = X_tr,
+#     y = y_tr,
+#     nlambda = 500,
+#     family = "multinomial"
+#   )
+#   lambda <- cvfit$lambda[which.min(cvfit$cvm)]
+#   cat ("The best lambda chosen by CV:", lambda, "\n")
+#   
+#   ## fit lasso with the best lambda
+#   lassofit <- glmnet (
+#     x = X_tr,
+#     y = y_tr,
+#     nlambda = 500,
+#     family = "multinomial"
+#   )
+#   
+#   betas <- coef (lassofit, s = lambda)
+#   
+#   mbetas <- matrix (0, p + 1, G)
+#   for (g in 1:G)
+#   {
+#     mbetas[, g] <- as.numeric (betas[[g]])
+#   }
+#   deltas <- mbetas[,-1, drop = FALSE] - mbetas[, 1]
+#   
+#   ## predicting for new cases
+#   if (is.null (X_ts))
+#   {
+#     return (deltas)
+#   }
+#   else
+#   {
+#     probs_pred <- matrix(predict (
+#       lassofit,
+#       newx = X_ts,
+#       s = lambda,
+#       type = "response"
+#     )[, , 1],
+#     nrow = nrow (X_ts))
+#     return (list (
+#       probs_pred = probs_pred,
+#       values_pred = apply (probs_pred, 1, which.max),
+#       deltas = deltas
+#     ))
+#   }
+# }
 
 
 # lassocv_fsel_trpr <- function (y_tr, X_tr, X_ts, nos_fsel = ncol (X_tr), rankf = rank_k)

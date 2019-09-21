@@ -232,174 +232,165 @@ htlr_fit <- function (
 
 ######################## some functions not used currently ###################
 
-if (F)
-{
-
-htlr_ci <- function (fithtlr, usedmc = NULL)
-{
-    mcdims <- dim (fithtlr$mcdeltas)
-    p <- mcdims [1] - 1
-    K <- mcdims [2]
-    no_mcspl <- mcdims[3]
-
-    ## index of mc iters used for inference
-
-    mcdeltas <- fithtlr$mcdeltas[,,usedmc, drop = FALSE]
-    
-    cideltas <- array (0, dim = c(p+1, K, 3))
-    for (j in 1:(p+1))
-    {
-        for (k in 1:K) {
-          cideltas [j,k,] <- 
-            quantile (mcdeltas[j,k,], probs = c(1-cp, 1, 1 + cp)/2)
-        }
-    }
-    
-    cideltas
-}
-
-## this function plots confidence intervals
-htlr_plotci <- function (fithtlr, usedmc = NULL, 
-                         cp = 0.95, truedeltas = NULL,   ...)
-{
-    
-    cideltas <- htlr_coefs (fithtlr, usedmc = usedmc, showci = TRUE, cp = cp)
-    K <- dim (cideltas)[2]
-    
-    for (k in 1:K)
-    {
-        plotmci (cideltas[,k,], truedeltas = truedeltas[,k], 
-                 main = sprintf ("%d%% MC C.I. of Coefs (Class %d)", 
-                                 cp * 100, k+1),
-                ...)
-        
-    }
-    
-    return (cideltas)
-}
-
-
-htlr_outpred <- function (x,y,...)
-{
-  X_ts <- cbind (x, rep (y, each = length (x)))
-  probs_pred <- htlr_predict (X_ts = X_ts, ...)$probs_pred[,2] 
-  matrix (probs_pred, nrow = length (x) )
-}
-
-
-norm_coef <- function (deltas)
-{
-  slope <- sqrt (sum(deltas^2))
-  deltas/slope
-}
-
-pie_coef <- function (deltas)
-{
-  slope <- sum(abs(deltas))
-  deltas/slope
-}
-
-norm_mcdeltas <- function (mcdeltas)
-{
-  sqnorm <- function (a) sqrt(sum (a^2))
-  dim_mcd <- dim (mcdeltas)
-    
-  slopes <- apply (mcdeltas[-1,,,drop=FALSE], MARGIN = c(2,3), sqnorm)
-    
-  mcthetas <- sweep (x = mcdeltas, MARGIN = c(2,3), STATS = slopes, FUN = "/")
-  
-  list (mcthetas = mcthetas, slopes = as.vector(slopes))
-}
-
-pie_mcdeltas <- function (mcdeltas)
-{
-  sumabs <- function (a) sum (abs(a))
-  dim_mcd <- dim (mcdeltas)
-    
-  slopes <- apply (mcdeltas[-1,,,drop=FALSE], MARGIN = c(2,3), sumabs)
-    
-  mcthetas <- sweep (x = mcdeltas, MARGIN = c(2,3), STATS = slopes, FUN = "/")
-  
-  list (mcthetas = mcthetas, slopes = as.vector(slopes))
-}
-
-plotmci <- function (CI, truedeltas = NULL, ...)
-{
-    p <- nrow (CI) - 1
-
-    plotargs <- list (...)
-    
-    if (is.null (plotargs$ylim)) plotargs$ylim <- range (CI)
-    if (is.null (plotargs$pch))  plotargs$pch <- 4 
-    if (is.null (plotargs$xlab)) 
-       plotargs$xlab <- "Feature Index in Training Data"
-    if (is.null (plotargs$ylab)) plotargs$ylab <- "Coefficient Value"
-    
-    do.call (plot, c (list(x= 0:p, y=CI[,2]), plotargs))
-    
-    abline (h = 0)
-    
-    for (j in 0:p)
-    {
-        
-        points (c(j,j), CI[j+1,-2], type = "l", lwd = 2)
-    }
-    
-    if (!is.null (truedeltas))
-    {
-        points (0:p, truedeltas, col = "red", cex = 1.2, pch = 20)
-    }
-
-}
-
-
-
-
-htlr_plotleapfrog <- function ()
-{
-        if (looklf & i_mc %% iters_imc == 0 & i_mc >=0 )
-        {
-           if (!file.exists ("leapfrogplots")) dir.create ("leapfrogplots")
-
-           postscript (file = sprintf ("leapfrogplots/ch%d.ps", i_sup),
-           title = "leapfrogplots-ch", paper = "special",
-           width = 8, height = 4, horiz = FALSE)
-           par (mar = c(5,4,3,1))
-           plot (-olp$nenergy_trj + olp$nenergy_trj[1],
-                xlab = "Index of Trajectory", type = "l",
-                ylab = "Hamiltonian Value",
-                main =
-                sprintf (paste( "Hamiltonian Values with the Starting Value",
-                "Subtracted\n(P(acceptance)=%.2f)", sep = ""),
-                min(1, exp(olp$nenergy_trj[L+1]-olp$nenergy_trj[1]) )
-                )
-           )
-           abline (h = c (-1,1))
-           dev.off()
-
-           postscript (file = sprintf ("leapfrogplots/dd%d.ps", i_sup+1),
-           title = sprintf("leapfrogplots-dd%d", i_sup + 1), 
-           paper = "special",
-           width = 8, height = 4, horiz = FALSE)
-           par (mar = c(5,4,3,1))
-           plot (olp$ddeltas_trj, xlab = "Index of Trajectory",type = "l",
-                 ylab = "square distance of Deltas",
-                 main = "Square Distance of `Deltas'")
-           dev.off ()
-
-           postscript (file = sprintf ("leapfrogplots/ll%d.ps", i_sup),
-           title = "leapfrogplots-ll", paper = "special",
-           width = 8, height = 4, horiz = FALSE)
-           par (mar = c(5,4,3,1))
-           plot (olp$loglike_trj, xlab = "Index of Trajectory", type = "l",
-                 ylab = "log likelihood",
-                 main = "Log likelihood of Training Cases")
-           dev.off()
-        }
-}
-
-
-
-}
-
-
+# htlr_ci <- function (fithtlr, usedmc = NULL)
+# {
+#     mcdims <- dim (fithtlr$mcdeltas)
+#     p <- mcdims [1] - 1
+#     K <- mcdims [2]
+#     no_mcspl <- mcdims[3]
+# 
+#     ## index of mc iters used for inference
+# 
+#     mcdeltas <- fithtlr$mcdeltas[,,usedmc, drop = FALSE]
+#     
+#     cideltas <- array (0, dim = c(p+1, K, 3))
+#     for (j in 1:(p+1))
+#     {
+#         for (k in 1:K) {
+#           cideltas [j,k,] <- 
+#             quantile (mcdeltas[j,k,], probs = c(1-cp, 1, 1 + cp)/2)
+#         }
+#     }
+#     
+#     cideltas
+# }
+# 
+# ## this function plots confidence intervals
+# htlr_plotci <- function (fithtlr, usedmc = NULL, 
+#                          cp = 0.95, truedeltas = NULL,   ...)
+# {
+#     
+#     cideltas <- htlr_coefs (fithtlr, usedmc = usedmc, showci = TRUE, cp = cp)
+#     K <- dim (cideltas)[2]
+#     
+#     for (k in 1:K)
+#     {
+#         plotmci (cideltas[,k,], truedeltas = truedeltas[,k], 
+#                  main = sprintf ("%d%% MC C.I. of Coefs (Class %d)", 
+#                                  cp * 100, k+1),
+#                 ...)
+#         
+#     }
+#     
+#     return (cideltas)
+# }
+# 
+# 
+# htlr_outpred <- function (x,y,...)
+# {
+#   X_ts <- cbind (x, rep (y, each = length (x)))
+#   probs_pred <- htlr_predict (X_ts = X_ts, ...)$probs_pred[,2] 
+#   matrix (probs_pred, nrow = length (x) )
+# }
+# 
+# 
+# norm_coef <- function (deltas)
+# {
+#   slope <- sqrt (sum(deltas^2))
+#   deltas/slope
+# }
+# 
+# pie_coef <- function (deltas)
+# {
+#   slope <- sum(abs(deltas))
+#   deltas/slope
+# }
+# 
+# norm_mcdeltas <- function (mcdeltas)
+# {
+#   sqnorm <- function (a) sqrt(sum (a^2))
+#   dim_mcd <- dim (mcdeltas)
+#     
+#   slopes <- apply (mcdeltas[-1,,,drop=FALSE], MARGIN = c(2,3), sqnorm)
+#     
+#   mcthetas <- sweep (x = mcdeltas, MARGIN = c(2,3), STATS = slopes, FUN = "/")
+#   
+#   list (mcthetas = mcthetas, slopes = as.vector(slopes))
+# }
+# 
+# pie_mcdeltas <- function (mcdeltas)
+# {
+#   sumabs <- function (a) sum (abs(a))
+#   dim_mcd <- dim (mcdeltas)
+#     
+#   slopes <- apply (mcdeltas[-1,,,drop=FALSE], MARGIN = c(2,3), sumabs)
+#     
+#   mcthetas <- sweep (x = mcdeltas, MARGIN = c(2,3), STATS = slopes, FUN = "/")
+#   
+#   list (mcthetas = mcthetas, slopes = as.vector(slopes))
+# }
+# 
+# plotmci <- function (CI, truedeltas = NULL, ...)
+# {
+#     p <- nrow (CI) - 1
+# 
+#     plotargs <- list (...)
+#     
+#     if (is.null (plotargs$ylim)) plotargs$ylim <- range (CI)
+#     if (is.null (plotargs$pch))  plotargs$pch <- 4 
+#     if (is.null (plotargs$xlab)) 
+#        plotargs$xlab <- "Feature Index in Training Data"
+#     if (is.null (plotargs$ylab)) plotargs$ylab <- "Coefficient Value"
+#     
+#     do.call (plot, c (list(x= 0:p, y=CI[,2]), plotargs))
+#     
+#     abline (h = 0)
+#     
+#     for (j in 0:p)
+#     {
+#         
+#         points (c(j,j), CI[j+1,-2], type = "l", lwd = 2)
+#     }
+#     
+#     if (!is.null (truedeltas))
+#     {
+#         points (0:p, truedeltas, col = "red", cex = 1.2, pch = 20)
+#     }
+# 
+# }
+# 
+# 
+# 
+# 
+# htlr_plotleapfrog <- function ()
+# {
+#         if (looklf & i_mc %% iters_imc == 0 & i_mc >=0 )
+#         {
+#            if (!file.exists ("leapfrogplots")) dir.create ("leapfrogplots")
+# 
+#            postscript (file = sprintf ("leapfrogplots/ch%d.ps", i_sup),
+#            title = "leapfrogplots-ch", paper = "special",
+#            width = 8, height = 4, horiz = FALSE)
+#            par (mar = c(5,4,3,1))
+#            plot (-olp$nenergy_trj + olp$nenergy_trj[1],
+#                 xlab = "Index of Trajectory", type = "l",
+#                 ylab = "Hamiltonian Value",
+#                 main =
+#                 sprintf (paste( "Hamiltonian Values with the Starting Value",
+#                 "Subtracted\n(P(acceptance)=%.2f)", sep = ""),
+#                 min(1, exp(olp$nenergy_trj[L+1]-olp$nenergy_trj[1]) )
+#                 )
+#            )
+#            abline (h = c (-1,1))
+#            dev.off()
+# 
+#            postscript (file = sprintf ("leapfrogplots/dd%d.ps", i_sup+1),
+#            title = sprintf("leapfrogplots-dd%d", i_sup + 1), 
+#            paper = "special",
+#            width = 8, height = 4, horiz = FALSE)
+#            par (mar = c(5,4,3,1))
+#            plot (olp$ddeltas_trj, xlab = "Index of Trajectory",type = "l",
+#                  ylab = "square distance of Deltas",
+#                  main = "Square Distance of `Deltas'")
+#            dev.off ()
+# 
+#            postscript (file = sprintf ("leapfrogplots/ll%d.ps", i_sup),
+#            title = "leapfrogplots-ll", paper = "special",
+#            width = 8, height = 4, horiz = FALSE)
+#            par (mar = c(5,4,3,1))
+#            plot (olp$loglike_trj, xlab = "Index of Trajectory", type = "l",
+#                  ylab = "log likelihood",
+#                  main = "Log likelihood of Training Cases")
+#            dev.off()
+#         }
+# }
