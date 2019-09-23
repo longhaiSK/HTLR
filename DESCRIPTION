@@ -5,14 +5,9 @@ Authors@R: c(person(given = "Longhai", family = "Li", role = c("aut", "cre"), em
     comment=c(ORCID="0000-0002-3074-8584")), person(given = "Steven", family = "Liu", role = c("aut"), 
     email = "xil865@usask.ca"))
 Description: Efficient Bayesian multinomial logistic regression based on heavy-tailed 
-  priors. This package is suitable for classification and feature selection with high-dimensional 
-  features, such as gene expression profiles. Heavy-tailed priors can impose stronger 
-  shrinkage (compared to Gaussian and Laplace priors) to the coefficients associated with 
-  a large number of useless features, but still allow coefficients of a small number of 
-  useful features to stand out without punishment. It can also automatically make selection 
-  within a large number of correlated features. The posterior of coefficients and hyper-
-  parameters is sampled with restricted Gibbs sampling for leveraging high-dimensionality 
-  and Hamiltonian Monte Carlo for handling high-correlations among coefficients.
+  priors. The posterior of coefficients and hyper-parameters is sampled with restricted 
+  Gibbs sampling for leveraging high-dimensionality and Hamiltonian Monte Carlo for 
+  handling high-correlations among coefficients, Li and Yao (2018) <arXiv:1405.3319>.
 License: GPL-2
 URL: https://github.com/longhaiSK/HTLR
 BugReports: https://github.com/longhaiSK/HTLR/issues
