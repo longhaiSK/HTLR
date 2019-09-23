@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • HTLR</title>
+<title>Bayesian Logistic Regression with Heavy-Tailed Priors — HTLR-package • HTLR</title>
 
 
 <!-- jquery -->
@@ -35,7 +35,17 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Bayesian Logistic Regression with Heavy-Tailed Priors — HTLR-package" />
+<meta property="og:description" content="Efficient Bayesian multinomial logistic regression based on heavy-tailed priors. 
+This package is suitable for classification and feature selection with high-dimensional 
+features, such as gene expression profiles. Heavy-tailed priors can impose stronger 
+shrinkage (compared to Gaussian and Laplace priors) to the coefficients associated with 
+a large number of useless features, but still allow coefficients of a small number of 
+useful features to stand out without punishment. It can also automatically make selection 
+within a large number of correlated features. The posterior of coefficients and hyper-
+parameters is sampled with restricted Gibbs sampling for leveraging high-dimensionality 
+and Hamiltonian Monte Carlo for handling high-correlations among coefficients." />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -54,7 +64,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -116,108 +126,40 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Bayesian Logistic Regression with Heavy-Tailed Priors</h1>
+    <small class="dont-index">Source: <a href='https://github.com/longhaiSK/HTLR/blob/master/R/HTLR-package.R'><code>R/HTLR-package.R</code></a></small>
+    <div class="hidden name"><code>HTLR-package.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>Efficient Bayesian multinomial logistic regression based on heavy-tailed priors. 
+This package is suitable for classification and feature selection with high-dimensional 
+features, such as gene expression profiles. Heavy-tailed priors can impose stronger 
+shrinkage (compared to Gaussian and Laplace priors) to the coefficients associated with 
+a large number of useless features, but still allow coefficients of a small number of 
+useful features to stand out without punishment. It can also automatically make selection 
+within a large number of correlated features. The posterior of coefficients and hyper-
+parameters is sampled with restricted Gibbs sampling for leveraging high-dimensionality 
+and Hamiltonian Monte Carlo for handling high-correlations among coefficients.</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="HTLR-package.html">HTLR-package</a></code> </p>
-        </td>
-        <td><p>Bayesian Logistic Regression with Heavy-Tailed Priors</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="as.matrix.htlrfit.html">as.matrix(<i>&lt;htlrfit&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Create a Matrix of Markov Chain Samples</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="colon.html">colon</a></code> </p>
-        </td>
-        <td><p>Colon tissues data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="evaluate_pred.html">evaluate_pred()</a></code> </p>
-        </td>
-        <td><p>Evaluate Prediction Results</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="gendata_FAM.html">gendata_FAM()</a></code> </p>
-        </td>
-        <td><p>Generate simulated data with factor analysis model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="gendata_MLR.html">gendata_MLR()</a></code> </p>
-        </td>
-        <td><p>Generate simulated data with multinomial logistic regression model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="htlr.html">htlr()</a></code> </p>
-        </td>
-        <td><p>Fit a HTLR Model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="htlr_prior.html">htlr_prior()</a></code> </p>
-        </td>
-        <td><p>Generate Prior Configuration</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="nzero_idx.html">nzero_idx()</a></code> </p>
-        </td>
-        <td><p>Get Indices of Non-Zero Coefficients</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="predict.htlrfit.html">predict(<i>&lt;htlrfit&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Make Prediction on New Data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="split_data.html">split_data()</a></code> </p>
-        </td>
-        <td><p>Split data into train and test partitions</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="summary.htlrfit.html">summary(<i>&lt;htlrfit&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Posterior Summaries</p></td>
-      </tr>
-    </tbody>
-    </table>
+
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>Longhai Li and Weixin Yao (2018). Fully Bayesian Logistic Regression 
+with Hyper-Lasso Priors for High-dimensional Feature Selection.
+<em>Journal of Statistical Computation and Simulation</em> 2018, 88:14, 2827-2851.</p>
+
   </div>
-
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+      <li><a href="#references">References</a></li>
     </ul>
+
   </div>
 </div>
 
