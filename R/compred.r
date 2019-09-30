@@ -43,6 +43,7 @@ probs_attrue_bplr <- function (probs_pred, y)
 }
 
 #' @importFrom utils read.table
+#' @import grDevices graphics
 eval_tab_pred <- function (table_eval, showplot = TRUE, method = "Prediction", ...)
 {
   if (is.character (table_eval)) 
@@ -156,26 +157,26 @@ eval_tab_pred <- function (table_eval, showplot = TRUE, method = "Prediction", .
 #     
 # }
 
-#' @import grDevices
-compare2 <- function (a1, a2, m1, m2, item, filename = item, sign = FALSE, ...)
-{
-    psfile <- sprintf ("%s.ps", filename)
-
-    postscript (file = psfile, title = psfile,
-                paper = "special", width = 5, height = 5, horizontal = F)
-    par (mar = c(4,4,2,0.5))
-    if (!sign)  xlim <- range (a1, a2)
-    else {
-        xlim <- max (abs(range (a1, a2, na.rm = TRUE, finite = TRUE)))
-        xlim <- c(-xlim, +xlim)
-    }
-    plot (a1, a2,  xlim = xlim, ylim = xlim,
-          main = sprintf("%s by %s and %s", item, m1, m2), 
-          xlab = m1, ylab = m2, ...)
-    abline (a = 0, b = 1, col = "grey")
-    if (sign) abline (a = 0, b = -1, col = "grey")
-    dev.off()
-}
+#import grDevices
+# compare2 <- function (a1, a2, m1, m2, item, filename = item, sign = FALSE, ...)
+# {
+#     psfile <- sprintf ("%s.ps", filename)
+# 
+#     postscript (file = psfile, title = psfile,
+#                 paper = "special", width = 5, height = 5, horizontal = F)
+#     par (mar = c(4,4,2,0.5))
+#     if (!sign)  xlim <- range (a1, a2)
+#     else {
+#         xlim <- max (abs(range (a1, a2, na.rm = TRUE, finite = TRUE)))
+#         xlim <- c(-xlim, +xlim)
+#     }
+#     plot (a1, a2,  xlim = xlim, ylim = xlim,
+#           main = sprintf("%s by %s and %s", item, m1, m2),
+#           xlab = m1, ylab = m2, ...)
+#     abline (a = 0, b = 1, col = "grey")
+#     if (sign) abline (a = 0, b = -1, col = "grey")
+#     dev.off()
+# }
 
 
 comp_amlp <- function(probs_pred, y)

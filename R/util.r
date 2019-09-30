@@ -163,43 +163,42 @@ print.htlrfit <- function(x, ...)
 # 
 #param fscores Scores measuring feature importance, such as \code{wsdbs}, \code{msdbs}, or coefficients values.
 # 
-#' @import graphics
 #export
 # 
 #seealso htlr_fss
-plot_fscore <- function (fscores, fsel=1:length (fscores), show_ix = 0.1, do.plot = TRUE, ...)
-{
-	if (show_ix > 1) stop ("show_ix must be less than 1")
-    afscores <- abs (fscores)
-    mfscore <- max (afscores)
-    
-    plotargs <- list (...)
-    
-    p <- length (fscores) 
-
-    if (is.null (plotargs$log))  plotargs$log <- ""
-    if (is.null (plotargs$type)) plotargs$type <- "h"
-    
-    if (is.null (plotargs$ylab) ) plotargs$ylab = "Feature Score"
-    if (is.null(plotargs$xlab))plotargs$xlab <-"Feature Index" 
-    if (is.null (plotargs$cex.axis))  plotargs$cex.axis <- 0.8
-    
-    # plot fscores   
-    if (do.plot) {
-	    do.call (plot, c(list (x = fscores), plotargs) )    
-    		# show shresholds 0.1 and 0.01
-    		abline (h = mfscore * c(-0.01,0.01), lty = 2, col = "grey")
-    		abline (h = mfscore * c(-0.1,0.1), lty = 1, col = "grey")    
-    }
-    
-    # showtops       
-    itops <- which (afscores >= show_ix * mfscore)    
-	if (do.plot)
-	 text (itops, fscores [itops], fsel[itops], col = "red", srt = 0, adj = - 0.2, cex = 0.7)
-    
-    a <- fsel[itops]
-    
-}
+# plot_fscore <- function (fscores, fsel=1:length (fscores), show_ix = 0.1, do.plot = TRUE, ...)
+# {
+# 	if (show_ix > 1) stop ("show_ix must be less than 1")
+#     afscores <- abs (fscores)
+#     mfscore <- max (afscores)
+#     
+#     plotargs <- list (...)
+#     
+#     p <- length (fscores) 
+# 
+#     if (is.null (plotargs$log))  plotargs$log <- ""
+#     if (is.null (plotargs$type)) plotargs$type <- "h"
+#     
+#     if (is.null (plotargs$ylab) ) plotargs$ylab = "Feature Score"
+#     if (is.null(plotargs$xlab))plotargs$xlab <-"Feature Index" 
+#     if (is.null (plotargs$cex.axis))  plotargs$cex.axis <- 0.8
+#     
+#     # plot fscores   
+#     if (do.plot) {
+# 	    do.call (plot, c(list (x = fscores), plotargs) )    
+#     		# show shresholds 0.1 and 0.01
+#     		abline (h = mfscore * c(-0.01,0.01), lty = 2, col = "grey")
+#     		abline (h = mfscore * c(-0.1,0.1), lty = 1, col = "grey")    
+#     }
+#     
+#     # showtops       
+#     itops <- which (afscores >= show_ix * mfscore)    
+# 	if (do.plot)
+# 	 text (itops, fscores [itops], fsel[itops], col = "red", srt = 0, adj = - 0.2, cex = 0.7)
+#     
+#     a <- fsel[itops]
+#     
+# }
 
 ## try to install suggested packages when needed
 try_require <- function(pkg, f = NULL) {
