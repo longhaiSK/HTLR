@@ -351,7 +351,7 @@ int sample_disc(const int k, const double *lw)
       break;
     i++;
   }
-  delete cw;
+  delete[] cw;
   return i;
 }
 
