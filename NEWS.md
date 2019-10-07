@@ -1,4 +1,4 @@
-# HTLR 0.4 (2019-09-11)
+# HTLR 0.4
 
 ## New Features
 
@@ -14,7 +14,7 @@
 
 * Added new dataset `colon`. 
 
-# HTLR 0.3.1 (2018-05-16)
+# HTLR 0.3.1
 
 * This is HTLR originally created by Longhai Li with legacy version number 3.1-1.
 
