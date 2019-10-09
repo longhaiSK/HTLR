@@ -16,6 +16,7 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - clang-6.0
+            - libgfortran3
             # - gcc-8 
             # - g++-8
       env:
