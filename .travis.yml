@@ -7,19 +7,17 @@ cache:
   
 matrix:
   include:
-        
-    # works on Precise and Trusty
     - os: linux
+      name: "Xenial - clang 6"
+      dist: xenial
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty-6.0
           packages:
             - clang-6.0
             # - gcc-8 
             # - g++-8
-           
       env:
         # - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
         - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
