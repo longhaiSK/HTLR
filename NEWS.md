@@ -1,3 +1,9 @@
+# HTLR 0.4-2
+
+## New Features
+
+* Added new dataset `diabetes392`. 
+
 # HTLR 0.4-1
 
 ## Bug Fixes
