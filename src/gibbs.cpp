@@ -496,21 +496,21 @@ void Fit::UpdateStepSizes()
 
 void Fit::CacheOldValues()
 {
-  lv_old_ = copy(lv_);
-  pred_prob_old_ = copy(pred_prob_);
-  deltas_old_ = copy(deltas_);
-  DNlogprior_old_ = copy(DNlogprior_);
-  var_deltas_old_ = copy(var_deltas_);
+  lv_old_ = lv_;
+  pred_prob_old_ = pred_prob_;
+  deltas_old_ = deltas_;
+  DNlogprior_old_ = DNlogprior_;
+  var_deltas_old_ = var_deltas_;
   loglike_old_ = loglike_;
 }
 
 void Fit::RestoreOldValues()
 {
-  lv_ = copy(lv_old_);
-  pred_prob_ = copy(pred_prob_old_);
-  deltas_ = copy(deltas_old_);
-  DNlogprior_ = copy(DNlogprior_old_);
-  var_deltas_ = copy(var_deltas_old_);
+  lv_ = lv_old_;
+  pred_prob_ = pred_prob_old_;
+  deltas_ = deltas_old_;
+  DNlogprior_ = DNlogprior_old_;
+  var_deltas_ = var_deltas_old_;
   loglike_ = loglike_old_;
 }
 
