@@ -53,9 +53,11 @@ class Fit
       step_sizes_, sigmasbt_; 
   double loglike_, loglike_old_;
  
-  void WhichUpdate(bool init = false);  
-  arma::uvec GetIdsUpdate();
-  arma::uvec GetIdsFix();
+ 
+  arma::uvec GetIdsUpdate() {return iup_;}
+  arma::uvec GetIdsFix() {return ids_fix_.head(nfvar_);}
+  
+  void WhichUpdate(bool init = false); 
   void DetachFixlv();
   void UpdatePredProb();
   void UpdateDNlogLike();

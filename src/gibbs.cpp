@@ -171,18 +171,6 @@ void Fit::WhichUpdate(bool init)
   iup_ = ids_update_.head(nuvar_); // save a quick reference 
 }
 
-// Get int vector ids_update of length nuvar. 
-arma::uvec Fit::GetIdsUpdate()
-{
-  return iup_;
-}
-
-// Get int vector ids_fix of length nfvar.
-arma::uvec Fit::GetIdsFix()
-{
-  return ids_fix_.head(nfvar_);
-}
-
 // X: n * nvar
 // deltas: nvar * K
 // lv: n * (1 + K)

@@ -1,15 +1,5 @@
 #include "utils.h"
 
-arma::vec col_sum(const arma::mat &A)
-{
-  return arma::sum(A, 0);
-}
-
-arma::vec row_sum(const arma::mat &A)
-{
-  return arma::sum(A, 1);
-}
-
 double log_sum_exp(const arma::vec &a)
 {  
   double m = a.max();
