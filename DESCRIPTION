@@ -8,7 +8,8 @@ Description: Efficient Bayesian multinomial logistic regression based on heavy-t
   (hyper-LASSO, non-convex) priors. The posterior of coefficients and hyper-parameters
   is sampled with restricted Gibbs sampling for leveraging the high-dimensionality and
   Hamiltonian Monte Carlo for handling the high-correlation among coefficients. A detailed
-  description of the method: Li and Yao (2018), JSCS, 88:14, 2827-2851, <arXiv:1405.3319>.
+  description of the method: Li and Yao (2018), 
+  Journal of Statistical Computation and Simulation, 88:14, 2827-2851, <arXiv:1405.3319>.
 License: GPL-2
 URL: https://github.com/longhaiSK/HTLR
 BugReports: https://github.com/longhaiSK/HTLR/issues
