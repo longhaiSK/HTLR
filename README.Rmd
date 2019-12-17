@@ -34,7 +34,7 @@ You can install the released version of HTLR from [CRAN](https://CRAN.R-project.
 install.packages("HTLR")
 ```
 
-And the development version from [GitHub](https://github.com/) with:
+or development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")

@@ -34,7 +34,11 @@ The number of warmup iterations should not be larger than iter and the default i
 
 \item{thin}{A positive integer specifying the period for saving samples.}
 
-\item{init}{The initial state of Markov Chain; it accepts three forms: 1) a previously fitted \code{fithtlr} object, 2) a user supplied initial coeficient matrix of (p+1)*K, where p is the number of features, K is the number of classes in y minus 1, 3) a character string matches the following:
+\item{init}{The initial state of Markov Chain; it accepts three forms:
+\itemize{ 
+\item a previously fitted \code{fithtlr} object, 
+\item  a user supplied initial coeficient matrix of (p+1)*K, where p is the number of features, K is the number of classes in y minus 1, 
+\item a character string matches the following:  
 \itemize{
   \item "lasso" - (Default) Use Lasso initial state with \code{lambda} chosen by 
   cross-validation. Users may specify their own candidate \code{lambda} values via 
@@ -46,6 +50,8 @@ The number of warmup iterations should not be larger than iter and the default i
   initial states can be used for continuous features such as gene expression profiles, 
   but it should not be used for categorical features such as SNP profiles.
   \item "random" - Use random initial values sampled from N(0, 1).     
+}
+
 }}
 
 \item{leap}{The length of leapfrog trajectory in sampling phase.}

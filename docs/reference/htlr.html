@@ -181,7 +181,10 @@ The number of warmup iterations should not be larger than iter and the default i
     </tr>
     <tr>
       <th>init</th>
-      <td><p>The initial state of Markov Chain; it accepts three forms: 1) a previously fitted <code>fithtlr</code> object, 2) a user supplied initial coeficient matrix of (p+1)*K, where p is the number of features, K is the number of classes in y minus 1, 3) a character string matches the following:</p><ul>
+      <td><p>The initial state of Markov Chain; it accepts three forms:</p><ul>
+<li><p>a previously fitted <code>fithtlr</code> object,</p></li>
+<li><p>a user supplied initial coeficient matrix of (p+1)*K, where p is the number of features, K is the number of classes in y minus 1,</p></li>
+<li><p>a character string matches the following:</p><ul>
 <li><p>"lasso" - (Default) Use Lasso initial state with <code>lambda</code> chosen by 
   cross-validation. Users may specify their own candidate <code>lambda</code> values via 
   optional argument <code>lasso.lambda</code>. Further customized Lasso initial 
@@ -192,6 +195,7 @@ The number of warmup iterations should not be larger than iter and the default i
   initial states can be used for continuous features such as gene expression profiles, 
   but it should not be used for categorical features such as SNP profiles.</p></li>
 <li><p>"random" - Use random initial values sampled from N(0, 1).</p></li>
+</ul></li>
 </ul></td>
     </tr>
     <tr>
