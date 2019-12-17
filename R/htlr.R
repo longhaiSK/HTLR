@@ -23,8 +23,7 @@
 #' 
 #' @param cut The coefficients smaller than this criteria will be fixed in each HMC updating step.
 #' 
-#' @param init The initial state of Markov Chain; can be a previously fitted \code{fithtlr} object, 
-#' or a user supplied initial state vector, or a character string matches the following:  
+#' @param init The initial state of Markov Chain; it accepts three forms: 1) a previously fitted \code{fithtlr} object, 2) a user supplied initial coeficient matrix of (p+1)*K, where p is the number of features, K is the number of classes in y minus 1, 3) a character string matches the following:  
 #' \itemize{
 #'   \item "lasso" - (Default) Use Lasso initial state with \code{lambda} chosen by 
 #'   cross-validation. Users may specify their own candidate \code{lambda} values via 

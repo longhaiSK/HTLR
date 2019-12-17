@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Evaluate Prediction Results — evaluate_pred • HTLR</title>
+<title>Pima Indians Diabetes — diabetes392 • HTLR</title>
 
 
 <!-- jquery -->
@@ -35,9 +35,13 @@
 
 
 
-<meta property="og:title" content="Evaluate Prediction Results — evaluate_pred" />
-<meta property="og:description" content="This function compares the prediction results returned by a classifier with ground truth, 
-and finally gives a summary of the evaluation." />
+<meta property="og:title" content="Pima Indians Diabetes — diabetes392" />
+<meta property="og:description" content="This dataset is originally from the National Institute of Diabetes and Digestive and Kidney Diseases.
+The objective of the dataset is to diagnostically predict whether or not a patient has diabetes, 
+based on certain diagnostic measurements included in the dataset. Several constraints were placed 
+on the selection of these instances from a larger database. In particular, all patients here are 
+females at least 21 years old of Pima Indian heritage. Different from the UCI original version, 
+the dataset has been preprocessed such that rows with missing values are removed, and features are scaled." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -121,54 +125,51 @@ and finally gives a summary of the evaluation." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Evaluate Prediction Results</h1>
-    <small class="dont-index">Source: <a href='https://github.com/longhaiSK/HTLR/blob/master/R/compred.r'><code>R/compred.r</code></a></small>
-    <div class="hidden name"><code>evaluate_pred.Rd</code></div>
+    <h1>Pima Indians Diabetes</h1>
+    <small class="dont-index">Source: <a href='https://github.com/longhaiSK/HTLR/blob/master/R/data.R'><code>R/data.R</code></a></small>
+    <div class="hidden name"><code>diabetes392.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function compares the prediction results returned by a classifier with ground truth, 
-and finally gives a summary of the evaluation.</p>
+    <p>This dataset is originally from the National Institute of Diabetes and Digestive and Kidney Diseases.
+The objective of the dataset is to diagnostically predict whether or not a patient has diabetes, 
+based on certain diagnostic measurements included in the dataset. Several constraints were placed 
+on the selection of these instances from a larger database. In particular, all patients here are 
+females at least 21 years old of Pima Indian heritage. Different from the UCI original version, 
+the dataset has been preprocessed such that rows with missing values are removed, and features are scaled.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>evaluate_pred</span>(<span class='no'>y.pred</span>, <span class='no'>y.true</span>, <span class='kw'>caseid</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>y.true</span>), <span class='kw'>showplot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"diabetes392"</span>)</pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>y.pred</th>
-      <td><p>A matrix of predicted probabilities, as returned by a classifier.</p></td>
-    </tr>
-    <tr>
-      <th>y.true</th>
-      <td><p>Ground truth labels vector.</p></td>
-    </tr>
-    <tr>
-      <th>caseid</th>
-      <td><p>The names of test cases which we take account of. By default all test cases are used for evaluation.</p></td>
-    </tr>
-    <tr>
-      <th>showplot</th>
-      <td><p>Logical; if <code>TRUE</code>, a summary plot will be generated.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Not used.</p></td>
-    </tr>
-    </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>A summary of evaluation result.</p>
+    <p>A list contains data matrix <code>X</code> and response vector <code>y</code>:</p><dl class='dl-horizontal'>
+  <dt>X</dt><dd><p>A matrix with 392 rows (observations) and 8 columns (features).</p></dd>
+  <dt>y</dt><dd><p>A binary vector where 1 indicates diabetes patients and 0 for otherwise.</p></dd>
+
+</dl>
+    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
+
+    <p><a href='https://www.kaggle.com/uciml/pima-indians-diabetes-database'>https://www.kaggle.com/uciml/pima-indians-diabetes-database</a></p>
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>Smith, J.W., Everhart, J.E., Dickson, W.C., Knowler, W.C., &amp; Johannes, R.S. (1988). 
+Using the ADAP learning algorithm to forecast the onset of diabetes mellitus. 
+<em>In Proceedings of the Symposium on Computer Applications and Medical Care</em> (pp. 261--265). 
+IEEE Computer Society Press.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><a href='https://avehtari.github.io/modelselection/diabetes.html'>https://avehtari.github.io/modelselection/diabetes.html</a></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
+      <li><a href="#format">Format</a></li>
+      <li><a href="#source">Source</a></li>
+      <li><a href="#references">References</a></li>
+      <li><a href="#see-also">See also</a></li>
     </ul>
 
   </div>

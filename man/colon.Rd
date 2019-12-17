@@ -3,7 +3,7 @@
 \docType{data}
 \name{colon}
 \alias{colon}
-\title{Colon tissues data}
+\title{Colon Tissues}
 \format{A list contains data matrix \code{X} and response vector \code{y}:
 \describe{
   \item{X}{A matrix with 66 rows (observations) and 2000 columns (features).}
