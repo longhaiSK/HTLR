@@ -1,5 +1,5 @@
 ---
-title: "Multi-logit Regression with Simulated Data"
+title: "Multinomial Logistic Regression with Heavy-Tailed Priors"
 author: "Longhai Li and Steven Liu"
 date: "`r Sys.Date()`"
 bibliography: HTLR.bib
