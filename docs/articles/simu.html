@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bayesian Logistic Regression with  • HTLR</title>
+<title>Multinomial Logistic Regression with Heavy-Tailed Priors • HTLR</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/all.min.css" integrity="sha256-PbSmjxuVAzJ6FPvNYsrXygfGhNJYyZ2GktDbkMBqQZg=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/v4-shims.min.css" integrity="sha256-A6jcAdwFD48VMjlI3GDxUd+eCQa7/KWy6G9oe/ovaPA=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Bayesian Logistic Regression with ">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Multinomial Logistic Regression with Heavy-Tailed Priors">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -54,7 +54,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/simu.html">Bayesian Logistic Regression with </a>
+      <a href="../articles/simu.html">Multinomial Logistic Regression with Heavy-Tailed Priors</a>
     </li>
   </ul>
 </li>
@@ -82,10 +82,10 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>Bayesian Logistic Regression with</h1>
+      <h1>Multinomial Logistic Regression with Heavy-Tailed Priors</h1>
                         <h4 class="author">Longhai Li and Steven Liu</h4>
             
-            <h4 class="date">2019-12-16</h4>
+            <h4 class="date">2019-12-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/longhaiSK/HTLR/blob/master/vignettes/simu.Rmd"><code>vignettes/simu.Rmd</code></a></small>
       <div class="hidden name"><code>simu.Rmd</code></div>
@@ -189,7 +189,7 @@
 <a class="sourceLine" id="cb5-3" data-line-number="3">  fit.t &lt;-<span class="st"> </span><span class="kw"><a href="../reference/htlr.html">htlr</a></span>(dat<span class="op">$</span>x.tr, dat<span class="op">$</span>y.tr)</a>
 <a class="sourceLine" id="cb5-4" data-line-number="4">)</a>
 <a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="co">#&gt;  53.014   3.063  24.368</span></a>
+<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="co">#&gt;  53.466   3.093  23.582</span></a>
 <a class="sourceLine" id="cb5-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(fit.t)</a>
 <a class="sourceLine" id="cb5-8" data-line-number="8"><span class="co">#&gt; Fitted HTLR model </span></a>
 <a class="sourceLine" id="cb5-9" data-line-number="9"><span class="co">#&gt; </span></a>
@@ -218,7 +218,7 @@
 <a class="sourceLine" id="cb6-5" data-line-number="5">                 <span class="dt">iter =</span> <span class="dv">4000</span>, <span class="dt">init =</span> <span class="st">"bcbc"</span>)</a>
 <a class="sourceLine" id="cb6-6" data-line-number="6">)</a>
 <a class="sourceLine" id="cb6-7" data-line-number="7"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb6-8" data-line-number="8"><span class="co">#&gt;  93.713   5.454  44.362</span></a>
+<a class="sourceLine" id="cb6-8" data-line-number="8"><span class="co">#&gt;  94.541   5.554  42.890</span></a>
 <a class="sourceLine" id="cb6-9" data-line-number="9"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(fit.t2)</a>
 <a class="sourceLine" id="cb6-10" data-line-number="10"><span class="co">#&gt; Fitted HTLR model </span></a>
 <a class="sourceLine" id="cb6-11" data-line-number="11"><span class="co">#&gt; </span></a>
