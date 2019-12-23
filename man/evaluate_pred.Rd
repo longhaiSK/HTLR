@@ -4,8 +4,7 @@
 \alias{evaluate_pred}
 \title{Evaluate Prediction Results}
 \usage{
-evaluate_pred(y.pred, y.true, caseid = names(y.true), showplot = TRUE,
-  ...)
+evaluate_pred(y.pred, y.true, caseid = names(y.true), showplot = TRUE, ...)
 }
 \arguments{
 \item{y.pred}{A matrix of predicted probabilities, as returned by a classifier.}

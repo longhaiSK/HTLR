@@ -4,8 +4,15 @@
 \alias{lasso_deltas}
 \title{Lasso Initial State}
 \usage{
-lasso_deltas(X, y, lambda = NULL, verbose = FALSE, alpha = 1,
-  rank_fn = rank_plain, k = ncol(X))
+lasso_deltas(
+  X,
+  y,
+  lambda = NULL,
+  verbose = FALSE,
+  alpha = 1,
+  rank_fn = rank_plain,
+  k = ncol(X)
+)
 }
 \arguments{
 \item{X}{Design matrix of traning data; 

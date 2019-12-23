@@ -4,8 +4,12 @@
 \alias{htlr_prior}
 \title{Generate Prior Configuration}
 \usage{
-htlr_prior(ptype = c("t", "ghs", "neg"), df = 1, logw = -(1/df) * 10,
-  sigmab0 = 2000)
+htlr_prior(
+  ptype = c("t", "ghs", "neg"),
+  df = 1,
+  logw = -(1/df) * 10,
+  sigmab0 = 2000
+)
 }
 \arguments{
 \item{ptype}{The prior to be applied to the model. Either "t" (student-t, default), "ghs" (horseshoe), 

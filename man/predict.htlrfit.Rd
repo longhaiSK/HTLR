@@ -4,8 +4,7 @@
 \alias{predict.htlrfit}
 \title{Make Prediction on New Data}
 \usage{
-\method{predict}{htlrfit}(object, newx, type = c("response", "class"),
-  ...)
+\method{predict}{htlrfit}(object, newx, type = c("response", "class"), ...)
 }
 \arguments{
 \item{object}{A fitted model object with S3 class \code{htlrfit}.}

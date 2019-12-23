@@ -2,7 +2,7 @@
 % Please edit documentation in R/util.r
 \name{split_data}
 \alias{split_data}
-\title{Split data into train and test partitions}
+\title{Split Data into Train and Test Partitions}
 \usage{
 split_data(X, y, p.train = 0.7, n.train = round(nrow(X) * p.train))
 }

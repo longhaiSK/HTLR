@@ -4,10 +4,25 @@
 \alias{htlr}
 \title{Fit a HTLR Model}
 \usage{
-htlr(X, y, fsel = 1:ncol(X), stdx = TRUE, prior = "t", df = 1,
-  iter = 2000, warmup = floor(iter/2), thin = 1, init = "lasso",
-  leap = 50, leap.warm = floor(leap/10), leap.stepsize = 0.3,
-  cut = 0.05, verbose = FALSE, pre.legacy = FALSE, ...)
+htlr(
+  X,
+  y,
+  fsel = 1:ncol(X),
+  stdx = TRUE,
+  prior = "t",
+  df = 1,
+  iter = 2000,
+  warmup = floor(iter/2),
+  thin = 1,
+  init = "lasso",
+  leap = 50,
+  leap.warm = floor(leap/10),
+  leap.stepsize = 0.3,
+  cut = 0.05,
+  verbose = FALSE,
+  pre.legacy = FALSE,
+  ...
+)
 }
 \arguments{
 \item{X}{Input matrix, of dimension nobs by nvars; each row is an observation vector.}

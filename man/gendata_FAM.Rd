@@ -2,7 +2,7 @@
 % Please edit documentation in R/gendata.r
 \name{gendata_FAM}
 \alias{gendata_FAM}
-\title{Generate simulated data with factor analysis model}
+\title{Generate Simulated Data with Factor Analysis Model}
 \usage{
 gendata_FAM(n, muj, A, sd_g = 0, stdx = FALSE)
 }

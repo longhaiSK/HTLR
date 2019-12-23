@@ -4,8 +4,7 @@
 \alias{summary.htlrfit}
 \title{Posterior Summaries}
 \usage{
-\method{summary}{htlrfit}(object, features = 1L:object$p,
-  method = median, usedmc = NULL, ...)
+\method{summary}{htlrfit}(object, features = 1L:object$p, method = median, usedmc = NULL, ...)
 }
 \arguments{
 \item{object}{An object of S3 class \code{htlrfit}.}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/gendata.r
 \name{gendata_MLR}
 \alias{gendata_MLR}
-\title{Generate simulated data with multinomial logistic regression model}
+\title{Generate Simulated Data with Multinomial Logistic Regression Model}
 \usage{
 gendata_MLR(n, p, NC = 3, nu = 2, w = 1, X = NULL, betas = NULL)
 }
