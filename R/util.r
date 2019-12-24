@@ -42,11 +42,11 @@ htlr_prior <- function(ptype = c("t", "ghs", "neg"),
   )
 }
 
-#' Split data into train and test partitions
+#' Split Data into Train and Test Partitions
 #' 
 #' This function splits the input data and response variables into training and testing parts.
 #' 
-#' @param X Input matrix, of dimension nobs by nvars; each row is an observation vector.
+#' @param X Input matrix, of dimension \code{nobs} by \code{nvars}; each row is an observation vector.
 #' 
 #' @param y Vector of response variables.
 #' 
@@ -85,6 +85,8 @@ split_data <- function(X,
     "y.te" = y.te
   )
 }
+
+
 
 ## compute V (delta)
 comp_vardeltas <- function (deltas)

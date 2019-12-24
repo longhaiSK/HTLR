@@ -7,7 +7,7 @@
 split_data(X, y, p.train = 0.7, n.train = round(nrow(X) * p.train))
 }
 \arguments{
-\item{X}{Input matrix, of dimension nobs by nvars; each row is an observation vector.}
+\item{X}{Input matrix, of dimension \code{nobs} by \code{nvars}; each row is an observation vector.}
 
 \item{y}{Vector of response variables.}
 
