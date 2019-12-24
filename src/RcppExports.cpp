@@ -110,6 +110,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// std_helper
+Rcpp::List std_helper(const arma::mat& A);
+RcppExport SEXP _HTLR_std_helper(SEXP ASEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type A(ASEXP);
+    rcpp_result_gen = Rcpp::wrap(std_helper(A));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_HTLR_sample_trunc_norm", (DL_FUNC) &_HTLR_sample_trunc_norm, 4},
@@ -118,6 +129,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_HTLR_htlr_fit_helper", (DL_FUNC) &_HTLR_htlr_fit_helper, 23},
     {"_HTLR_log_sum_exp", (DL_FUNC) &_HTLR_log_sum_exp, 1},
     {"_HTLR_spl_sgm_ig", (DL_FUNC) &_HTLR_spl_sgm_ig, 4},
+    {"_HTLR_std_helper", (DL_FUNC) &_HTLR_std_helper, 1},
     {NULL, NULL, 0}
 };
 

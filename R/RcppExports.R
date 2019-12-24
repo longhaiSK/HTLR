@@ -25,3 +25,7 @@ spl_sgm_ig <- function(alpha, K, w, vardeltas) {
     .Call('_HTLR_spl_sgm_ig', PACKAGE = 'HTLR', alpha, K, w, vardeltas)
 }
 
+std_helper <- function(A) {
+    .Call('_HTLR_std_helper', PACKAGE = 'HTLR', A)
+}
+

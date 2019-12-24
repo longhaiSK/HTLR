@@ -31,3 +31,18 @@ arma::vec spl_sgm_ig(double alpha, int K, double w, const arma::vec &vardeltas)
   arma::vec rn_gamma = Rcpp::rgamma(vardeltas.n_elem, (alpha + K) / 2); 
   return (1.0 / rn_gamma % (alpha * w + vardeltas) / 2.0);
 }
+
+// [[Rcpp::export]]
+Rcpp::List std_helper(const arma::mat &A)
+{
+  arma::rowvec nuj = arma::median(A);
+  arma::rowvec sdj = arma::stddev(A);
+  arma::mat A_std = A.each_row() - nuj;
+  A_std.each_row() /= sdj;
+
+  return Rcpp::List::create(
+    Rcpp::Named("median") = nuj,
+    Rcpp::Named("sd") = sdj,
+    Rcpp::Named("X") = A_std
+  );
+}
