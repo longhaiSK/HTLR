@@ -18,8 +18,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/all.min.css" integrity="sha256-PbSmjxuVAzJ6FPvNYsrXygfGhNJYyZ2GktDbkMBqQZg=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/v4-shims.min.css" integrity="sha256-A6jcAdwFD48VMjlI3GDxUd+eCQa7/KWy6G9oe/ovaPA=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
@@ -102,12 +102,7 @@ regression coefficient to predict the class labels of test cases." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li>
-  <a href="https://github.com/longhaiSK/HTLR">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+        
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -122,7 +117,7 @@ regression coefficient to predict the class labels of test cases." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Make Prediction on New Data (Advanced)</h1>
-    <small class="dont-index">Source: <a href='https://github.com/longhaiSK/HTLR/blob/master/R/predict.R'><code>R/predict.R</code></a></small>
+    
     <div class="hidden name"><code>htlr_predict.Rd</code></div>
     </div>
 
@@ -131,8 +126,14 @@ regression coefficient to predict the class labels of test cases." />
 regression coefficient to predict the class labels of test cases.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>htlr_predict</span>(<span class='no'>X_ts</span>, <span class='kw'>fithtlr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>deltas</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>burn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>thin</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>usedmc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>htlr_predict</span>(
+  <span class='no'>X_ts</span>,
+  <span class='kw'>fithtlr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>deltas</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>burn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>thin</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>usedmc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -167,7 +168,7 @@ If supplied, <code>burn</code> and <code>thin</code> will be ignored.</p></td>
     <p>A matrix of predictive probabilities, with rows for cases, cols for classes.</p>
 
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
@@ -184,7 +185,7 @@ If supplied, <code>burn</code> and <code>thin</code> will be ignored.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
 
       </footer>

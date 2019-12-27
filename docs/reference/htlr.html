@@ -18,8 +18,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/all.min.css" integrity="sha256-PbSmjxuVAzJ6FPvNYsrXygfGhNJYyZ2GktDbkMBqQZg=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/v4-shims.min.css" integrity="sha256-A6jcAdwFD48VMjlI3GDxUd+eCQa7/KWy6G9oe/ovaPA=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
@@ -101,12 +101,7 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li>
-  <a href="https://github.com/longhaiSK/HTLR">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+        
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -121,7 +116,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Fit a HTLR Model</h1>
-    <small class="dont-index">Source: <a href='https://github.com/longhaiSK/HTLR/blob/master/R/htlr.R'><code>R/htlr.R</code></a></small>
+    
     <div class="hidden name"><code>htlr.Rd</code></div>
     </div>
 
@@ -129,10 +124,25 @@
     <p>This function trains linear logistic regression models with HMC in restricted Gibbs sampling.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>htlr</span>(<span class='no'>X</span>, <span class='no'>y</span>, <span class='kw'>fsel</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span>(<span class='no'>X</span>), <span class='kw'>stdx</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>prior</span> <span class='kw'>=</span> <span class='st'>"t"</span>, <span class='kw'>df</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>2000</span>, <span class='kw'>warmup</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>floor</a></span>(<span class='no'>iter</span>/<span class='fl'>2</span>), <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>init</span> <span class='kw'>=</span> <span class='st'>"lasso"</span>,
-  <span class='kw'>leap</span> <span class='kw'>=</span> <span class='fl'>50</span>, <span class='kw'>leap.warm</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>floor</a></span>(<span class='no'>leap</span>/<span class='fl'>10</span>), <span class='kw'>leap.stepsize</span> <span class='kw'>=</span> <span class='fl'>0.3</span>,
-  <span class='kw'>cut</span> <span class='kw'>=</span> <span class='fl'>0.05</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>pre.legacy</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>htlr</span>(
+  <span class='no'>X</span>,
+  <span class='no'>y</span>,
+  <span class='kw'>fsel</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span>(<span class='no'>X</span>),
+  <span class='kw'>stdx</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>prior</span> <span class='kw'>=</span> <span class='st'>"t"</span>,
+  <span class='kw'>df</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>2000</span>,
+  <span class='kw'>warmup</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>floor</a></span>(<span class='no'>iter</span>/<span class='fl'>2</span>),
+  <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>init</span> <span class='kw'>=</span> <span class='st'>"lasso"</span>,
+  <span class='kw'>leap</span> <span class='kw'>=</span> <span class='fl'>50</span>,
+  <span class='kw'>leap.warm</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>floor</a></span>(<span class='no'>leap</span>/<span class='fl'>10</span>),
+  <span class='kw'>leap.stepsize</span> <span class='kw'>=</span> <span class='fl'>0.3</span>,
+  <span class='kw'>cut</span> <span class='kw'>=</span> <span class='fl'>0.05</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>pre.legacy</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='no'>...</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -264,7 +274,7 @@ with Hyper-Lasso Priors for High-dimensional Feature Selection.
                 <span class='kw'>prior</span> <span class='kw'>=</span> <span class='st'>"ghs"</span>, <span class='kw'>df</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>init</span> <span class='kw'>=</span> <span class='st'>"bcbc"</span>,
                 <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
@@ -283,7 +293,7 @@ with Hyper-Lasso Priors for High-dimensional Feature Selection.
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
 
       </footer>

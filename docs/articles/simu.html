@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Multinomial Logistic Regression with Heavy-Tailed Priors • HTLR</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/all.min.css" integrity="sha256-PbSmjxuVAzJ6FPvNYsrXygfGhNJYyZ2GktDbkMBqQZg=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/v4-shims.min.css" integrity="sha256-A6jcAdwFD48VMjlI3GDxUd+eCQa7/KWy6G9oe/ovaPA=" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Multinomial Logistic Regression with Heavy-Tailed Priors">
 <meta property="og:description" content="">
@@ -62,14 +62,7 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/longhaiSK/HTLR">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul>
+<ul class="nav navbar-nav navbar-right"></ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -85,9 +78,9 @@
       <h1>Multinomial Logistic Regression with Heavy-Tailed Priors</h1>
                         <h4 class="author">Longhai Li and Steven Liu</h4>
             
-            <h4 class="date">2019-12-18</h4>
+            <h4 class="date">2019-12-27</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/longhaiSK/HTLR/blob/master/vignettes/simu.Rmd"><code>vignettes/simu.Rmd</code></a></small>
+      
       <div class="hidden name"><code>simu.Rmd</code></div>
 
     </div>
@@ -169,16 +162,16 @@
 <a class="sourceLine" id="cb4-2" data-line-number="2">dat &lt;-<span class="st"> </span><span class="kw"><a href="../reference/split_data.html">split_data</a></span>(dat<span class="op">$</span>X, dat<span class="op">$</span>y, <span class="dt">n.train =</span> <span class="dv">500</span>)</a>
 <a class="sourceLine" id="cb4-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(dat)</a>
 <a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co">#&gt; List of 4</span></a>
-<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="co">#&gt;  $ x.tr: num [1:500, 1:2000] -0.0503 -0.6964 -0.1224 -0.6762 0.726 ...</span></a>
+<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="co">#&gt;  $ x.tr: num [1:500, 1:2000] -0.2476 0.0789 -1.5571 1.1904 -0.8982 ...</span></a>
 <a class="sourceLine" id="cb4-6" data-line-number="6"><span class="co">#&gt;   ..- attr(*, "dimnames")=List of 2</span></a>
 <a class="sourceLine" id="cb4-7" data-line-number="7"><span class="co">#&gt;   .. ..$ : NULL</span></a>
 <a class="sourceLine" id="cb4-8" data-line-number="8"><span class="co">#&gt;   .. ..$ : chr [1:2000] "V1" "V2" "V3" "V4" ...</span></a>
-<a class="sourceLine" id="cb4-9" data-line-number="9"><span class="co">#&gt;  $ y.tr: int [1:500] 2 1 1 2 2 2 1 3 2 3 ...</span></a>
-<a class="sourceLine" id="cb4-10" data-line-number="10"><span class="co">#&gt;  $ x.te: num [1:10, 1:2000] -0.413 -1.298 0.977 1.222 -0.447 ...</span></a>
+<a class="sourceLine" id="cb4-9" data-line-number="9"><span class="co">#&gt;  $ y.tr: int [1:500] 1 2 1 1 1 2 1 3 1 1 ...</span></a>
+<a class="sourceLine" id="cb4-10" data-line-number="10"><span class="co">#&gt;  $ x.te: num [1:10, 1:2000] 0.136 -0.634 -1.132 -0.283 0.188 ...</span></a>
 <a class="sourceLine" id="cb4-11" data-line-number="11"><span class="co">#&gt;   ..- attr(*, "dimnames")=List of 2</span></a>
 <a class="sourceLine" id="cb4-12" data-line-number="12"><span class="co">#&gt;   .. ..$ : NULL</span></a>
 <a class="sourceLine" id="cb4-13" data-line-number="13"><span class="co">#&gt;   .. ..$ : chr [1:2000] "V1" "V2" "V3" "V4" ...</span></a>
-<a class="sourceLine" id="cb4-14" data-line-number="14"><span class="co">#&gt;  $ y.te: int [1:10] 1 1 2 2 1 3 2 3 2 3</span></a></code></pre></div>
+<a class="sourceLine" id="cb4-14" data-line-number="14"><span class="co">#&gt;  $ y.te: int [1:10] 2 2 3 3 3 1 1 3 2 3</span></a></code></pre></div>
 </div>
 <div id="model-fitting" class="section level1">
 <h1 class="hasAnchor">
@@ -189,7 +182,7 @@
 <a class="sourceLine" id="cb5-3" data-line-number="3">  fit.t &lt;-<span class="st"> </span><span class="kw"><a href="../reference/htlr.html">htlr</a></span>(dat<span class="op">$</span>x.tr, dat<span class="op">$</span>y.tr)</a>
 <a class="sourceLine" id="cb5-4" data-line-number="4">)</a>
 <a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="co">#&gt;  52.777   3.020  25.770</span></a>
+<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="co">#&gt; 731.620   0.453 127.068</span></a>
 <a class="sourceLine" id="cb5-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(fit.t)</a>
 <a class="sourceLine" id="cb5-8" data-line-number="8"><span class="co">#&gt; Fitted HTLR model </span></a>
 <a class="sourceLine" id="cb5-9" data-line-number="9"><span class="co">#&gt; </span></a>
@@ -217,8 +210,8 @@
 <a class="sourceLine" id="cb6-4" data-line-number="4">                 <span class="dt">prior =</span> <span class="kw"><a href="../reference/htlr_prior.html">htlr_prior</a></span>(<span class="st">"t"</span>, <span class="dt">df =</span> <span class="dv">1</span>, <span class="dt">logw =</span> <span class="dv">-20</span>, <span class="dt">sigmab0 =</span> <span class="dv">1500</span>), </a>
 <a class="sourceLine" id="cb6-5" data-line-number="5">                 <span class="dt">iter =</span> <span class="dv">4000</span>, <span class="dt">init =</span> <span class="st">"bcbc"</span>)</a>
 <a class="sourceLine" id="cb6-6" data-line-number="6">)</a>
-<a class="sourceLine" id="cb6-7" data-line-number="7"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb6-8" data-line-number="8"><span class="co">#&gt;  93.965   5.310  41.364</span></a>
+<a class="sourceLine" id="cb6-7" data-line-number="7"><span class="co">#&gt;     user   system  elapsed </span></a>
+<a class="sourceLine" id="cb6-8" data-line-number="8"><span class="co">#&gt; 1196.186    1.017  207.253</span></a>
 <a class="sourceLine" id="cb6-9" data-line-number="9"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(fit.t2)</a>
 <a class="sourceLine" id="cb6-10" data-line-number="10"><span class="co">#&gt; Fitted HTLR model </span></a>
 <a class="sourceLine" id="cb6-11" data-line-number="11"><span class="co">#&gt; </span></a>
@@ -246,21 +239,21 @@
 <p>Look at the point summaries of posterior of selected parameters:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(fit.t2, <span class="dt">features =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">200</span>, <span class="dv">1000</span>, <span class="dv">2000</span>), <span class="dt">method =</span> median)</a>
 <a class="sourceLine" id="cb7-2" data-line-number="2"><span class="co">#&gt;                 class 2       class 3</span></a>
-<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="co">#&gt; Intercept -3.2346205855 -1.6820417587</span></a>
-<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="co">#&gt; V1        10.0146580818 -0.5101864020</span></a>
-<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="co">#&gt; V2        -6.2944758433  0.2339212210</span></a>
-<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="co">#&gt; V3        -0.0016258259  2.8407969550</span></a>
-<a class="sourceLine" id="cb7-7" data-line-number="7"><span class="co">#&gt; V4         0.0046380881  0.0667659027</span></a>
-<a class="sourceLine" id="cb7-8" data-line-number="8"><span class="co">#&gt; V5        -0.0008155004 -0.0027256240</span></a>
-<a class="sourceLine" id="cb7-9" data-line-number="9"><span class="co">#&gt; V6         0.0033553088  0.0133013020</span></a>
-<a class="sourceLine" id="cb7-10" data-line-number="10"><span class="co">#&gt; V7        -0.0051864218  1.0466692309</span></a>
-<a class="sourceLine" id="cb7-11" data-line-number="11"><span class="co">#&gt; V8         0.0867192726  1.5253605248</span></a>
-<a class="sourceLine" id="cb7-12" data-line-number="12"><span class="co">#&gt; V9        -0.0002005319 -0.0006428837</span></a>
-<a class="sourceLine" id="cb7-13" data-line-number="13"><span class="co">#&gt; V10       -0.0087948457 -0.0055658379</span></a>
-<a class="sourceLine" id="cb7-14" data-line-number="14"><span class="co">#&gt; V100      -0.0034092228 -0.0034482331</span></a>
-<a class="sourceLine" id="cb7-15" data-line-number="15"><span class="co">#&gt; V200      -0.0036680629  0.0003934260</span></a>
-<a class="sourceLine" id="cb7-16" data-line-number="16"><span class="co">#&gt; V1000     -0.0106743626 -0.0097007044</span></a>
-<a class="sourceLine" id="cb7-17" data-line-number="17"><span class="co">#&gt; V2000     -0.0011271600  0.0029761761</span></a>
+<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="co">#&gt; Intercept -3.0617042129 -1.5103399543</span></a>
+<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="co">#&gt; V1         9.4541085933 -0.5020662323</span></a>
+<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="co">#&gt; V2        -5.7603486493  0.2149368251</span></a>
+<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="co">#&gt; V3         0.0359357704  3.1257249469</span></a>
+<a class="sourceLine" id="cb7-7" data-line-number="7"><span class="co">#&gt; V4        -0.0034134708 -0.0004150318</span></a>
+<a class="sourceLine" id="cb7-8" data-line-number="8"><span class="co">#&gt; V5        -0.0021260393 -0.0021705510</span></a>
+<a class="sourceLine" id="cb7-9" data-line-number="9"><span class="co">#&gt; V6         0.0005933266  0.0014395451</span></a>
+<a class="sourceLine" id="cb7-10" data-line-number="10"><span class="co">#&gt; V7        -0.1997239891  1.3111777939</span></a>
+<a class="sourceLine" id="cb7-11" data-line-number="11"><span class="co">#&gt; V8        -0.0178842305 -0.0141715819</span></a>
+<a class="sourceLine" id="cb7-12" data-line-number="12"><span class="co">#&gt; V9         0.0043794662 -0.0013018003</span></a>
+<a class="sourceLine" id="cb7-13" data-line-number="13"><span class="co">#&gt; V10       -0.0004814938 -0.0063657810</span></a>
+<a class="sourceLine" id="cb7-14" data-line-number="14"><span class="co">#&gt; V100      -0.0144196457 -0.0105803810</span></a>
+<a class="sourceLine" id="cb7-15" data-line-number="15"><span class="co">#&gt; V200       0.0033995051 -0.0006334967</span></a>
+<a class="sourceLine" id="cb7-16" data-line-number="16"><span class="co">#&gt; V1000     -0.0007550395 -0.0078158975</span></a>
+<a class="sourceLine" id="cb7-17" data-line-number="17"><span class="co">#&gt; V2000     -0.0013167362  0.0002088031</span></a>
 <a class="sourceLine" id="cb7-18" data-line-number="18"><span class="co">#&gt; attr(,"stats")</span></a>
 <a class="sourceLine" id="cb7-19" data-line-number="19"><span class="co">#&gt; [1] "median"</span></a></code></pre></div>
 <p>Plot interval estimates from posterior draws using <a href="https://mc-stan.org/bayesplot/index.html">bayesplot</a>:</p>
@@ -280,53 +273,53 @@
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">y.class &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span>(fit.t, dat<span class="op">$</span>x.te, <span class="dt">type =</span> <span class="st">"class"</span>)</a>
 <a class="sourceLine" id="cb10-2" data-line-number="2">y.class</a>
 <a class="sourceLine" id="cb10-3" data-line-number="3"><span class="co">#&gt;       y.pred</span></a>
-<a class="sourceLine" id="cb10-4" data-line-number="4"><span class="co">#&gt;  [1,]      1</span></a>
-<a class="sourceLine" id="cb10-5" data-line-number="5"><span class="co">#&gt;  [2,]      1</span></a>
-<a class="sourceLine" id="cb10-6" data-line-number="6"><span class="co">#&gt;  [3,]      1</span></a>
-<a class="sourceLine" id="cb10-7" data-line-number="7"><span class="co">#&gt;  [4,]      2</span></a>
-<a class="sourceLine" id="cb10-8" data-line-number="8"><span class="co">#&gt;  [5,]      1</span></a>
-<a class="sourceLine" id="cb10-9" data-line-number="9"><span class="co">#&gt;  [6,]      3</span></a>
-<a class="sourceLine" id="cb10-10" data-line-number="10"><span class="co">#&gt;  [7,]      2</span></a>
-<a class="sourceLine" id="cb10-11" data-line-number="11"><span class="co">#&gt;  [8,]      1</span></a>
+<a class="sourceLine" id="cb10-4" data-line-number="4"><span class="co">#&gt;  [1,]      2</span></a>
+<a class="sourceLine" id="cb10-5" data-line-number="5"><span class="co">#&gt;  [2,]      2</span></a>
+<a class="sourceLine" id="cb10-6" data-line-number="6"><span class="co">#&gt;  [3,]      3</span></a>
+<a class="sourceLine" id="cb10-7" data-line-number="7"><span class="co">#&gt;  [4,]      1</span></a>
+<a class="sourceLine" id="cb10-8" data-line-number="8"><span class="co">#&gt;  [5,]      3</span></a>
+<a class="sourceLine" id="cb10-9" data-line-number="9"><span class="co">#&gt;  [6,]      1</span></a>
+<a class="sourceLine" id="cb10-10" data-line-number="10"><span class="co">#&gt;  [7,]      1</span></a>
+<a class="sourceLine" id="cb10-11" data-line-number="11"><span class="co">#&gt;  [8,]      3</span></a>
 <a class="sourceLine" id="cb10-12" data-line-number="12"><span class="co">#&gt;  [9,]      2</span></a>
 <a class="sourceLine" id="cb10-13" data-line-number="13"><span class="co">#&gt; [10,]      3</span></a>
 <a class="sourceLine" id="cb10-14" data-line-number="14"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"prediction accuracy of model 1 = "</span>, </a>
 <a class="sourceLine" id="cb10-15" data-line-number="15">             <span class="kw"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(y.class <span class="op">==</span><span class="st"> </span>dat<span class="op">$</span>y.te) <span class="op">/</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(y.class)))</a>
-<a class="sourceLine" id="cb10-16" data-line-number="16"><span class="co">#&gt; [1] "prediction accuracy of model 1 = 0.8"</span></a>
+<a class="sourceLine" id="cb10-16" data-line-number="16"><span class="co">#&gt; [1] "prediction accuracy of model 1 = 0.9"</span></a>
 <a class="sourceLine" id="cb10-17" data-line-number="17"></a>
 <a class="sourceLine" id="cb10-18" data-line-number="18">y.class2 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span>(fit.t2, dat<span class="op">$</span>x.te, <span class="dt">type =</span> <span class="st">"class"</span>)</a>
 <a class="sourceLine" id="cb10-19" data-line-number="19"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"prediction accuracy of model 2 = "</span>, </a>
 <a class="sourceLine" id="cb10-20" data-line-number="20">             <span class="kw"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(y.class2 <span class="op">==</span><span class="st"> </span>dat<span class="op">$</span>y.te) <span class="op">/</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(y.class)))</a>
-<a class="sourceLine" id="cb10-21" data-line-number="21"><span class="co">#&gt; [1] "prediction accuracy of model 2 = 0.7"</span></a></code></pre></div>
+<a class="sourceLine" id="cb10-21" data-line-number="21"><span class="co">#&gt; [1] "prediction accuracy of model 2 = 1"</span></a></code></pre></div>
 <p>More details about the prediction result:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span>(fit.t, dat<span class="op">$</span>x.te, <span class="dt">type =</span> <span class="st">"response"</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb11-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/evaluate_pred.html">evaluate_pred</a></span>(<span class="dt">y.true =</span> dat<span class="op">$</span>y.te)</a></code></pre></div>
 <p><img src="simu_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
 <pre><code>#&gt; $prob_at_truelabels
-#&gt;  [1] 0.9158752 0.5143388 0.1704510 0.8589665 0.5361699 0.9965191 0.9990142
-#&gt;  [8] 0.3711716 0.9865730 0.9057939
+#&gt;  [1] 0.9835792 0.5047878 0.9999475 0.4470446 0.6987078 0.7675260 0.6813872
+#&gt;  [8] 0.8674879 0.6518713 0.9455875
 #&gt; 
 #&gt; $table_eval
 #&gt;    Case ID True Label Pred. Prob 1 Pred. Prob 2 Pred. Prob 3 Wrong?
-#&gt; 1        1          1 0.9158751926 1.033946e-02 0.0737853519      0
-#&gt; 2        2          1 0.5143387831 3.733332e-06 0.4856574836      0
-#&gt; 3        3          2 0.4622306217 1.704510e-01 0.3673183440      1
-#&gt; 4        4          2 0.0646607378 8.589665e-01 0.0763727407      0
-#&gt; 5        5          1 0.5361699334 2.371429e-02 0.4401157811      0
-#&gt; 6        6          3 0.0003739791 3.106891e-03 0.9965191300      0
-#&gt; 7        7          2 0.0003841528 9.990142e-01 0.0006016587      0
-#&gt; 8        8          3 0.5552351528 7.359328e-02 0.3711715677      1
-#&gt; 9        9          2 0.0081440045 9.865730e-01 0.0052830214      0
-#&gt; 10      10          3 0.0941077285 9.832529e-05 0.9057939462      0
+#&gt; 1        1          2 1.641411e-02 9.835792e-01 6.693351e-06      0
+#&gt; 2        2          2 3.384455e-01 5.047878e-01 1.567667e-01      0
+#&gt; 3        3          3 5.248789e-05 1.839606e-11 9.999475e-01      0
+#&gt; 4        4          3 5.457843e-01 7.171088e-03 4.470446e-01      1
+#&gt; 5        5          3 3.003288e-01 9.634115e-04 6.987078e-01      0
+#&gt; 6        6          1 7.675260e-01 2.846003e-02 2.040140e-01      0
+#&gt; 7        7          1 6.813872e-01 1.485273e-01 1.700855e-01      0
+#&gt; 8        8          3 1.303536e-01 2.158497e-03 8.674879e-01      0
+#&gt; 9        9          2 3.474336e-01 6.518713e-01 6.950645e-04      0
+#&gt; 10      10          3 5.422114e-02 1.914056e-04 9.455875e-01      0
 #&gt; 
 #&gt; $amlp
-#&gt; [1] 0.440541
+#&gt; [1] 0.3138065
 #&gt; 
 #&gt; $err_rate
-#&gt; [1] 0.2
+#&gt; [1] 0.1
 #&gt; 
 #&gt; $which.wrong
-#&gt; [1] 3 8</code></pre>
+#&gt; [1] 4</code></pre>
 <div id="refs" class="references">
 <div id="ref-li2018fully">
 <p>Li, Longhai, and Weixin Yao. 2018. “Fully Bayesian Logistic Regression with Hyper-Lasso Priors for High-Dimensional Feature Selection.” <em>Journal of Statistical Computation and Simulation</em> 88 (14). Taylor &amp; Francis: 2827–51.</p>
@@ -335,7 +328,7 @@
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
 
         <div id="tocnav">
       <h2 class="hasAnchor">
@@ -358,7 +351,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
 
       </footer>

@@ -18,8 +18,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/all.min.css" integrity="sha256-PbSmjxuVAzJ6FPvNYsrXygfGhNJYyZ2GktDbkMBqQZg=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/v4-shims.min.css" integrity="sha256-A6jcAdwFD48VMjlI3GDxUd+eCQa7/KWy6G9oe/ovaPA=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
@@ -101,12 +101,7 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li>
-  <a href="https://github.com/longhaiSK/HTLR">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+        
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -121,7 +116,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Posterior Summaries</h1>
-    <small class="dont-index">Source: <a href='https://github.com/longhaiSK/HTLR/blob/master/R/mccoef.r'><code>R/mccoef.r</code></a></small>
+    
     <div class="hidden name"><code>summary.htlrfit.Rd</code></div>
     </div>
 
@@ -130,8 +125,7 @@
     </div>
 
     <pre class="usage"><span class='co'># S3 method for htlrfit</span>
-<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='no'>object</span>, <span class='kw'>features</span> <span class='kw'>=</span> <span class='fl'>1L</span>:<span class='no'>object</span>$<span class='no'>p</span>,
-  <span class='kw'>method</span> <span class='kw'>=</span> <span class='no'>median</span>, <span class='kw'>usedmc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='no'>object</span>, <span class='kw'>features</span> <span class='kw'>=</span> <span class='fl'>1L</span>:<span class='no'>object</span>$<span class='no'>p</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='no'>median</span>, <span class='kw'>usedmc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -171,7 +165,7 @@ can also be used.</p></td>
 
 <span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='htlr.html'>htlr</a></span>(<span class='kw'>X</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>X</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>y</span>, <span class='kw'>fsel</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>100</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>20</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='no'>fit</span>, <span class='kw'>features</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>16</span>)</div><div class='output co'>#&gt;                class 1
-#&gt; Intercept  0.938177120
+#&gt; Intercept  1.335669935
 #&gt; V1         0.000000000
 #&gt; V2         0.000000000
 #&gt; V3         0.000000000
@@ -185,14 +179,14 @@ can also be used.</p></td>
 #&gt; V11        0.000000000
 #&gt; V12        0.000000000
 #&gt; V13        0.000000000
-#&gt; V14       -2.045512555
-#&gt; V15        0.002115235
-#&gt; V16       -0.019430491
+#&gt; V14       -1.697594259
+#&gt; V15        0.006178324
+#&gt; V16       -0.325748938
 #&gt; attr(,"stats")
 #&gt; [1] "median"</div><div class='input'>  
 </div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
@@ -210,7 +204,7 @@ can also be used.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
 
       </footer>

@@ -18,8 +18,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/all.min.css" integrity="sha256-PbSmjxuVAzJ6FPvNYsrXygfGhNJYyZ2GktDbkMBqQZg=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/v4-shims.min.css" integrity="sha256-A6jcAdwFD48VMjlI3GDxUd+eCQa7/KWy6G9oe/ovaPA=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
@@ -99,12 +99,7 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li>
-  <a href="https://github.com/longhaiSK/HTLR">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+        
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -132,53 +127,11 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
+          <h2 id="section-model-fitting" class="hasAnchor"><a href="#section-model-fitting" class="anchor"></a>Model fitting</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
       <tr>
-        
-        <td>
-          <p><code><a href="HTLR-package.html">HTLR-package</a></code> </p>
-        </td>
-        <td><p>Bayesian Logistic Regression with Heavy-Tailed Priors</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="as.matrix.htlrfit.html">as.matrix(<i>&lt;htlrfit&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Create a Matrix of Markov Chain Samples</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="colon.html">colon</a></code> </p>
-        </td>
-        <td><p>Colon Tissues</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="diabetes392.html">diabetes392</a></code> </p>
-        </td>
-        <td><p>Pima Indians Diabetes</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="evaluate_pred.html">evaluate_pred()</a></code> </p>
-        </td>
-        <td><p>Evaluate Prediction Results</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="gendata_FAM.html">gendata_FAM()</a></code> </p>
-        </td>
-        <td><p>Generate simulated data with factor analysis model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="gendata_MLR.html">gendata_MLR()</a></code> </p>
-        </td>
-        <td><p>Generate simulated data with multinomial logistic regression model</p></td>
-      </tr><tr>
         
         <td>
           <p><code><a href="htlr.html">htlr()</a></code> </p>
@@ -190,6 +143,26 @@
           <p><code><a href="htlr_prior.html">htlr_prior()</a></code> </p>
         </td>
         <td><p>Generate Prior Configuration</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-prediction-and-inference" class="hasAnchor"><a href="#section-prediction-and-inference" class="anchor"></a>Prediction and inference</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="predict.htlrfit.html">predict(<i>&lt;htlrfit&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Make Prediction on New Data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="as.matrix.htlrfit.html">as.matrix(<i>&lt;htlrfit&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Create a Matrix of Markov Chain Samples</p></td>
       </tr><tr>
         
         <td>
@@ -199,30 +172,88 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="predict.htlrfit.html">predict(<i>&lt;htlrfit&gt;</i>)</a></code> </p>
+          <p><code><a href="summary.htlrfit.html">summary(<i>&lt;htlrfit&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Make Prediction on New Data</p></td>
+        <td><p>Posterior Summaries</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="evaluate_pred.html">evaluate_pred()</a></code> </p>
+        </td>
+        <td><p>Evaluate Prediction Results</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-generating-simulation-data" class="hasAnchor"><a href="#section-generating-simulation-data" class="anchor"></a>Generating simulation data</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="gendata_FAM.html">gendata_FAM()</a></code> </p>
+        </td>
+        <td><p>Generate Simulated Data with Factor Analysis Model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="gendata_MLR.html">gendata_MLR()</a></code> </p>
+        </td>
+        <td><p>Generate Simulated Data with Multinomial Logistic Regression Model</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-utility-functions" class="hasAnchor"><a href="#section-utility-functions" class="anchor"></a>Utility functions</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="std.html">std()</a></code> </p>
+        </td>
+        <td><p>Standardizes a Design Matrix</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="split_data.html">split_data()</a></code> </p>
         </td>
-        <td><p>Split data into train and test partitions</p></td>
+        <td><p>Split Data into Train and Test Partitions</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-data-sets" class="hasAnchor"><a href="#section-data-sets" class="anchor"></a>Data sets</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="colon.html">colon</a></code> </p>
+        </td>
+        <td><p>Colon Tissues</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="summary.htlrfit.html">summary(<i>&lt;htlrfit&gt;</i>)</a></code> </p>
+          <p><code><a href="diabetes392.html">diabetes392</a></code> </p>
         </td>
-        <td><p>Posterior Summaries</p></td>
+        <td><p>Pima Indians Diabetes</p></td>
       </tr>
     </tbody>
     </table>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+      <li><a href="#section-model-fitting">Model fitting</a></li>
+      <li><a href="#section-prediction-and-inference">Prediction and inference</a></li>
+      <li><a href="#section-generating-simulation-data">Generating simulation data</a></li>
+      <li><a href="#section-utility-functions">Utility functions</a></li>
+      <li><a href="#section-data-sets">Data sets</a></li>
     </ul>
   </div>
 </div>
@@ -234,7 +265,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
 
       </footer>
