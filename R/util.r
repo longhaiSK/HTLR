@@ -86,17 +86,6 @@ split_data <- function(X,
   )
 }
 
-
-
-## compute V (delta)
-comp_vardeltas <- function (deltas)
-{
-    K <- ncol (deltas)
-    SUMdeltas <- rowSums (deltas)
-    SUMsqdeltas <- rowSums (deltas^2)
-    SUMsqdeltas  - SUMdeltas^2 / (K + 1)
-}
-
 ## compute sd of betas
 # @export
 comp_sdb <- function (deltas, removeint = TRUE, normalize = FALSE)

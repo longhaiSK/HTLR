@@ -46,3 +46,11 @@ Rcpp::List std_helper(const arma::mat &A)
     Rcpp::Named("X") = A_std
   );
 }
+
+// [[Rcpp::export]]
+arma::vec comp_vardeltas(const arma::mat &deltas)
+{
+    arma::vec sum_deltas = row_sum(deltas);
+    arma::vec sum_sq_deltas = row_sum(arma::pow(deltas,2));
+    return sum_sq_deltas - (arma::pow(sum_deltas, 2) / (deltas.n_cols + 1));
+}

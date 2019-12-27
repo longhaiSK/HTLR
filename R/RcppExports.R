@@ -29,3 +29,7 @@ std_helper <- function(A) {
     .Call('_HTLR_std_helper', PACKAGE = 'HTLR', A)
 }
 
+comp_vardeltas <- function(deltas) {
+    .Call('_HTLR_comp_vardeltas', PACKAGE = 'HTLR', deltas)
+}
+

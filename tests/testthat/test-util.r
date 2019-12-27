@@ -14,3 +14,16 @@ test_that("std works", {
   expect_equal(attr(mat_80x90_std_act, "scale"), mat_80x90_sdj)
   expect_equal(attr(mat_80x90_std_act, "nonsingular"), 1L:ncol(mat_80x90))
 })
+
+## compute V (delta)
+comp_vardeltas_r <- function(deltas)
+{
+  K <- ncol (deltas)
+  SUMdeltas <- rowSums (deltas)
+  SUMsqdeltas <- rowSums (deltas^2)
+  SUMsqdeltas  - SUMdeltas^2 / (K + 1)
+}
+
+test_that("comp_vardeltas", {
+  expect_equal(c(comp_vardeltas(mat_80x90)), comp_vardeltas_r(mat_80x90))
+})

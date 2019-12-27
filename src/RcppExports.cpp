@@ -121,6 +121,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// comp_vardeltas
+arma::vec comp_vardeltas(const arma::mat& deltas);
+RcppExport SEXP _HTLR_comp_vardeltas(SEXP deltasSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type deltas(deltasSEXP);
+    rcpp_result_gen = Rcpp::wrap(comp_vardeltas(deltas));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_HTLR_sample_trunc_norm", (DL_FUNC) &_HTLR_sample_trunc_norm, 4},
@@ -130,6 +141,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_HTLR_log_sum_exp", (DL_FUNC) &_HTLR_log_sum_exp, 1},
     {"_HTLR_spl_sgm_ig", (DL_FUNC) &_HTLR_spl_sgm_ig, 4},
     {"_HTLR_std_helper", (DL_FUNC) &_HTLR_std_helper, 1},
+    {"_HTLR_comp_vardeltas", (DL_FUNC) &_HTLR_comp_vardeltas, 1},
     {NULL, NULL, 0}
 };
 
