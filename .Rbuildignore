@@ -1,8 +1,10 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^docs$
+^pkgdown$
 ^\.travis\.yml$
 ^README\.Rmd$
+^index\.md$
 ^tmp$
 ^.vscode$
 ^data-raw$

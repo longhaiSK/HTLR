@@ -1,0 +1,25 @@
+reference:
+- title: Model fitting
+  contents:
+  - htlr
+  - htlr_prior
+- title: Prediction and inference
+  contents:
+  - predict.htlrfit
+  - as.matrix.htlrfit
+  - nzero_idx
+  - summary.htlrfit
+  - evaluate_pred
+- title: Generating simulation data
+  contents:
+  - gendata_FAM
+  - gendata_MLR 
+- title: Utility functions 
+  contents:
+  - std
+  - split_data
+- title: Data sets
+  contents:
+  - colon
+  - diabetes392
+  
