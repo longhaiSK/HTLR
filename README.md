@@ -10,8 +10,6 @@ status](https://www.r-pkg.org/badges/version/HTLR)](https://CRAN.R-project.org/p
 [![Lifecycle:
 maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![](https://cranlogs.r-pkg.org/badges/HTLR)](https://cran.r-project.org/package=HTLR)
-[![License: GPL
-v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 [![Build
 Status](https://travis-ci.org/longhaiSK/HTLR.svg?branch=master)](https://travis-ci.org/longhaiSK/HTLR)
 <!-- badges: end -->
@@ -32,7 +30,7 @@ high-correlations among coefficients.
 
 ## Installation
 
-[CRAN](https://CRAN.R-project.org) version:
+[CRAN](https://CRAN.R-project.org) version (recommended):
 
 ``` r
 install.packages("HTLR")
