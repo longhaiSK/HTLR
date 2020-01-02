@@ -117,12 +117,25 @@ htlr_fit <- function (
   ## standardize selected features
   nuj <- rep(0, length(fsel))
   sdj <- rep(1, length(fsel))
-  if (stdzx == TRUE & !is.numeric(initial_state))
+  if (stdzx == TRUE)
   {
-    nuj <- apply(X_tr, 2, median)
-    sdj <- apply(X_tr, 2, sd)
-    X_tr <- sweep(X_tr, 2, nuj, "-")
-    X_tr <- sweep(X_tr, 2, sdj, "/")
+    if (is.numeric(initial_state))
+    {
+      message("skip standardizing features because customized initial state is provided")
+    }
+    else
+    {
+      X_tr <- std(X_tr)
+      nuj <- attr(X_tr, "center")
+      sdj <- attr(X_tr, "scale")
+    }
+  }
+  else
+  {
+    if (!is.matrix(X_tr)) {
+      message(sprintf("coercing %s 'X' to matrix", class(X_tr)))
+      X_tr <- as.matrix(X_tr) 
+    }
   }
   
   ## add intercept

@@ -133,6 +133,7 @@ htlr <-
   if (is.character(prior))
     prior <- htlr_prior(prior, df)
   
+  # htlr_fit() will take care of input checking
   htlr_fit(X_tr = X, y_tr = y, fsel = fsel, stdzx = stdx, 
            ptype = prior$ptype, alpha = prior$alpha, s = prior$logw, 
            #eta = prior$eta, 
