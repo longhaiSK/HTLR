@@ -116,13 +116,13 @@ log_normcons <- function(lv)
 }
 
 #' @export
-nobs.htlrfit <- function(object, ...)
+nobs.htlr.fit <- function(object, ...)
 {
   object$n
 }
 
 #' @export
-print.htlrfit <- function(x, ...)
+print.htlr.fit <- function(x, ...)
 {
   info.data <- sprintf("Data:\n
   response:\t%d-class
@@ -140,7 +140,7 @@ print.htlrfit <- function(x, ...)
   
   info.est <- sprintf("Estimates:\n
   model size:\t%d (w/ intercept)
-  coefficients: see help('summary.htlrfit')",
+  coefficients: see help('summary.htlr.fit')",
   length(nzero_idx(x)) + 1)
   
   cat("Fitted HTLR model", "\n\n", info.data, "\n\n", info.model, "\n\n", info.est)

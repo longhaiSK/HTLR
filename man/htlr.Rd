@@ -91,7 +91,7 @@ multi-core machine. Default is \code{FALSE}.}
 }}
 }
 \value{
-An object with S3 class \code{htlrfit}.
+An object with S3 class \code{htlr.fit}.
 }
 \description{
 This function trains linear logistic regression models with HMC in restricted Gibbs sampling.

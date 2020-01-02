@@ -7,7 +7,7 @@
 nzero_idx(fit, cut = 0.1)
 }
 \arguments{
-\item{fit}{An object of S3 class \code{htlrfit}.}
+\item{fit}{An object of S3 class \code{htlr.fit}.}
 
 \item{cut}{Threshold on relative SDB to distinguish zero coefficients.}
 }

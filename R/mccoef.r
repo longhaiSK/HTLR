@@ -1,8 +1,8 @@
 #' Create a Matrix of Markov Chain Samples
 #' 
-#' The Markov chain samples (without warmup) included in a \code{htlrfit} object will be coerced to a matrix.
+#' The Markov chain samples (without warmup) included in a \code{htlr.fit} object will be coerced to a matrix.
 #' 
-#' @param x An object of S3 class \code{htlrfit}.
+#' @param x An object of S3 class \code{htlr.fit}.
 #' 
 #' @param k Coefficients associated with class \code{k} will be drawn. Must be a positive integer in 
 #' 1,2,\ldots,C-1 for C-class traning labels (base class 0 can not be chosen). By default the last class
@@ -21,7 +21,7 @@
 #' 
 #' dim(as.matrix(fit))
 #'   
-as.matrix.htlrfit <- function(x, k = NULL, ...)
+as.matrix.htlr.fit <- function(x, k = NULL, ...)
 {
   if (is.null(k))
   {
@@ -40,7 +40,7 @@ as.matrix.htlrfit <- function(x, k = NULL, ...)
 #' 
 #' This function gives a summary of posterior of parameters.
 #' 
-#' @param object An object of S3 class \code{htlrfit}.
+#' @param object An object of S3 class \code{htlr.fit}.
 #' 
 #' @param usedmc Indices of Markov chain iterations used for inference. By default all iterations are used.
 #' 
@@ -66,7 +66,7 @@ as.matrix.htlrfit <- function(x, k = NULL, ...)
 #' fit <- htlr(X = colon$X, y = colon$y, fsel = 1:100, iter = 20)
 #' summary(fit, features = 1:16)
 #'   
-summary.htlrfit <-
+summary.htlr.fit <-
   function (object,
             features = 1L:object$p,
             method = median,
@@ -203,7 +203,7 @@ htlr_sdb <- function(fit,
 #' 
 #' Get the indices of non-zero coefficients from fitted HTLR model objects.
 #' 
-#' @param fit An object of S3 class \code{htlrfit}.
+#' @param fit An object of S3 class \code{htlr.fit}.
 #' 
 #' @param cut Threshold on relative SDB to distinguish zero coefficients. 
 #' 

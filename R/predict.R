@@ -24,7 +24,7 @@
 #' 
 htlr_predict <- function(X_ts, fithtlr = NULL, deltas = NULL, burn = NULL, thin = NULL, usedmc = NULL)
 {
-  ## chaning X_ts as needed
+  ## changing X_ts as needed
   if (is.vector(X_ts))
     X_ts <- matrix(X_ts, 1)
   no_ts <- nrow(X_ts)
@@ -106,7 +106,7 @@ htlr_predict <- function(X_ts, fithtlr = NULL, deltas = NULL, burn = NULL, thin 
 #' 
 #' @export
 #' 
-predict.htlrfit <- function(object, newx, type = c("response", "class"), ...)
+predict.htlr.fit <- function(object, newx, type = c("response", "class"), ...)
 {
   if (!exists("burn")) burn <- NULL
   if (!exists("thin")) thin <- NULL

@@ -62,7 +62,7 @@
 #' \code{pre.legacy} is set to \code{TRUE}. 
 #' 
 #' @return A list of fitting results. If \code{X_ts} is not provided, the list is an object 
-#' with S3 class \code{htlrfit}.  
+#' with S3 class \code{htlr.fit}.  
 #' 
 #' @references
 #' Longhai Li and Weixin Yao (2018). Fully Bayesian Logistic Regression 
@@ -227,7 +227,7 @@ htlr_fit <- function (
   fit$call <- match.call()
   
   # register S3
-  attr(fit, "class") <- "htlrfit"
+  attr(fit, "class") <- "htlr.fit"
         
   #---------------------- Prediction for test cases ----------------------#
   if (!is.null(X_ts))

@@ -63,7 +63,7 @@
 #'   Default: \{.01, .02, \ldots, .05\}. Will be ignored if \code{pre.legacy} is set to \code{TRUE}.
 #' } 
 #' 
-#' @return An object with S3 class \code{htlrfit}.  
+#' @return An object with S3 class \code{htlr.fit}.  
 #' 
 #' @references
 #' Longhai Li and Weixin Yao (2018). Fully Bayesian Logistic Regression 
