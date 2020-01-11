@@ -15,7 +15,6 @@ URL: https://longhaisk.github.io/HTLR/
 BugReports: https://github.com/longhaiSK/HTLR/issues
 Depends: R (>= 3.1.0)
 Suggests: 
-    rda,
     ggplot2,
     corrplot,
     testthat (>= 2.1.0),
