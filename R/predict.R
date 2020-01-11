@@ -24,9 +24,10 @@
 #' 
 htlr_predict <- function(X_ts, fithtlr = NULL, deltas = NULL, burn = NULL, thin = NULL, usedmc = NULL)
 {
-  ## changing X_ts as needed
   if (is.vector(X_ts))
     X_ts <- matrix(X_ts, 1)
+  else if (!is.matrix(X_ts))
+    X_ts <- as.matrix(X_ts)
   no_ts <- nrow(X_ts)
   
   if (is.null(deltas) & !is.null(fithtlr))
