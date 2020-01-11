@@ -35,9 +35,7 @@ complexity of median finding, but still substantially faster than \code{scale()}
 set.seed(123)
 mat <- matrix(rnorm(n = 80 * 90, mean = 100, sd = 50), 80, 90)
 mat \%>\% as.numeric() \%>\% ggplot2::qplot(bins = 30, xlab = '')
-mat_std <- std(mat)
-mat_std \%>\% as.numeric() \%>\% ggplot2::qplot(bins = 30, xlab = '')
-mat_std
+mat \%>\% std() \%>\% as.numeric() \%>\% ggplot2::qplot(bins = 30, xlab = '')
  
 }
 \seealso{

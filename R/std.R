@@ -56,18 +56,18 @@ std <- function(X, tol = 1e-6)
   vars.ns <- which(std.info$sd > tol)
   
   val <- std.info$X[, vars.ns, drop = FALSE]
-  attr(val, "nonsingular") <- vars.ns
-  attr(val, "center") <- std.info$median[, vars.ns]
-  attr(val, "scale") <- std.info$sd[, vars.ns]
-  
   if (length(vars.ns) < ncol(X)) 
   {
     message(
       sprintf(
-        "dropped %d singular column(s), check attr 'nonsingular' for details",
+        "dropped %d singular column(s)",
         ncol(X) - length(vars.ns)
       )
     )
   }
+  
+  attr(val, "nonsingular") <- vars.ns
+  attr(val, "center") <- std.info$median[, vars.ns]
+  attr(val, "scale") <- std.info$sd[, vars.ns]
   return(val)
 }
