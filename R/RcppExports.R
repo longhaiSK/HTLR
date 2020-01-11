@@ -33,3 +33,11 @@ comp_vardeltas <- function(deltas) {
     .Call('_HTLR_comp_vardeltas', PACKAGE = 'HTLR', deltas)
 }
 
+comp_lsl <- function(A) {
+    .Call('_HTLR_comp_lsl', PACKAGE = 'HTLR', A)
+}
+
+log_normcons <- function(A) {
+    .Call('_HTLR_log_normcons', PACKAGE = 'HTLR', A)
+}
+

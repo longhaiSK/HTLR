@@ -1,6 +1,7 @@
 set.seed(1234)
 
 mat_80x90 <- matrix(rnorm(n = 80 * 90, mean = 100, sd = 50), 80, 90)
+mat_800x900 <- matrix(rnorm(n = 800 * 900, mean = 100, sd = 50), 800, 900)
 
 test_that("std works", {
   mat_80x90_nuj <- apply(mat_80x90, 2, median)
@@ -18,12 +19,30 @@ test_that("std works", {
 ## compute V (delta)
 comp_vardeltas_r <- function(deltas)
 {
-  K <- ncol (deltas)
-  SUMdeltas <- rowSums (deltas)
-  SUMsqdeltas <- rowSums (deltas^2)
-  SUMsqdeltas  - SUMdeltas^2 / (K + 1)
+  K <- ncol(deltas)
+  SUMdeltas <- rowSums(deltas)
+  SUMsqdeltas <- rowSums(deltas^2)
+  SUMsqdeltas - SUMdeltas^2 / (K + 1)
 }
 
-test_that("comp_vardeltas", {
+test_that("comp_vardeltas works", {
   expect_equal(c(comp_vardeltas(mat_80x90)), comp_vardeltas_r(mat_80x90))
+})
+
+comp_lsl_r <- function(lv)
+{
+  log_sum_exp(cbind(0, lv))
+}
+
+test_that("comp_lsl works", {
+  expect_equal(comp_lsl(mat_80x90), comp_lsl_r(mat_80x90))
+})
+
+log_normcons_r <- function(lv)
+{
+  sum(comp_lsl_r(lv))
+}
+
+test_that("log_normcons works", {
+  expect_equal(log_normcons(mat_80x90), log_normcons_r(mat_80x90))
 })

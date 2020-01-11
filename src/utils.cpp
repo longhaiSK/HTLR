@@ -54,3 +54,16 @@ arma::vec comp_vardeltas(const arma::mat &deltas)
   arma::vec sum_sq_deltas = row_sum(arma::square(deltas));
   return sum_sq_deltas - (arma::square(sum_deltas) / (deltas.n_cols + 1));
 }
+
+// [[Rcpp::export]]
+arma::vec comp_lsl(arma::mat &A)
+{
+  A.insert_cols(0, 1);
+  return log_sum_exp(A);
+}
+
+// [[Rcpp::export]]
+double log_normcons(arma::mat &A)
+{
+  return arma::accu(comp_lsl(A));
+}

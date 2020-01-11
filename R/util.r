@@ -104,17 +104,6 @@ comp_sdb <- function (deltas, removeint = TRUE, normalize = FALSE)
     sdb
 }
 
-
-comp_lsl <- function(lv)
-{
-  log_sum_exp(cbind(0, lv))
-}
-
-log_normcons <- function(lv)
-{
-  sum(comp_lsl(lv))
-}
-
 #' @export
 nobs.htlr.fit <- function(object, ...)
 {
@@ -146,7 +135,36 @@ print.htlr.fit <- function(x, ...)
   cat("Fitted HTLR model", "\n\n", info.data, "\n\n", info.model, "\n\n", info.est)
 }
 
+## try to install suggested packages when needed
+## author: Michael W. Kearney
+## source: https://github.com/ropensci/rtweet/blob/master/R/utils.R
+try_require <- function(pkg, f = NULL) {
+  if (is.null(f)) {
+    f <- "this action"
+  } else {
+    f <- paste0("`", f, "`")
+  }
+  
+  if (requireNamespace(pkg, quietly = TRUE)) {
+    library(pkg, character.only = TRUE)
+    return(invisible())
+  }
+  
+  stop(paste0("Package `", pkg, "` required for ", f , ".\n",
+              "Please install and try again."), call. = FALSE)
+}
 
+#' Pipe operator
+#'
+#' See \code{magrittr::\link[magrittr]{\%>\%}} for details.
+#'
+#' @name %>%
+#' @rdname pipe
+#' @keywords internal
+#' @export
+#' @importFrom magrittr %>%
+#' @usage lhs \%>\% rhs
+NULL
 
 #Plots feature importance scores
 # 
@@ -190,32 +208,3 @@ print.htlr.fit <- function(x, ...)
 #     a <- fsel[itops]
 #     
 # }
-
-## try to install suggested packages when needed
-try_require <- function(pkg, f = NULL) {
-  if (is.null(f)) {
-    f <- "this action"
-  } else {
-    f <- paste0("`", f, "`")
-  }
-  
-  if (requireNamespace(pkg, quietly = TRUE)) {
-    library(pkg, character.only = TRUE)
-    return(invisible())
-  }
-  
-  stop(paste0("Package `", pkg, "` required for ", f , ".\n",
-              "Please install and try again."), call. = FALSE)
-}
-
-#' Pipe operator
-#'
-#' See \code{magrittr::\link[magrittr]{\%>\%}} for details.
-#'
-#' @name %>%
-#' @rdname pipe
-#' @keywords internal
-#' @export
-#' @importFrom magrittr %>%
-#' @usage lhs \%>\% rhs
-NULL
