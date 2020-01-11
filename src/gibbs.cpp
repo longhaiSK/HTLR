@@ -2,19 +2,19 @@
 #include "gibbs.h"
 
 Fit::Fit(int p, int K, int n,
-         arma::mat &X, arma::mat &ymat, arma::uvec &ybase,
+         const arma::mat &X, const arma::mat &ymat, const arma::uvec &ybase,
          std::string ptype, double alpha, double s, double eta,
          int iters_rmc, int iters_h, int thin,
          int leap_L, int leap_L_h, double leap_step,
-         double hmc_sgmcut, arma::vec &DDNloglike_,
-         arma::mat &deltas, double logw, arma::vec &sigmasbt,
-         int silence, bool legacy)
+         double hmc_sgmcut, const arma::mat &deltas, double logw, 
+         const arma::vec &sigmasbt, int silence, bool legacy)
     : p_(p), K_(K), C_(K + 1), n_(n), X_(X), ymat_(ymat), ybase_(ybase),
       ptype_(ptype), alpha_(alpha), s_(s), eta_(eta),
       iters_rmc_(iters_rmc), iters_h_(iters_h), thin_(thin),
       leap_L_(leap_L), leap_L_h_(leap_L_h), leap_step_(leap_step),
-      DDNloglike_(DDNloglike_), silence_(silence), 
-      legacy_(legacy), nvar_(p + 1), logw_(logw)
+      sgmsq_cut_(hmc_sgmcut > 0 ? R_pow_di(hmc_sgmcut, 2) : hmc_sgmcut),
+      DDNloglike_(col_sum(arma::square(X)) / 4), 
+      silence_(silence), legacy_(legacy), nvar_(p + 1), logw_(logw)
 {
   ids_update_ = arma::uvec(nvar_, arma::fill::zeros);
   ids_fix_ = arma::uvec(nvar_, arma::fill::zeros);
@@ -47,8 +47,6 @@ Fit::Fit(int p, int K, int n,
   sum_deltas_ = arma::vec(nvar_, arma::fill::zeros);
   var_deltas_ = arma::vec(nvar_, arma::fill::zeros);
   step_sizes_ = arma::vec(nvar_, arma::fill::zeros);
-
-  sgmsq_cut_ = hmc_sgmcut > 0 ? R_pow_di(hmc_sgmcut, 2) : hmc_sgmcut;
 }
 
 void Fit::StartSampling()

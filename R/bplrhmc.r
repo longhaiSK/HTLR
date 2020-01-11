@@ -143,9 +143,6 @@ htlr_fit <- function (
   X_addint <- cbind(1, X_tr)
   if (!is.null(colnames(X_tr)))
     colnames(X_addint) <- c("Intercept", colnames(X_tr))
-  
-  ## stepsize for HMC from data
-  DDNloglike <- 1 / 4 * colSums(X_addint ^ 2)
 
   #---------------------- Markov chain state initialization ----------------------#
 
@@ -208,7 +205,7 @@ htlr_fit <- function (
       ## sampling
       iters_rmc = iters_rmc, iters_h = iters_h, thin = thin, 
       leap_L = leap_L, leap_L_h = leap_L_h, leap_step = leap_step, 
-      hmc_sgmcut = hmc_sgmcut, DDNloglike = as.vector(DDNloglike),
+      hmc_sgmcut = hmc_sgmcut,
       ## fit result
       deltas = deltas, logw = s, sigmasbt = sigmasbt,
       ## other control

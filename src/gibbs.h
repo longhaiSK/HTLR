@@ -12,17 +12,20 @@ class Fit
 
   // data
   const int p_, K_, C_, n_;
-  arma::mat X_; arma::mat ymat_; arma::uvec ybase_;
+  const arma::mat X_; 
+  const arma::mat ymat_; 
+  const arma::uvec ybase_;
 
   // prior
-  std::string ptype_; 
+  const std::string ptype_; 
   const double alpha_, s_, eta_;
 
   // sampling
   const int iters_rmc_, iters_h_, thin_, leap_L_, leap_L_h_; 
   const double leap_step_; 
-  double sgmsq_cut_;
-  arma::vec DDNloglike_;
+  const double sgmsq_cut_;
+  // stepsize for HMC
+  const arma::rowvec DDNloglike_;
 
   // fit result
   arma::cube mc_deltas_;
@@ -85,13 +88,12 @@ class Fit
   public:
 
   Fit(int p, int K, int n,
-      arma::mat &X, arma::mat &ymat, arma::uvec &ybase,
+      const arma::mat &X, const arma::mat &ymat, const arma::uvec &ybase,
       std::string ptype, double alpha, double s, double eta,
       int iters_rmc, int iters_h, int thin, 
       int leap_L, int leap_L_h, double leap_step,
-      double hmc_sgmcut, arma::vec &DDNloglike,
-      arma::mat &deltas, double logw, arma::vec &sigmasbt,
-      int silence, bool legacy);
+      double hmc_sgmcut, const arma::mat &deltas, double logw,
+      const arma::vec &sigmasbt, int silence, bool legacy);
 
   void StartSampling();
   Rcpp::List OutputR(); 
