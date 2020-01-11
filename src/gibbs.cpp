@@ -6,7 +6,7 @@ Fit::Fit(int p, int K, int n,
          std::string ptype, double alpha, double s, double eta,
          int iters_rmc, int iters_h, int thin,
          int leap_L, int leap_L_h, double leap_step,
-         double hmc_sgmcut, const arma::mat &deltas, double logw, 
+         double hmc_sgmcut, const arma::mat &deltas, 
          const arma::vec &sigmasbt, int silence, bool legacy)
     : p_(p), K_(K), C_(K + 1), n_(n), X_(X), ymat_(ymat), ybase_(ybase),
       ptype_(ptype), alpha_(alpha), s_(s), eta_(eta),
@@ -14,13 +14,13 @@ Fit::Fit(int p, int K, int n,
       leap_L_(leap_L), leap_L_h_(leap_L_h), leap_step_(leap_step),
       sgmsq_cut_(hmc_sgmcut > 0 ? R_pow_di(hmc_sgmcut, 2) : hmc_sgmcut),
       DDNloglike_(col_sum(arma::square(X)) / 4), 
-      silence_(silence), legacy_(legacy), nvar_(p + 1), logw_(logw)
+      silence_(silence), legacy_(legacy), nvar_(p + 1), logw_(s)
 {
   ids_update_ = arma::uvec(nvar_, arma::fill::zeros);
   ids_fix_ = arma::uvec(nvar_, arma::fill::zeros);
 
   mc_logw_ = arma::vec(iters_rmc + 1, arma::fill::zeros);
-  mc_logw_[0] = logw;
+  mc_logw_[0] = logw_;
   
   sigmasbt_ = sigmasbt;
   mc_sigmasbt_ = arma::mat(nvar_, iters_rmc + 1, arma::fill::zeros);

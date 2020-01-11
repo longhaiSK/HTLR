@@ -197,17 +197,17 @@ htlr_fit <- function (
   fit <- htlr_fit_helper(
       ## data
       p = p, K = K, n = n,
-      X = as.matrix(X_addint), 
+      X = X_addint, 
       ymat = as.matrix(ymat), 
-      ybase = as.vector(ybase),
+      ybase = ybase,
       ## prior
       ptype = ptype, alpha = alpha, s = s, eta = eta,
       ## sampling
       iters_rmc = iters_rmc, iters_h = iters_h, thin = thin, 
       leap_L = leap_L, leap_L_h = leap_L_h, leap_step = leap_step, 
       hmc_sgmcut = hmc_sgmcut,
-      ## fit result
-      deltas = deltas, logw = s, sigmasbt = sigmasbt,
+      ## init state
+      deltas = deltas, sigmasbt = sigmasbt,
       ## other control
       silence = as.integer(silence), legacy = pre.legacy)
   

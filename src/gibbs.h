@@ -92,7 +92,7 @@ class Fit
       std::string ptype, double alpha, double s, double eta,
       int iters_rmc, int iters_h, int thin, 
       int leap_L, int leap_L_h, double leap_step,
-      double hmc_sgmcut, const arma::mat &deltas, double logw,
+      double hmc_sgmcut, const arma::mat &deltas,
       const arma::vec &sigmasbt, int silence, bool legacy);
 
   void StartSampling();
