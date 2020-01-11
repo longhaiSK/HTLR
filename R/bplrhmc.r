@@ -110,9 +110,7 @@ htlr_fit <- function (
   
   ## feature selection
   X_tr <- X_tr[, fsel, drop = FALSE]
-  names(fsel) <- colnames(X_tr) 
-  p <- length(fsel)
-  n <- nrow(X_tr)
+  names(fsel) <- colnames(X_tr)
   
   ## standardize selected features
   nuj <- rep(0, length(fsel))
@@ -128,6 +126,7 @@ htlr_fit <- function (
       X_tr <- std(X_tr)
       nuj <- attr(X_tr, "center")
       sdj <- attr(X_tr, "scale")
+      fsel <- fsel[attr(X_tr, "nonsingular")]
     }
   }
   else
@@ -137,7 +136,9 @@ htlr_fit <- function (
       X_tr <- as.matrix(X_tr) 
     }
   }
-  
+  p <- ncol(X_tr)
+  n <- nrow(X_tr)
+
   ## add intercept
   X_addint <- cbind(1, X_tr)
   if (!is.null(colnames(X_tr)))
@@ -193,7 +194,7 @@ htlr_fit <- function (
     vardeltas <- comp_vardeltas(deltas)[-1]
     sigmasbt <- c(sigmab0, spl_sgm_ig(alpha, K, exp(s), vardeltas))
   }
-    
+ 
   #-------------------------- Do Gibbs sampling --------------------------#
 
   fit <- htlr_fit_helper(

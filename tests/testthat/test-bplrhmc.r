@@ -63,4 +63,18 @@ test_that("colon500_ghs1_s10_eta0_bcbc_bi", {
 #   expect_equal_htlr(fit, colon500_t1_s10_eta10_lasso_bi)
 # })
 
+HoSC <- list("x.train" = read.csv("../../data-raw/HoCS_train_data.csv", header = F),
+             "x.test" = read.csv("../../data-raw/HoCS_test_data.csv", header = F),
+             "y.train" = rep(1:3, each = 10),
+             "y.test" = c(rep(1, 50), rep(2, 27), rep(3, 52)))
 
+test_that("data_with_singular_col", {
+  fit.1 <- htlr(X = HoSC$x.train, y = HoSC$y.train, init = "bcbc", iter = 10)
+  fit.2 <- htlr_fit(X_tr = HoSC$x.train, y_tr = HoSC$y.train, ptype = "t",
+                    initial_state = "lasso", iters_h = 5, iters_rmc = 5, thin = 1)
+  
+  expect_equal(length(fit.1$featur$fsel), 86)
+  expect_equal(length(fit.2$featur$fsel), 86)
+  
+  pred <- predict(fit.1, HoSC$x.test)
+})
