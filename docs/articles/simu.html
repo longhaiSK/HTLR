@@ -78,7 +78,7 @@
       <h1>Multinomial Logistic Regression with Heavy-Tailed Priors</h1>
                         <h4 class="author">Longhai Li and Steven Liu</h4>
             
-            <h4 class="date">2019-12-27</h4>
+            <h4 class="date">2020-01-12</h4>
       
       
       <div class="hidden name"><code>simu.Rmd</code></div>
@@ -150,9 +150,9 @@
 <a class="sourceLine" id="cb2-42" data-line-number="42"><span class="co">#&gt;   ..- attr(*, "dimnames")=List of 2</span></a>
 <a class="sourceLine" id="cb2-43" data-line-number="43"><span class="co">#&gt;   .. ..$ : NULL</span></a>
 <a class="sourceLine" id="cb2-44" data-line-number="44"><span class="co">#&gt;   .. ..$ : chr [1:2000] "V1" "V2" "V3" "V4" ...</span></a>
-<a class="sourceLine" id="cb2-45" data-line-number="45"><span class="co">#&gt;  $ y  : int [1:510] 1 2 3 1 2 3 1 2 3 1 ...</span></a>
-<a class="sourceLine" id="cb2-46" data-line-number="46"><span class="co">#&gt;  $ muj: num [1:2000, 1:3] -0.456 0 -0.456 -0.376 -0.376 ...</span></a>
-<a class="sourceLine" id="cb2-47" data-line-number="47"><span class="co">#&gt;  $ SGM: num [1:2000, 1:2000] 0.584 0.597 0 0 0 ...</span></a></code></pre></div>
+<a class="sourceLine" id="cb2-45" data-line-number="45"><span class="co">#&gt;  $ muj: num [1:2000, 1:3] -0.456 0 -0.456 -0.376 -0.376 ...</span></a>
+<a class="sourceLine" id="cb2-46" data-line-number="46"><span class="co">#&gt;  $ SGM: num [1:2000, 1:2000] 0.584 0.597 0 0 0 ...</span></a>
+<a class="sourceLine" id="cb2-47" data-line-number="47"><span class="co">#&gt;  $ y  : int [1:510] 1 2 3 1 2 3 1 2 3 1 ...</span></a></code></pre></div>
 <p>Look at the correlation between features:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># require(corrplot)</span></a>
 <a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span>(dat<span class="op">$</span>X[ , <span class="dv">1</span><span class="op">:</span><span class="dv">11</span>]) <span class="op">%&gt;%</span><span class="st"> </span>corrplot<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/corrplot/man/corrplot.html">corrplot</a></span>(<span class="dt">tl.pos =</span> <span class="st">"n"</span>)</a></code></pre></div>
@@ -182,7 +182,7 @@
 <a class="sourceLine" id="cb5-3" data-line-number="3">  fit.t &lt;-<span class="st"> </span><span class="kw"><a href="../reference/htlr.html">htlr</a></span>(dat<span class="op">$</span>x.tr, dat<span class="op">$</span>y.tr)</a>
 <a class="sourceLine" id="cb5-4" data-line-number="4">)</a>
 <a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co">#&gt;    user  system elapsed </span></a>
-<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="co">#&gt; 731.620   0.453 127.068</span></a>
+<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="co">#&gt; 120.500   0.106  22.018</span></a>
 <a class="sourceLine" id="cb5-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(fit.t)</a>
 <a class="sourceLine" id="cb5-8" data-line-number="8"><span class="co">#&gt; Fitted HTLR model </span></a>
 <a class="sourceLine" id="cb5-9" data-line-number="9"><span class="co">#&gt; </span></a>
@@ -202,7 +202,7 @@
 <a class="sourceLine" id="cb5-23" data-line-number="23"><span class="co">#&gt;  Estimates:</span></a>
 <a class="sourceLine" id="cb5-24" data-line-number="24"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb5-25" data-line-number="25"><span class="co">#&gt;   model size:    5 (w/ intercept)</span></a>
-<a class="sourceLine" id="cb5-26" data-line-number="26"><span class="co">#&gt;   coefficients: see help('summary.htlrfit')</span></a></code></pre></div>
+<a class="sourceLine" id="cb5-26" data-line-number="26"><span class="co">#&gt;   coefficients: see help('summary.htlr.fit')</span></a></code></pre></div>
 <p>With another configuration:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(SEED)</a>
 <a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(</a>
@@ -210,8 +210,8 @@
 <a class="sourceLine" id="cb6-4" data-line-number="4">                 <span class="dt">prior =</span> <span class="kw"><a href="../reference/htlr_prior.html">htlr_prior</a></span>(<span class="st">"t"</span>, <span class="dt">df =</span> <span class="dv">1</span>, <span class="dt">logw =</span> <span class="dv">-20</span>, <span class="dt">sigmab0 =</span> <span class="dv">1500</span>), </a>
 <a class="sourceLine" id="cb6-5" data-line-number="5">                 <span class="dt">iter =</span> <span class="dv">4000</span>, <span class="dt">init =</span> <span class="st">"bcbc"</span>)</a>
 <a class="sourceLine" id="cb6-6" data-line-number="6">)</a>
-<a class="sourceLine" id="cb6-7" data-line-number="7"><span class="co">#&gt;     user   system  elapsed </span></a>
-<a class="sourceLine" id="cb6-8" data-line-number="8"><span class="co">#&gt; 1196.186    1.017  207.253</span></a>
+<a class="sourceLine" id="cb6-7" data-line-number="7"><span class="co">#&gt;    user  system elapsed </span></a>
+<a class="sourceLine" id="cb6-8" data-line-number="8"><span class="co">#&gt; 194.383   0.332  34.165</span></a>
 <a class="sourceLine" id="cb6-9" data-line-number="9"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(fit.t2)</a>
 <a class="sourceLine" id="cb6-10" data-line-number="10"><span class="co">#&gt; Fitted HTLR model </span></a>
 <a class="sourceLine" id="cb6-11" data-line-number="11"><span class="co">#&gt; </span></a>
@@ -230,30 +230,30 @@
 <a class="sourceLine" id="cb6-24" data-line-number="24"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb6-25" data-line-number="25"><span class="co">#&gt;  Estimates:</span></a>
 <a class="sourceLine" id="cb6-26" data-line-number="26"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb6-27" data-line-number="27"><span class="co">#&gt;   model size:    5 (w/ intercept)</span></a>
-<a class="sourceLine" id="cb6-28" data-line-number="28"><span class="co">#&gt;   coefficients: see help('summary.htlrfit')</span></a></code></pre></div>
+<a class="sourceLine" id="cb6-27" data-line-number="27"><span class="co">#&gt;   model size:    6 (w/ intercept)</span></a>
+<a class="sourceLine" id="cb6-28" data-line-number="28"><span class="co">#&gt;   coefficients: see help('summary.htlr.fit')</span></a></code></pre></div>
 </div>
 <div id="model-inspection" class="section level1">
 <h1 class="hasAnchor">
 <a href="#model-inspection" class="anchor"></a>Model Inspection</h1>
 <p>Look at the point summaries of posterior of selected parameters:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(fit.t2, <span class="dt">features =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">200</span>, <span class="dv">1000</span>, <span class="dv">2000</span>), <span class="dt">method =</span> median)</a>
-<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="co">#&gt;                 class 2       class 3</span></a>
-<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="co">#&gt; Intercept -3.0617042129 -1.5103399543</span></a>
-<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="co">#&gt; V1         9.4541085933 -0.5020662323</span></a>
-<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="co">#&gt; V2        -5.7603486493  0.2149368251</span></a>
-<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="co">#&gt; V3         0.0359357704  3.1257249469</span></a>
-<a class="sourceLine" id="cb7-7" data-line-number="7"><span class="co">#&gt; V4        -0.0034134708 -0.0004150318</span></a>
-<a class="sourceLine" id="cb7-8" data-line-number="8"><span class="co">#&gt; V5        -0.0021260393 -0.0021705510</span></a>
-<a class="sourceLine" id="cb7-9" data-line-number="9"><span class="co">#&gt; V6         0.0005933266  0.0014395451</span></a>
-<a class="sourceLine" id="cb7-10" data-line-number="10"><span class="co">#&gt; V7        -0.1997239891  1.3111777939</span></a>
-<a class="sourceLine" id="cb7-11" data-line-number="11"><span class="co">#&gt; V8        -0.0178842305 -0.0141715819</span></a>
-<a class="sourceLine" id="cb7-12" data-line-number="12"><span class="co">#&gt; V9         0.0043794662 -0.0013018003</span></a>
-<a class="sourceLine" id="cb7-13" data-line-number="13"><span class="co">#&gt; V10       -0.0004814938 -0.0063657810</span></a>
-<a class="sourceLine" id="cb7-14" data-line-number="14"><span class="co">#&gt; V100      -0.0144196457 -0.0105803810</span></a>
-<a class="sourceLine" id="cb7-15" data-line-number="15"><span class="co">#&gt; V200       0.0033995051 -0.0006334967</span></a>
-<a class="sourceLine" id="cb7-16" data-line-number="16"><span class="co">#&gt; V1000     -0.0007550395 -0.0078158975</span></a>
-<a class="sourceLine" id="cb7-17" data-line-number="17"><span class="co">#&gt; V2000     -0.0013167362  0.0002088031</span></a>
+<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="co">#&gt;                class 2       class 3</span></a>
+<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="co">#&gt; Intercept -3.300316223 -1.9070412107</span></a>
+<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="co">#&gt; V1        10.350593648 -0.4020897215</span></a>
+<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="co">#&gt; V2        -6.277168943  0.1162428743</span></a>
+<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="co">#&gt; V3         0.104563626  3.0794342376</span></a>
+<a class="sourceLine" id="cb7-7" data-line-number="7"><span class="co">#&gt; V4        -0.008132072 -0.0066356093</span></a>
+<a class="sourceLine" id="cb7-8" data-line-number="8"><span class="co">#&gt; V5        -0.002126039 -0.0021705510</span></a>
+<a class="sourceLine" id="cb7-9" data-line-number="9"><span class="co">#&gt; V6         0.003971248  0.0012639359</span></a>
+<a class="sourceLine" id="cb7-10" data-line-number="10"><span class="co">#&gt; V7        -0.346893064  1.6136516173</span></a>
+<a class="sourceLine" id="cb7-11" data-line-number="11"><span class="co">#&gt; V8         0.012365796  1.0173655539</span></a>
+<a class="sourceLine" id="cb7-12" data-line-number="12"><span class="co">#&gt; V9        -0.004739610  0.0014478780</span></a>
+<a class="sourceLine" id="cb7-13" data-line-number="13"><span class="co">#&gt; V10        0.006284849 -0.0008267156</span></a>
+<a class="sourceLine" id="cb7-14" data-line-number="14"><span class="co">#&gt; V100       0.000832599 -0.0074730025</span></a>
+<a class="sourceLine" id="cb7-15" data-line-number="15"><span class="co">#&gt; V200       0.002518865  0.0132492986</span></a>
+<a class="sourceLine" id="cb7-16" data-line-number="16"><span class="co">#&gt; V1000     -0.011929868 -0.0138085483</span></a>
+<a class="sourceLine" id="cb7-17" data-line-number="17"><span class="co">#&gt; V2000     -0.002381775 -0.0047217161</span></a>
 <a class="sourceLine" id="cb7-18" data-line-number="18"><span class="co">#&gt; attr(,"stats")</span></a>
 <a class="sourceLine" id="cb7-19" data-line-number="19"><span class="co">#&gt; [1] "median"</span></a></code></pre></div>
 <p>Plot interval estimates from posterior draws using <a href="https://mc-stan.org/bayesplot/index.html">bayesplot</a>:</p>
@@ -276,7 +276,7 @@
 <a class="sourceLine" id="cb10-4" data-line-number="4"><span class="co">#&gt;  [1,]      2</span></a>
 <a class="sourceLine" id="cb10-5" data-line-number="5"><span class="co">#&gt;  [2,]      2</span></a>
 <a class="sourceLine" id="cb10-6" data-line-number="6"><span class="co">#&gt;  [3,]      3</span></a>
-<a class="sourceLine" id="cb10-7" data-line-number="7"><span class="co">#&gt;  [4,]      1</span></a>
+<a class="sourceLine" id="cb10-7" data-line-number="7"><span class="co">#&gt;  [4,]      3</span></a>
 <a class="sourceLine" id="cb10-8" data-line-number="8"><span class="co">#&gt;  [5,]      3</span></a>
 <a class="sourceLine" id="cb10-9" data-line-number="9"><span class="co">#&gt;  [6,]      1</span></a>
 <a class="sourceLine" id="cb10-10" data-line-number="10"><span class="co">#&gt;  [7,]      1</span></a>
@@ -285,7 +285,7 @@
 <a class="sourceLine" id="cb10-13" data-line-number="13"><span class="co">#&gt; [10,]      3</span></a>
 <a class="sourceLine" id="cb10-14" data-line-number="14"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"prediction accuracy of model 1 = "</span>, </a>
 <a class="sourceLine" id="cb10-15" data-line-number="15">             <span class="kw"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(y.class <span class="op">==</span><span class="st"> </span>dat<span class="op">$</span>y.te) <span class="op">/</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(y.class)))</a>
-<a class="sourceLine" id="cb10-16" data-line-number="16"><span class="co">#&gt; [1] "prediction accuracy of model 1 = 0.9"</span></a>
+<a class="sourceLine" id="cb10-16" data-line-number="16"><span class="co">#&gt; [1] "prediction accuracy of model 1 = 1"</span></a>
 <a class="sourceLine" id="cb10-17" data-line-number="17"></a>
 <a class="sourceLine" id="cb10-18" data-line-number="18">y.class2 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span>(fit.t2, dat<span class="op">$</span>x.te, <span class="dt">type =</span> <span class="st">"class"</span>)</a>
 <a class="sourceLine" id="cb10-19" data-line-number="19"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"prediction accuracy of model 2 = "</span>, </a>
@@ -296,30 +296,30 @@
 <a class="sourceLine" id="cb11-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/evaluate_pred.html">evaluate_pred</a></span>(<span class="dt">y.true =</span> dat<span class="op">$</span>y.te)</a></code></pre></div>
 <p><img src="simu_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
 <pre><code>#&gt; $prob_at_truelabels
-#&gt;  [1] 0.9835792 0.5047878 0.9999475 0.4470446 0.6987078 0.7675260 0.6813872
-#&gt;  [8] 0.8674879 0.6518713 0.9455875
+#&gt;  [1] 0.9835432 0.6796138 0.9995977 0.6352723 0.9041224 0.6537921 0.6312978
+#&gt;  [8] 0.7955446 0.6207597 0.9705560
 #&gt; 
 #&gt; $table_eval
 #&gt;    Case ID True Label Pred. Prob 1 Pred. Prob 2 Pred. Prob 3 Wrong?
-#&gt; 1        1          2 1.641411e-02 9.835792e-01 6.693351e-06      0
-#&gt; 2        2          2 3.384455e-01 5.047878e-01 1.567667e-01      0
-#&gt; 3        3          3 5.248789e-05 1.839606e-11 9.999475e-01      0
-#&gt; 4        4          3 5.457843e-01 7.171088e-03 4.470446e-01      1
-#&gt; 5        5          3 3.003288e-01 9.634115e-04 6.987078e-01      0
-#&gt; 6        6          1 7.675260e-01 2.846003e-02 2.040140e-01      0
-#&gt; 7        7          1 6.813872e-01 1.485273e-01 1.700855e-01      0
-#&gt; 8        8          3 1.303536e-01 2.158497e-03 8.674879e-01      0
-#&gt; 9        9          2 3.474336e-01 6.518713e-01 6.950645e-04      0
-#&gt; 10      10          3 5.422114e-02 1.914056e-04 9.455875e-01      0
+#&gt; 1        1          2 0.0164547419 9.835432e-01 0.0000020499      0
+#&gt; 2        2          2 0.2441853060 6.796138e-01 0.0762008918      0
+#&gt; 3        3          3 0.0004023339 1.075147e-11 0.9995976660      0
+#&gt; 4        4          3 0.3512558309 1.347191e-02 0.6352722610      0
+#&gt; 5        5          3 0.0948079799 1.069570e-03 0.9041224500      0
+#&gt; 6        6          1 0.6537920838 3.934170e-02 0.3068662193      0
+#&gt; 7        7          1 0.6312978172 1.618725e-01 0.2068296840      0
+#&gt; 8        8          3 0.1994720269 4.983390e-03 0.7955445832      0
+#&gt; 9        9          2 0.3783598874 6.207597e-01 0.0008803816      0
+#&gt; 10      10          3 0.0294153288 2.868652e-05 0.9705559847      0
 #&gt; 
 #&gt; $amlp
-#&gt; [1] 0.3138065
+#&gt; [1] 0.2578088
 #&gt; 
 #&gt; $err_rate
-#&gt; [1] 0.1
+#&gt; [1] 0
 #&gt; 
 #&gt; $which.wrong
-#&gt; [1] 4</code></pre>
+#&gt; integer(0)</code></pre>
 <div id="refs" class="references">
 <div id="ref-li2018fully">
 <p>Li, Longhai, and Weixin Yao. 2018. “Fully Bayesian Logistic Regression with Hyper-Lasso Priors for High-Dimensional Feature Selection.” <em>Journal of Statistical Computation and Simulation</em> 88 (14). Taylor &amp; Francis: 2827–51.</p>

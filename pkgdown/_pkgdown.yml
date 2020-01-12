@@ -5,10 +5,10 @@ reference:
   - htlr_prior
 - title: Prediction and inference
   contents:
-  - predict.htlrfit
-  - as.matrix.htlrfit
+  - predict.htlr.fit
+  - as.matrix.htlr.fit
   - nzero_idx
-  - summary.htlrfit
+  - summary.htlr.fit
   - evaluate_pred
 - title: Generating simulation data
   contents:

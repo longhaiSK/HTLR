@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • HTLR</title>
+<title>Create a Matrix of Markov Chain Samples — as.matrix.htlr.fit • HTLR</title>
 
 
 <!-- jquery -->
@@ -35,7 +35,9 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Create a Matrix of Markov Chain Samples — as.matrix.htlr.fit" />
+<meta property="og:description" content="The Markov chain samples (without warmup) included in a htlr.fit object will be coerced to a matrix." />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -54,7 +56,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -111,150 +113,59 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Create a Matrix of Markov Chain Samples</h1>
+    
+    <div class="hidden name"><code>as.matrix.htlr.fit.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>The Markov chain samples (without warmup) included in a <code>htlr.fit</code> object will be coerced to a matrix.</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='co'># S3 method for htlr.fit</span>
+<span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span>(<span class='no'>x</span>, <span class='kw'>k</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-model-fitting" class="hasAnchor"><a href="#section-model-fitting" class="anchor"></a>Model fitting</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="htlr.html">htlr()</a></code> </p>
-        </td>
-        <td><p>Fit a HTLR Model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="htlr_prior.html">htlr_prior()</a></code> </p>
-        </td>
-        <td><p>Generate Prior Configuration</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-prediction-and-inference" class="hasAnchor"><a href="#section-prediction-and-inference" class="anchor"></a>Prediction and inference</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="predict.htlr.fit.html">predict(<i>&lt;htlr.fit&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Make Prediction on New Data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="as.matrix.htlr.fit.html">as.matrix(<i>&lt;htlr.fit&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Create a Matrix of Markov Chain Samples</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="nzero_idx.html">nzero_idx()</a></code> </p>
-        </td>
-        <td><p>Get Indices of Non-Zero Coefficients</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="summary.htlr.fit.html">summary(<i>&lt;htlr.fit&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Posterior Summaries</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="evaluate_pred.html">evaluate_pred()</a></code> </p>
-        </td>
-        <td><p>Evaluate Prediction Results</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-generating-simulation-data" class="hasAnchor"><a href="#section-generating-simulation-data" class="anchor"></a>Generating simulation data</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="gendata_FAM.html">gendata_FAM()</a></code> </p>
-        </td>
-        <td><p>Generate Simulated Data with Factor Analysis Model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="gendata_MLR.html">gendata_MLR()</a></code> </p>
-        </td>
-        <td><p>Generate Simulated Data with Multinomial Logistic Regression Model</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-utility-functions" class="hasAnchor"><a href="#section-utility-functions" class="anchor"></a>Utility functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="std.html">std()</a></code> </p>
-        </td>
-        <td><p>Standardizes a Design Matrix</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="split_data.html">split_data()</a></code> </p>
-        </td>
-        <td><p>Split Data into Train and Test Partitions</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-data-sets" class="hasAnchor"><a href="#section-data-sets" class="anchor"></a>Data sets</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="colon.html">colon</a></code> </p>
-        </td>
-        <td><p>Colon Tissues</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="diabetes392.html">diabetes392</a></code> </p>
-        </td>
-        <td><p>Pima Indians Diabetes</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>An object of S3 class <code>htlr.fit</code>.</p></td>
+    </tr>
+    <tr>
+      <th>k</th>
+      <td><p>Coefficients associated with class <code>k</code> will be drawn. Must be a positive integer in 
+1,2,...,C-1 for C-class traning labels (base class 0 can not be chosen). By default the last class
+is selected. For binary logistic model this argument can be ignored.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Not used.</p></td>
+    </tr>
     </table>
-  </div>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A matrix with <code>(p + 1)</code> columns and <code>i</code> rows, where <code>p</code> is the number of features 
+excluding intercept, and <code>i</code> is the number of iterations after burnin.</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'>## No. of features used: 100; No. of iterations after burnin: 15 </span>
+<span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='htlr.html'>htlr</a></span>(<span class='kw'>X</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>X</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>y</span>, <span class='kw'>fsel</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>100</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>warmup</span> <span class='kw'>=</span> <span class='fl'>5</span>)
+
+<span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span>(<span class='no'>fit</span>))</div><div class='output co'>#&gt; [1]  15 101</div><div class='input'>  
+</div></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-model-fitting">Model fitting</a></li>
-      <li><a href="#section-prediction-and-inference">Prediction and inference</a></li>
-      <li><a href="#section-generating-simulation-data">Generating simulation data</a></li>
-      <li><a href="#section-utility-functions">Utility functions</a></li>
-      <li><a href="#section-data-sets">Data sets</a></li>
+      <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
+
   </div>
 </div>
 
