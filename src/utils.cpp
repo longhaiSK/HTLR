@@ -88,7 +88,7 @@ Rcpp::List gendata_FAM_helper(int n, arma::mat &muj, const arma::mat &muj_rep, c
   if (stdx)
   {
     arma::vec mux = arma::mean(muj, 1);
-    arma::vec sdx = arma::sqrt(SGM.diag() + arma::var(muj, 0, 1) * (c - 1) / c);
+    arma::vec sdx = arma::sqrt(SGM.diag() + arma::var(muj, 1, 1));
     muj.each_col() -= mux;
     muj.each_col() /= sdx;
     X.each_col() -= mux;
