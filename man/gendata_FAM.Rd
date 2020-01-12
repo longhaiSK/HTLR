@@ -12,9 +12,9 @@ gendata_FAM(n, muj, A, sd_g = 0, stdx = FALSE)
 \item{muj}{C by p matrix, with row c representing y = c, and column j representing \eqn{x_j}.
 Used to specify \code{y}.}
 
-\item{A}{The factor loading matrix, see details.}
+\item{A}{Factor loading matrix of size p by p, see details.}
 
-\item{sd_g}{Noise level \eqn{\delta}, see details.}
+\item{sd_g}{Numeric value indicating noise level \eqn{\delta}, see details.}
 
 \item{stdx}{Logical; if \code{TRUE}, data \code{X} is standardized to have \code{mean = 0} and \code{sd = 1}.}
 }
