@@ -67,3 +67,39 @@ double log_normcons(arma::mat &A)
 {
   return arma::accu(comp_lsl(A));
 }
+
+// [[Rcpp::export]]
+Rcpp::List gendata_FAM_helper(int n, arma::mat &muj, const arma::mat &muj_rep, const arma::mat &A, double sd_g, bool stdx)
+{
+  int p = muj.n_rows;
+  int c = muj.n_cols;
+  int k = A.n_cols;
+
+  arma::vec rn_nk = Rcpp::rnorm(n * k);
+  arma::mat KN = arma::reshape(rn_nk, k, n); 
+  arma::mat X = A * KN + muj_rep; 
+
+  arma::vec rn_np = Rcpp::rnorm(n * p); 
+  arma::mat NP = arma::reshape(rn_np, arma::size(X));
+  X += NP * sd_g; 
+
+  arma::mat SGM = A * A.t() + arma::eye(p, p) * R_pow_di(sd_g, 2);
+  
+  if (stdx)
+  {
+    arma::vec mux = arma::mean(muj, 1);
+    arma::vec sdx = arma::sqrt(SGM.diag() + arma::var(muj, 0, 1) * (c - 1) / c);
+    muj.each_col() -= mux;
+    muj.each_col() /= sdx;
+    X.each_col() -= mux;
+    X.each_col() /= sdx;
+    SGM.each_col() /= sdx;
+    SGM.each_row() /= sdx.t();
+  }
+
+  return Rcpp::List::create(
+    Rcpp::Named("X") = X.t(),
+    Rcpp::Named("muj") = muj,
+    Rcpp::Named("SGM") = SGM
+  );
+}

@@ -152,6 +152,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// gendata_FAM_helper
+Rcpp::List gendata_FAM_helper(int n, arma::mat& muj, const arma::mat& muj_rep, const arma::mat& A, double sd_g, bool stdx);
+RcppExport SEXP _HTLR_gendata_FAM_helper(SEXP nSEXP, SEXP mujSEXP, SEXP muj_repSEXP, SEXP ASEXP, SEXP sd_gSEXP, SEXP stdxSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type muj(mujSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type muj_rep(muj_repSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type A(ASEXP);
+    Rcpp::traits::input_parameter< double >::type sd_g(sd_gSEXP);
+    Rcpp::traits::input_parameter< bool >::type stdx(stdxSEXP);
+    rcpp_result_gen = Rcpp::wrap(gendata_FAM_helper(n, muj, muj_rep, A, sd_g, stdx));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_HTLR_sample_trunc_norm", (DL_FUNC) &_HTLR_sample_trunc_norm, 4},
@@ -164,6 +180,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_HTLR_comp_vardeltas", (DL_FUNC) &_HTLR_comp_vardeltas, 1},
     {"_HTLR_comp_lsl", (DL_FUNC) &_HTLR_comp_lsl, 1},
     {"_HTLR_log_normcons", (DL_FUNC) &_HTLR_log_normcons, 1},
+    {"_HTLR_gendata_FAM_helper", (DL_FUNC) &_HTLR_gendata_FAM_helper, 6},
     {NULL, NULL, 0}
 };
 

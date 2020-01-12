@@ -41,3 +41,7 @@ log_normcons <- function(A) {
     .Call('_HTLR_log_normcons', PACKAGE = 'HTLR', A)
 }
 
+gendata_FAM_helper <- function(n, muj, muj_rep, A, sd_g, stdx) {
+    .Call('_HTLR_gendata_FAM_helper', PACKAGE = 'HTLR', n, muj, muj_rep, A, sd_g, stdx)
+}
+
