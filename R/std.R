@@ -40,7 +40,7 @@
 #'  
 std <- function(X, tol = 1e-6)
 {
-  if (class(X) != "matrix") 
+  if (!is.matrix(X)) 
   {
     tmp <- try(X <- model.matrix(~0+., data = X), silent=TRUE)
     if (class(tmp)[1] == "try-error") 
