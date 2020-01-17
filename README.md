@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# HTLR: Bayesian Logistic Regression with Heavy-tailed Priors
+## HTLR: Bayesian Logistic Regression with Heavy-tailed Priors
 
 <!-- badges: start -->
 
@@ -14,7 +14,7 @@ maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www
 Status](https://travis-ci.org/longhaiSK/HTLR.svg?branch=master)](https://travis-ci.org/longhaiSK/HTLR)
 <!-- badges: end -->
 
-`HTLR` performs classification and feature selection by fitting Bayesian
+*HTLR* performs classification and feature selection by fitting Bayesian
 polychotomous (multiclass, multinomial) logistic regression models based
 on heavy-tailed priors with small degree freedom. This package is
 suitable for classification with high-dimensional features, such as gene

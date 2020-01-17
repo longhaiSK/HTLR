@@ -12,7 +12,7 @@ knitr::opts_chunk$set(
   out.width = "100%"
 )
 ```
-# HTLR: Bayesian Logistic Regression with Heavy-tailed Priors
+## HTLR: Bayesian Logistic Regression with Heavy-tailed Priors
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/HTLR)](https://CRAN.R-project.org/package=HTLR)
@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 [![Build Status](https://travis-ci.org/longhaiSK/HTLR.svg?branch=master)](https://travis-ci.org/longhaiSK/HTLR)
 <!-- badges: end -->
 
-`HTLR` performs classification and feature selection by fitting Bayesian polychotomous (multiclass, multinomial) logistic regression models based on heavy-tailed priors with small degree freedom. This package is suitable for classification with high-dimensional features, such as gene expression profiles. Heavy-tailed priors can impose stronger shrinkage (compared to Guassian and Laplace priors) to the coefficients associated with a large number of useless features, but still allow coefficients of a small number of useful features to stand out with little punishment. Heavy-tailed priors can also automatically make selection within a large number of correlated features. The posterior of coefficients and hyperparameters is sampled with resitricted Gibbs sampling for leveraging high-dimensionality and Hamiltonian Monte Carlo for handling high-correlations among coefficients. 
+*HTLR* performs classification and feature selection by fitting Bayesian polychotomous (multiclass, multinomial) logistic regression models based on heavy-tailed priors with small degree freedom. This package is suitable for classification with high-dimensional features, such as gene expression profiles. Heavy-tailed priors can impose stronger shrinkage (compared to Guassian and Laplace priors) to the coefficients associated with a large number of useless features, but still allow coefficients of a small number of useful features to stand out with little punishment. Heavy-tailed priors can also automatically make selection within a large number of correlated features. The posterior of coefficients and hyperparameters is sampled with resitricted Gibbs sampling for leveraging high-dimensionality and Hamiltonian Monte Carlo for handling high-correlations among coefficients. 
 
 ## Installation
 
