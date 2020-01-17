@@ -8,7 +8,7 @@
 
 ## Improvements
 
-* `htlr()` and `predict.htlr()` now handles non-matrix input, i.e. data.frame.
+* `htlr()` and `predict.htlr.fit()` now handles non-matrix input, i.e. data.frame.
 
 * Minor speed improvement on `htlr()` and `gendata_FAM()`. 
 
