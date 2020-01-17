@@ -79,13 +79,15 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="htlr-bayesian-logistic-regression-with-heavy-tailed-priors" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#htlr-bayesian-logistic-regression-with-heavy-tailed-priors" class="anchor"></a>HTLR: Bayesian Logistic Regression with Heavy-tailed Priors</h1></div>
-<!-- badges: start -->
 
-<p><code>HTLR</code> performs classification and feature selection by fitting Bayesian polychotomous (multiclass, multinomial) logistic regression models based on heavy-tailed priors with small degree freedom. This package is suitable for classification with high-dimensional features, such as gene expression profiles. Heavy-tailed priors can impose stronger shrinkage (compared to Guassian and Laplace priors) to the coefficients associated with a large number of useless features, but still allow coefficients of a small number of useful features to stand out with little punishment. Heavy-tailed priors can also automatically make selection within a large number of correlated features. The posterior of coefficients and hyperparameters is sampled with resitricted Gibbs sampling for leveraging high-dimensionality and Hamiltonian Monte Carlo for handling high-correlations among coefficients.</p>
-<p>This site focuses mainly on illustrating the usage and syntax of HTLR. For more details on the algorithm, see the reference section below.</p>
+<div id="htlr-bayesian-logistic-regression-with-heavy-tailed-priors" class="section level2">
+<h2 class="hasAnchor">
+<a href="#htlr-bayesian-logistic-regression-with-heavy-tailed-priors" class="anchor"></a>HTLR: Bayesian Logistic Regression with Heavy-tailed Priors</h2>
+<hr>
+<!-- badges: start -->
+<p><em>HTLR</em> performs classification and feature selection by fitting Bayesian polychotomous (multiclass, multinomial) logistic regression models based on heavy-tailed priors with small degree freedom. This package is suitable for classification with high-dimensional features, such as gene expression profiles. Heavy-tailed priors can impose stronger shrinkage (compared to Guassian and Laplace priors) to the coefficients associated with a large number of useless features, but still allow coefficients of a small number of useful features to stand out with little punishment. Heavy-tailed priors can also automatically make selection within a large number of correlated features. The posterior of coefficients and hyperparameters is sampled with resitricted Gibbs sampling for leveraging high-dimensionality and Hamiltonian Monte Carlo for handling high-correlations among coefficients.</p>
+<p>This site focuses mainly on illustrating the usage and syntax of <em>HTLR</em>. For more details on the algorithm, see the reference section below.</p>
+</div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
@@ -94,13 +96,14 @@
 <p>Development version on <a href="https://github.com/">GitHub</a>:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co"># install.packages("devtools")</span></a>
 <a class="sourceLine" id="cb2-2" data-line-number="2">devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"longhaiSK/HTLR"</span>)</a></code></pre></div>
+<p>This package uses library <a href="http://arma.sourceforge.net/">Armadillo</a> for carrying out most of matrix operations, you may get speed benefits from using an alternative BLAS library such as <a href="http://math-atlas.sourceforge.net/">ATLAS</a>, <a href="http://www.openblas.net/">OpenBLAS</a> or <a href="https://software.intel.com/en-us/mkl">Intel MKL</a>. Check this <a href="http://brettklamer.com/diversions/statistical/faster-blas-in-r/">post</a> for the comparision and the installation guide. Windows users may consider installing <a href="https://mran.microsoft.com/open">Microsoft R Open</a>.</p>
 </div>
 <div id="reference" class="section level2">
 <h2 class="hasAnchor">
 <a href="#reference" class="anchor"></a>Reference</h2>
 <p>Longhai Li and Weixin Yao (2018). Fully Bayesian Logistic Regression with Hyper-Lasso Priors for High-dimensional Feature Selection. 2018, 88:14, 2827-2851, <a href="https://www.tandfonline.com/doi/full/10.1080/00949655.2018.1490418">the published version</a>, or <a href="https://arxiv.org/pdf/1405.3319.pdf">arXiv version</a>.</p>
 </div>
-</div>
+
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
