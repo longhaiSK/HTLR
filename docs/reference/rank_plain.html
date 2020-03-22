@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Split Data into Train and Test Partitions — split_data • HTLR</title>
+<title>Plain rank function — rank_plain • HTLR</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="Split Data into Train and Test Partitions — split_data" />
-<meta property="og:description" content="This function splits the input data and response variables into training and testing parts." />
+<meta property="og:title" content="Plain rank function — rank_plain" />
+<meta property="og:description" content="A placeholder rank function that returns the original order of given features." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -115,16 +115,16 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Split Data into Train and Test Partitions</h1>
+    <h1>Plain rank function</h1>
     
-    <div class="hidden name"><code>split_data.Rd</code></div>
+    <div class="hidden name"><code>rank_plain.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function splits the input data and response variables into training and testing parts.</p>
+    <p>A placeholder rank function that returns the original order of given features.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>split_data</span>(<span class='no'>X</span>, <span class='no'>y</span>, <span class='kw'>p.train</span> <span class='kw'>=</span> <span class='fl'>0.7</span>, <span class='kw'>n.train</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>round</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>X</span>) * <span class='no'>p.train</span>))</pre>
+    <pre class="usage"><span class='fu'>rank_plain</span>(<span class='no'>X</span>, <span class='no'>y</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -137,32 +137,18 @@
       <th>y</th>
       <td><p>Vector of response variables.</p></td>
     </tr>
-    <tr>
-      <th>p.train</th>
-      <td><p>Percentage of training set.</p></td>
-    </tr>
-    <tr>
-      <th>n.train</th>
-      <td><p>Number of cases for training; will override <code>p.train</code> if specified.</p></td>
-    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>List of training data <code>x.tr</code>, <code>y.tr</code> and testing data <code>x.te</code>, <code>y.te</code>.</p>
+    <p>Sequence starting from 1 to <code>nvars</code>.</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>dat</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='gendata_MLR.html'>gendata_MLR</a></span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>p</span> <span class='kw'>=</span> <span class='fl'>10</span>)
-<span class='no'>dat</span> <span class='kw'>&lt;-</span> <span class='fu'>split_data</span>(<span class='no'>dat</span>$<span class='no'>X</span>, <span class='no'>dat</span>$<span class='no'>y</span>, <span class='kw'>p.train</span> <span class='kw'>=</span> <span class='fl'>0.7</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>(<span class='no'>dat</span>$<span class='no'>x.tr</span>)</div><div class='output co'>#&gt; [1] 70 10</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>(<span class='no'>dat</span>$<span class='no'>x.te</span>)</div><div class='output co'>#&gt; [1] 30 10</div><div class='input'>   
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
-      <li><a href="#examples">Examples</a></li>
     </ul>
 
   </div>
