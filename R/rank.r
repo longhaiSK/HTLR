@@ -8,20 +8,19 @@
 #' 
 #' @return Rank of all features of length \code{nvars}.
 #' 
-#' @author Longhai Li
-#' 
 #' @export
 #'
 #' @examples 
 #' data("diabetes392")
 #' rank_kruskal(diabetes392$X, diabetes392$y)
+#' 
 rank_kruskal <- function(X, y)
 {
   pv_kt <- function(x, g) { kruskal.test(x, g)$p.value }
   order(apply(X, 2, pv_kt, g = y))
 }
 
-## This function ranks all features in terms of F-statistic.
+# Helper function for rank_ftest() 
 panova <- function(X, y)
 {
   ## This function computes the values of F-statistic of all the features.
@@ -48,13 +47,37 @@ panova <- function(X, y)
   pvalues
 }
 
-rank_ftest <- function (X, y)
-{
-  order (panova (X, y))
-}
+#' Rank features by F-statistic
+#'
+#' This function ranks all features in terms of ANOVA F-statistic.
+#' 
+#' @param X Input matrix, of dimension \code{nobs} by \code{nvars}; each row is an observation vector.
+#' 
+#' @param y Vector of response variables.
+#' 
+#' @return Rank of all features of length \code{nvars}.
+#' 
+#' @export
+#'
+#' @examples 
+#' data("diabetes392")
+#' rank_ftest(diabetes392$X, diabetes392$y)
+#' 
+rank_ftest <- function(X, y) { order(panova(X, y)) }
 
-rank_plain <- function (X, y)
-{
-  seq(1, ncol (X), by = 1)
-}
+#' Plain rank function
+#'
+#' A placeholder rank function that returns the original order of given features.
+#' 
+#' @param X Input matrix, of dimension \code{nobs} by \code{nvars}; each row is an observation vector.
+#' 
+#' @param y Vector of response variables.
+#' 
+#' @return Sequence starting from 1 to \code{nvars}.
+#' 
+#' @export
+#' 
+#' @keywords internal
+#' 
+rank_plain <- function(X, y) { 1L:ncol(X) }
 
