@@ -14,6 +14,10 @@ reference:
   contents:
   - gendata_FAM
   - gendata_MLR 
+- title: Feature screening
+  contents:
+  - rank_ftest
+  - rank_kruskal
 - title: Utility functions 
   contents:
   - std
