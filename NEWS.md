@@ -40,7 +40,7 @@
 
 * Added new dataset `colon`. 
 
-# HTLR 0.3-1
+# HTLR 0.3
 
 ## Note
 

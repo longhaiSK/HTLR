@@ -86,7 +86,7 @@ split_data <- function(X,
   )
 }
 
-## compute sd of betas
+# compute sd of betas
 # @export
 comp_sdb <- function (deltas, removeint = TRUE, normalize = FALSE)
 {
@@ -135,17 +135,17 @@ print.htlr.fit <- function(x, ...)
   cat("Fitted HTLR model", "\n\n", info.data, "\n\n", info.model, "\n\n", info.est)
 }
 
-## try to install suggested packages when needed
-## author: Michael W. Kearney
-## source: https://github.com/ropensci/rtweet/blob/master/R/utils.R
+# try to install suggested packages when needed
+# @author: Michael W. Kearney
+# @source: https://github.com/ropensci/rtweet/blob/master/R/utils.R
 try_require <- function(pkg, f = NULL) {
-  if (is.null(f)) {
+  if (is.null(f))
     f <- "this action"
-  } else {
+  else
     f <- paste0("`", f, "`")
-  }
   
-  if (requireNamespace(pkg, quietly = TRUE)) {
+  if (requireNamespace(pkg, quietly = TRUE)) 
+  {
     library(pkg, character.only = TRUE)
     return(invisible())
   }
@@ -153,6 +153,14 @@ try_require <- function(pkg, f = NULL) {
   stop(paste0("Package `", pkg, "` required for ", f , ".\n",
               "Please install and try again."), call. = FALSE)
 }
+
+# @param rstudio launch in rstudio viewer instead of web browser? 
+# @param ... passed to shiny::runApp
+# launch_shiny <- function(launch.browser = TRUE, ...) {
+#   try_require("shiny", f = "launch_shiny()")
+#   shiny::runApp(system.file("app", package = "HTLR"), 
+#                 launch.browser = launch.browser, ...)
+# }
 
 #' Pipe operator
 #'
