@@ -27,17 +27,17 @@
 htlr_prior <- function(ptype = c("t", "ghs", "neg"), 
                        df = 1,
                        logw = -(1 / df) * 10,
-                       #eta = (df > 2) * 100,
+                       eta = ifelse(x > 1, 3, 0),
                        sigmab0 = 2000)
 {
   ptype <- match.arg(ptype)
-  #if (ptype != "t" & eta != 0)
-  #  warning("random logw currently only supports t prior")
+  if (ptype != "t" & eta != 0)
+    warning("random logw currently only supports t prior")
   list(
     "ptype" = ptype,
     "alpha" = df,
     "logw" = logw,
-    #"eta" = eta,
+    "eta" = eta,
     "sigmab0" = sigmab0
   )
 }
