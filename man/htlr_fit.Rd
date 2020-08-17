@@ -22,6 +22,7 @@ htlr_fit(
   leap_step = 0.3,
   hmc_sgmcut = 0.05,
   initial_state = "lasso",
+  keep.warmup.hist = FALSE,
   silence = TRUE,
   pre.legacy = TRUE,
   alpha.rda = 0.2,
@@ -84,6 +85,8 @@ a character string matches the following:
   but it should not be used for categorical features such as SNP profiles.
   \item "random" - Use random initial values sampled from N(0, 1).     
 }}
+
+\item{keep.warmup.hist}{Warmup iterations are not recorded by default, set \code{TRUE} to enable it.}
 
 \item{silence}{Setting it to \code{FALSE} for tracking MCMC sampling iterations.}
 

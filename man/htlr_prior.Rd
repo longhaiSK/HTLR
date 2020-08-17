@@ -8,6 +8,7 @@ htlr_prior(
   ptype = c("t", "ghs", "neg"),
   df = 1,
   logw = -(1/df) * 10,
+  eta = ifelse(df > 1, 3, 0),
   sigmab0 = 2000
 )
 }
@@ -17,7 +18,9 @@ or "neg" (normal-exponential-gamma).}
 
 \item{df}{The degree freedom (aka alpha) of t/ghs/neg prior for coefficients.}
 
-\item{logw}{The log scale of priors for coefficients.
+\item{logw}{The log scale of priors for coefficients.}
+
+\item{eta}{The \code{sd} of the normal prior for logw. When it is set to 0, logw is fixed. 
 Otherwise, logw is assigned with a normal prior and it will be updated during sampling.}
 
 \item{sigmab0}{The \code{sd} of the normal prior for the intercept.}

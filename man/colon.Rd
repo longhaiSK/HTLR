@@ -4,11 +4,13 @@
 \name{colon}
 \alias{colon}
 \title{Colon Tissues}
-\format{A list contains data matrix \code{X} and response vector \code{y}:
+\format{
+A list contains data matrix \code{X} and response vector \code{y}:
 \describe{
   \item{X}{A matrix with 66 rows (observations) and 2000 columns (features).}
   \item{y}{A binary vector where 0 indicates normal colon tissues and 1 indicates tumor colon tissues.}
-}}
+}
+}
 \source{
 \url{ftp://stat.ethz.ch/Manuscripts/dettling/bagboost.pdf}
 }

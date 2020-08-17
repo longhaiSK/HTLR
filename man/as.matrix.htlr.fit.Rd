@@ -4,7 +4,7 @@
 \alias{as.matrix.htlr.fit}
 \title{Create a Matrix of Markov Chain Samples}
 \usage{
-\method{as.matrix}{htlr.fit}(x, k = NULL, ...)
+\method{as.matrix}{htlr.fit}(x, k = NULL, include.warmup = FALSE, ...)
 }
 \arguments{
 \item{x}{An object of S3 class \code{htlr.fit}.}
@@ -12,6 +12,8 @@
 \item{k}{Coefficients associated with class \code{k} will be drawn. Must be a positive integer in 
 1,2,\ldots,C-1 for C-class traning labels (base class 0 can not be chosen). By default the last class
 is selected. For binary logistic model this argument can be ignored.}
+
+\item{include.warmup}{Whether or not to include warmup samples}
 
 \item{...}{Not used.}
 }

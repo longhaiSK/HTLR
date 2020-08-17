@@ -21,6 +21,7 @@ htlr(
   cut = 0.05,
   verbose = FALSE,
   pre.legacy = FALSE,
+  keep.warmup.hist = FALSE,
   ...
 )
 }
@@ -82,6 +83,8 @@ The number of warmup iterations should not be larger than iter and the default i
 \item{pre.legacy}{Logical; if \code{TRUE}, the output produced in \code{HTLR} versions up to 
 legacy-3.1-1 is reproduced. The speed will be typically slower than non-legacy mode on
 multi-core machine. Default is \code{FALSE}.}
+
+\item{keep.warmup.hist}{Warmup iterations are not recorded by default, set \code{TRUE} to enable it.}
 
 \item{...}{Other optional parameters:
 \itemize{
