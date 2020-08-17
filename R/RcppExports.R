@@ -13,8 +13,8 @@ sample_trunc_beta <- function(n, alpha, beta, lb = 0, ub = 1, verbose = FALSE) {
     .Call('_HTLR_sample_trunc_beta', PACKAGE = 'HTLR', n, alpha, beta, lb, ub, verbose)
 }
 
-htlr_fit_helper <- function(p, K, n, X, ymat, ybase, ptype, alpha, s, eta, iters_rmc, iters_h, thin, leap_L, leap_L_h, leap_step, hmc_sgmcut, deltas, sigmasbt, silence, legacy) {
-    .Call('_HTLR_htlr_fit_helper', PACKAGE = 'HTLR', p, K, n, X, ymat, ybase, ptype, alpha, s, eta, iters_rmc, iters_h, thin, leap_L, leap_L_h, leap_step, hmc_sgmcut, deltas, sigmasbt, silence, legacy)
+htlr_fit_helper <- function(p, K, n, X, ymat, ybase, ptype, alpha, s, eta, iters_rmc, iters_h, thin, leap_L, leap_L_h, leap_step, hmc_sgmcut, deltas, sigmasbt, keep_warmup_hist, silence, legacy) {
+    .Call('_HTLR_htlr_fit_helper', PACKAGE = 'HTLR', p, K, n, X, ymat, ybase, ptype, alpha, s, eta, iters_rmc, iters_h, thin, leap_L, leap_L_h, leap_step, hmc_sgmcut, deltas, sigmasbt, keep_warmup_hist, silence, legacy)
 }
 
 log_sum_exp <- function(A) {

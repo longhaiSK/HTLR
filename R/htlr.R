@@ -56,6 +56,8 @@
 #' legacy-3.1-1 is reproduced. The speed will be typically slower than non-legacy mode on
 #' multi-core machine. Default is \code{FALSE}.
 #' 
+#' @param keep.warmup.hist Warmup iterations are not recorded by default, set \code{TRUE} to enable it. 
+#' 
 #' @param ... Other optional parameters:
 #' \itemize{
 #'   \item rda.alpha - A user supplied alpha value for \code{\link{bcbcsf_deltas}}. Default: 0.2.
@@ -109,6 +111,7 @@ htlr <-
             cut = 0.05,
             verbose = FALSE,
             pre.legacy = FALSE,
+            keep.warmup.hist = FALSE,
             ...
   )
 {
@@ -141,6 +144,6 @@ htlr <-
            iters_h = warmup, iters_rmc = (iter - warmup), thin = thin, 
            leap_L = leap, leap_L_h = leap.warm, leap_step = leap.stepsize, 
            hmc_sgmcut = cut, initial_state = init, 
-           silence = !verbose, pre.legacy = pre.legacy)
+           silence = !verbose, pre.legacy = pre.legacy, keep.warmup.hist = keep.warmup.hist)
 
 }

@@ -24,6 +24,7 @@ class Fit
   const int iters_rmc_, iters_h_, thin_, leap_L_, leap_L_h_; 
   const double leap_step_; 
   const double sgmsq_cut_;
+
   // stepsize for HMC
   const arma::rowvec DDNloglike_;
 
@@ -33,6 +34,7 @@ class Fit
   arma::vec mc_logw_, mc_loglike_, mc_uvar_, mc_hmcrej_;
 
   // other control or result
+  const bool keep_warmup_hist_;
   const int silence_;
   const bool legacy_;
 
@@ -55,7 +57,6 @@ class Fit
       var_deltas_, var_deltas_old_,
       step_sizes_, sigmasbt_; 
   double loglike_, loglike_old_;
- 
  
   arma::uvec GetIdsUpdate() {return iup_;}
   arma::uvec GetIdsFix() {return ids_fix_.head(nfvar_);}
@@ -92,8 +93,8 @@ class Fit
       std::string ptype, double alpha, double s, double eta,
       int iters_rmc, int iters_h, int thin, 
       int leap_L, int leap_L_h, double leap_step,
-      double hmc_sgmcut, const arma::mat &deltas,
-      const arma::vec &sigmasbt, int silence, bool legacy);
+      double hmc_sgmcut, const arma::mat &deltas, const arma::vec &sigmasbt,
+      bool keep_warmup_hist, int silence, bool legacy);
 
   void StartSampling();
   Rcpp::List OutputR(); 
