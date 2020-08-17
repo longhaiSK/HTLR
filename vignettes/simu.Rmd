@@ -136,7 +136,8 @@ mcmc_intervals(post.t, pars = c("Intercept", "V1", "V2", "V3", "V1000"))
 
 Trace plot of MCMC draws:
 ```{r}
-mcmc_trace(post.t, c("V1", "V1000"), facet_args = list("nrow" = 2))
+as.matrix(fit.t2, k = 2, include.warmup = T) %>%
+  mcmc_trace(c("V1", "V1000"), facet_args = list("nrow" = 2), n_warmup = 2000)
 ```
 
 The coefficient of unrelated features (noise) are not updated during some iterations due to restricted Gibbs sampling @li2018fully, hence the computational cost is greatly reduced.
