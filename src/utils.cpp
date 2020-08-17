@@ -72,7 +72,7 @@ double log_normcons(arma::mat &A)
 Rcpp::List gendata_FAM_helper(int n, arma::mat &muj, const arma::mat &muj_rep, const arma::mat &A, double sd_g, bool stdx)
 {
   int p = muj.n_rows;
-  int c = muj.n_cols;
+  // int c = muj.n_cols;
   int k = A.n_cols;
 
   arma::vec rn_nk = Rcpp::rnorm(n * k);
