@@ -24,7 +24,7 @@ htlr_fit(
   initial_state = "lasso",
   keep.warmup.hist = FALSE,
   silence = TRUE,
-  pre.legacy = TRUE,
+  rep.legacy = TRUE,
   alpha.rda = 0.2,
   lasso.lambda = seq(0.05, 0.01, by = -0.01),
   X_ts = NULL,
@@ -90,7 +90,7 @@ a character string matches the following:
 
 \item{silence}{Setting it to \code{FALSE} for tracking MCMC sampling iterations.}
 
-\item{pre.legacy}{Logical; if \code{TRUE}, the output produced in \code{HTLR} versions up to 
+\item{rep.legacy}{Logical; if \code{TRUE}, the output produced in \code{HTLR} versions up to 
 legacy-3.1-1 is reproduced. The speed would be typically slower than non-legacy mode on
 multi-core machine.}
 
@@ -99,7 +99,7 @@ setting up BCBCSF initial state. Default: 0.2.}
 
 \item{lasso.lambda}{- A user supplied lambda sequence for \code{\link{lasso_deltas}} when 
 setting up Lasso initial state. Default: \{.01, .02, \ldots, .05\}. Will be ignored if 
-\code{pre.legacy} is set to \code{TRUE}.}
+\code{rep.legacy} is set to \code{TRUE}.}
 
 \item{X_ts}{Test data which predictions are to be made.}
 
