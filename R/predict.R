@@ -16,7 +16,7 @@
 #' @param usedmc Indices of Markov chain iterations used for inference. 
 #' If supplied, \code{burn} and \code{thin} will be ignored.
 #' 
-#' @param pre.legacy To reproduce (actually incorrect) results in legacy version.
+#' @param rep.legacy To reproduce (actually incorrect) results in legacy version.
 #' See \url{https://github.com/longhaiSK/HTLR/issues/7}. 
 #' 
 #' @return A matrix of predictive probabilities, with rows for cases, cols for classes.
@@ -25,7 +25,7 @@
 #' 
 #' @keywords internal
 #' 
-htlr_predict <- function(X_ts, fithtlr = NULL, deltas = NULL, burn = NULL, thin = 1, usedmc = NULL, pre.legacy = TRUE)
+htlr_predict <- function(X_ts, fithtlr = NULL, deltas = NULL, burn = NULL, thin = 1, usedmc = NULL, rep.legacy = TRUE)
 {
   if (is.vector(X_ts))
     X_ts <- matrix(X_ts, 1)
@@ -44,9 +44,9 @@ htlr_predict <- function(X_ts, fithtlr = NULL, deltas = NULL, burn = NULL, thin 
     if (is.null(usedmc))
     {
       if (is.null(burn))
-        usedmc <- get_sample_indice(no_mcspl, fithtlr$mc.param$iter.rmc, p.burn.extra = 0.1, thin = thin, ignore.first = !pre.legacy)
+        usedmc <- get_sample_indice(no_mcspl, fithtlr$mc.param$iter.rmc, p.burn.extra = 0.1, thin = thin, ignore.first = !rep.legacy)
       else
-        usedmc <- get_sample_indice(no_mcspl, fithtlr$mc.param$iter.rmc, n.burn.extra = burn, thin = thin, ignore.first = !pre.legacy)
+        usedmc <- get_sample_indice(no_mcspl, fithtlr$mc.param$iter.rmc, n.burn.extra = burn, thin = thin, ignore.first = !rep.legacy)
     }
     
     no_used <- length(usedmc)
@@ -115,7 +115,7 @@ predict.htlr.fit <- function(object, newx, type = c("response", "class"), ...)
   if (!exists("usedmc")) usedmc <- NULL
   if (!exists("thin")) thin <- 1
   
-  pred.prob <- htlr_predict(X_ts = newx, fithtlr = object, burn = burn, thin = thin, usedmc = usedmc, pre.legacy = FALSE)
+  pred.prob <- htlr_predict(X_ts = newx, fithtlr = object, burn = burn, thin = thin, usedmc = usedmc, rep.legacy = FALSE)
   
   type <- match.arg(type)
   if (type == "response")

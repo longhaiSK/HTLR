@@ -11,7 +11,7 @@ htlr_predict(
   burn = NULL,
   thin = 1,
   usedmc = NULL,
-  pre.legacy = TRUE
+  rep.legacy = TRUE
 )
 }
 \arguments{
@@ -28,7 +28,7 @@ and only every \code{thin} are used.}
 \item{usedmc}{Indices of Markov chain iterations used for inference. 
 If supplied, \code{burn} and \code{thin} will be ignored.}
 
-\item{pre.legacy}{To reproduce (actually incorrect) results in legacy version.
+\item{rep.legacy}{To reproduce (actually incorrect) results in legacy version.
 See \url{https://github.com/longhaiSK/HTLR/issues/7}.}
 }
 \value{
