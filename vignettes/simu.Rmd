@@ -44,7 +44,7 @@ There are 4 groups of features:
 * feature #11 - #2000: noise features without relationship with the y
 
 ```{r}
-SEED <- 101
+SEED <- 1234
 
 n <- 510
 p <- 2000
@@ -115,7 +115,7 @@ set.seed(SEED)
 system.time(
   fit.t2 <- htlr(X = dat$x.tr, y = dat$y.tr, 
                  prior = htlr_prior("t", df = 1, logw = -20, sigmab0 = 1500), 
-                 iter = 4000, init = "bcbc")
+                 iter = 4000, init = "bcbc", keep.warmup.hist = T)
 )
 print(fit.t2)
 ```

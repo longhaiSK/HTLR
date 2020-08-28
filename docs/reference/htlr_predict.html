@@ -70,7 +70,7 @@ regression coefficient to predict the class labels of test cases." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">HTLR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.3</span>
       </span>
     </div>
 
@@ -131,8 +131,9 @@ regression coefficient to predict the class labels of test cases.</p>
   <span class='kw'>fithtlr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>deltas</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>burn</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>thin</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>usedmc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+  <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>usedmc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>rep.legacy</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -160,6 +161,11 @@ and only every <code>thin</code> are used.</p></td>
       <th>usedmc</th>
       <td><p>Indices of Markov chain iterations used for inference. 
 If supplied, <code>burn</code> and <code>thin</code> will be ignored.</p></td>
+    </tr>
+    <tr>
+      <th>rep.legacy</th>
+      <td><p>To reproduce (actually incorrect) results in legacy version.
+See <a href='https://github.com/longhaiSK/HTLR/issues/7'>https://github.com/longhaiSK/HTLR/issues/7</a>.</p></td>
     </tr>
     </table>
 

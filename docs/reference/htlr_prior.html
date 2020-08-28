@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">HTLR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.3</span>
       </span>
     </div>
 
@@ -128,6 +128,7 @@
   <span class='kw'>ptype</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"t"</span>, <span class='st'>"ghs"</span>, <span class='st'>"neg"</span>),
   <span class='kw'>df</span> <span class='kw'>=</span> <span class='fl'>1</span>,
   <span class='kw'>logw</span> <span class='kw'>=</span> -(<span class='fl'>1</span>/<span class='no'>df</span>) * <span class='fl'>10</span>,
+  <span class='kw'>eta</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span>(<span class='no'>df</span> <span class='kw'>&gt;</span> <span class='fl'>1</span>, <span class='fl'>3</span>, <span class='fl'>0</span>),
   <span class='kw'>sigmab0</span> <span class='kw'>=</span> <span class='fl'>2000</span>
 )</pre>
 
@@ -145,7 +146,11 @@ or "neg" (normal-exponential-gamma).</p></td>
     </tr>
     <tr>
       <th>logw</th>
-      <td><p>The log scale of priors for coefficients.
+      <td><p>The log scale of priors for coefficients.</p></td>
+    </tr>
+    <tr>
+      <th>eta</th>
+      <td><p>The <code>sd</code> of the normal prior for logw. When it is set to 0, logw is fixed. 
 Otherwise, logw is assigned with a normal prior and it will be updated during sampling.</p></td>
     </tr>
     <tr>

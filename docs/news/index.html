@@ -67,7 +67,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">HTLR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.3</span>
       </span>
     </div>
 
@@ -117,21 +117,40 @@
       
     </div>
 
-    <div id="htlr-0-4-2" class="section level1">
+    <div id="htlr-0-4-3" class="section level1">
 <h1 class="page-header">
-<a href="#htlr-0-4-2" class="anchor"></a>HTLR 0.4-2<small> 2020-01-17 </small>
+<a href="#htlr-0-4-3" class="anchor"></a>HTLR 0.4-3<small> Unreleased </small>
 </h1>
 <div id="new-features" class="section level2">
 <h2 class="hasAnchor">
 <a href="#new-features" class="anchor"></a>New Features</h2>
 <ul>
-<li><p>Added new function <code><a href="../reference/std.html">std()</a></code> for feature standardization.</p></li>
-<li><p>Added new dataset <code>diabetes392</code>.</p></li>
+<li>Added option for users to keep samples of warmup iterations.</li>
 </ul>
 </div>
 <div id="improvements" class="section level2">
 <h2 class="hasAnchor">
 <a href="#improvements" class="anchor"></a>Improvements</h2>
+<ul>
+<li>Bug fix [<a href="https://github.com/longhaiSK/HTLR/issues/7">#7</a>].</li>
+</ul>
+</div>
+</div>
+    <div id="htlr-0-4-2" class="section level1">
+<h1 class="page-header">
+<a href="#htlr-0-4-2" class="anchor"></a>HTLR 0.4-2<small> 2020-01-17 </small>
+</h1>
+<div id="new-features-1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#new-features-1" class="anchor"></a>New Features</h2>
+<ul>
+<li><p>Added new function <code><a href="../reference/std.html">std()</a></code> for feature standardization.</p></li>
+<li><p>Added new dataset <code>diabetes392</code>.</p></li>
+</ul>
+</div>
+<div id="improvements-1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#improvements-1" class="anchor"></a>Improvements</h2>
 <ul>
 <li><p><code><a href="../reference/htlr.html">htlr()</a></code> and <code><a href="../reference/predict.htlr.fit.html">predict.htlr.fit()</a></code> now handles non-matrix input, i.e. data.frame.</p></li>
 <li><p>Minor speed improvement on <code><a href="../reference/htlr.html">htlr()</a></code> and <code><a href="../reference/gendata_FAM.html">gendata_FAM()</a></code>.</p></li>
@@ -162,9 +181,9 @@
 <h1 class="page-header">
 <a href="#htlr-0-4" class="anchor"></a>HTLR 0.4<small> 2019-10-06 </small>
 </h1>
-<div id="new-features-1" class="section level2">
+<div id="new-features-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-features-1" class="anchor"></a>New Features</h2>
+<a href="#new-features-2" class="anchor"></a>New Features</h2>
 <ul>
 <li><p>This is the first released version of revamped HTLR.</p></li>
 <li><p>The Gibbs sampling routine is completely refactored using RcppArmadillo, which leads to a significant performance gain on multi-core/distributed machines.</p></li>
@@ -194,6 +213,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#htlr-0-4-3">0.4-3</a></li>
         <li><a href="#htlr-0-4-2">0.4-2</a></li>
         <li><a href="#htlr-0-4-1">0.4-1</a></li>
         <li><a href="#htlr-0-4">0.4</a></li>
