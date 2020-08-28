@@ -22,3 +22,4 @@ data("diabetes392")
 order_ftest(diabetes392$X, diabetes392$y)
 
 }
+\keyword{internal}

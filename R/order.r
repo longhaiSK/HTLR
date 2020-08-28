@@ -9,6 +9,8 @@
 #' @return Order of all features of length \code{nvars}.
 #' 
 #' @export
+#' 
+#' @keywords internal
 #'
 #' @examples 
 #' data("diabetes392")
@@ -47,6 +49,8 @@ order_plain <- function(X, y) { 1L:ncol(X) }
 #' @return Order of all features of length \code{nvars}.
 #' 
 #' @export
+#' 
+#' @keywords internal
 #'
 #' @examples 
 #' data("diabetes392")
