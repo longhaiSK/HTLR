@@ -70,7 +70,7 @@ It also makes predictions for test cases if X_ts are provided." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">HTLR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.3</span>
       </span>
     </div>
 
@@ -144,8 +144,9 @@ It also makes predictions for test cases if <code>X_ts</code> are provided.</p>
   <span class='kw'>leap_step</span> <span class='kw'>=</span> <span class='fl'>0.3</span>,
   <span class='kw'>hmc_sgmcut</span> <span class='kw'>=</span> <span class='fl'>0.05</span>,
   <span class='kw'>initial_state</span> <span class='kw'>=</span> <span class='st'>"lasso"</span>,
+  <span class='kw'>keep.warmup.hist</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>silence</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>pre.legacy</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>rep.legacy</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>alpha.rda</span> <span class='kw'>=</span> <span class='fl'>0.2</span>,
   <span class='kw'>lasso.lambda</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span>(<span class='fl'>0.05</span>, <span class='fl'>0.01</span>, <span class='kw'>by</span> <span class='kw'>=</span> -<span class='fl'>0.01</span>),
   <span class='kw'>X_ts</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
@@ -243,11 +244,15 @@ a character string matches the following:</p><ul>
 </ul></td>
     </tr>
     <tr>
+      <th>keep.warmup.hist</th>
+      <td><p>Warmup iterations are not recorded by default, set <code>TRUE</code> to enable it.</p></td>
+    </tr>
+    <tr>
       <th>silence</th>
       <td><p>Setting it to <code>FALSE</code> for tracking MCMC sampling iterations.</p></td>
     </tr>
     <tr>
-      <th>pre.legacy</th>
+      <th>rep.legacy</th>
       <td><p>Logical; if <code>TRUE</code>, the output produced in <code>HTLR</code> versions up to 
 legacy-3.1-1 is reproduced. The speed would be typically slower than non-legacy mode on
 multi-core machine.</p></td>
@@ -261,7 +266,7 @@ setting up BCBCSF initial state. Default: 0.2.</p></td>
       <th>lasso.lambda</th>
       <td><p>- A user supplied lambda sequence for <code><a href='lasso_deltas.html'>lasso_deltas</a></code> when 
 setting up Lasso initial state. Default: {.01, .02, ..., .05}. Will be ignored if 
-<code>pre.legacy</code> is set to <code>TRUE</code>.</p></td>
+<code>rep.legacy</code> is set to <code>TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>X_ts</th>

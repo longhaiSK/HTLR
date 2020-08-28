@@ -4,11 +4,13 @@
 \name{diabetes392}
 \alias{diabetes392}
 \title{Pima Indians Diabetes}
-\format{A list contains data matrix \code{X} and response vector \code{y}:
+\format{
+A list contains data matrix \code{X} and response vector \code{y}:
 \describe{
   \item{X}{A matrix with 392 rows (observations) and 8 columns (features).}
   \item{y}{A binary vector where 1 indicates diabetes patients and 0 for otherwise.}
-}}
+}
+}
 \source{
 \url{https://www.kaggle.com/uciml/pima-indians-diabetes-database}
 }

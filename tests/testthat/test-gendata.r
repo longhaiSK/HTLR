@@ -1,3 +1,5 @@
+skip_on_cran()
+
 load("gendata_expect.rda")
 
 test_that("sim MLR works", {

@@ -44,7 +44,7 @@ There are 4 groups of features:
 * feature #11 - #2000: noise features without relationship with the y
 
 ```{r}
-SEED <- 101
+SEED <- 1234
 
 n <- 510
 p <- 2000
@@ -115,7 +115,7 @@ set.seed(SEED)
 system.time(
   fit.t2 <- htlr(X = dat$x.tr, y = dat$y.tr, 
                  prior = htlr_prior("t", df = 1, logw = -20, sigmab0 = 1500), 
-                 iter = 4000, init = "bcbc")
+                 iter = 4000, init = "bcbc", keep.warmup.hist = T)
 )
 print(fit.t2)
 ```
@@ -136,7 +136,8 @@ mcmc_intervals(post.t, pars = c("Intercept", "V1", "V2", "V3", "V1000"))
 
 Trace plot of MCMC draws:
 ```{r}
-mcmc_trace(post.t, c("V1", "V1000"), facet_args = list("nrow" = 2))
+as.matrix(fit.t2, k = 2, include.warmup = T) %>%
+  mcmc_trace(c("V1", "V1000"), facet_args = list("nrow" = 2), n_warmup = 2000)
 ```
 
 The coefficient of unrelated features (noise) are not updated during some iterations due to restricted Gibbs sampling @li2018fully, hence the computational cost is greatly reduced.

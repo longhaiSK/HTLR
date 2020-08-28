@@ -1,5 +1,5 @@
 Package: HTLR
-Version: 0.4-2
+Version: 0.4-3
 Title: Bayesian Logistic Regression with Heavy-Tailed Priors
 Authors@R: c(person(given = "Longhai", family = "Li", role = c("aut", "cre"), email = "longhai@math.usask.ca",
     comment=c(ORCID="0000-0002-3074-8584")), person(given = "Steven", family = "Liu", role = c("aut"), 
@@ -31,5 +31,5 @@ NeedsCompilation: yes
 SystemRequirements: C++11
 LazyData: true
 Encoding: UTF-8
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
 VignetteBuilder: knitr

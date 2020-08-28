@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Posterior Summaries — summary.htlr.fit • HTLR</title>
+<title>Plain rank function — rank_plain • HTLR</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="Posterior Summaries — summary.htlr.fit" />
-<meta property="og:description" content="This function gives a summary of posterior of parameters." />
+<meta property="og:title" content="Plain rank function — rank_plain" />
+<meta property="og:description" content="A placeholder rank function that returns the original order of given features." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">HTLR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.2.9000</span>
       </span>
     </div>
 
@@ -115,89 +115,40 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Posterior Summaries</h1>
+    <h1>Plain rank function</h1>
     
-    <div class="hidden name"><code>summary.htlr.fit.Rd</code></div>
+    <div class="hidden name"><code>rank_plain.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function gives a summary of posterior of parameters.</p>
+    <p>A placeholder rank function that returns the original order of given features.</p>
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for htlr.fit</span>
-<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(
-  <span class='no'>object</span>,
-  <span class='kw'>features</span> <span class='kw'>=</span> <span class='fl'>1L</span>:<span class='no'>object</span>$<span class='no'>p</span>,
-  <span class='kw'>method</span> <span class='kw'>=</span> <span class='no'>median</span>,
-  <span class='kw'>usedmc</span> <span class='kw'>=</span> <span class='fu'>get_sample_indice</span>(<span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>(<span class='no'>object</span>$<span class='no'>mcdeltas</span>)[<span class='fl'>3</span>], <span class='no'>object</span>$<span class='no'>mc.param</span>$<span class='no'>iter.rmc</span>),
-  <span class='no'>...</span>
-)</pre>
+    <pre class="usage"><span class='fu'>rank_plain</span>(<span class='no'>X</span>, <span class='no'>y</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>object</th>
-      <td><p>An object of S3 class <code>htlr.fit</code>.</p></td>
+      <th>X</th>
+      <td><p>Input matrix, of dimension <code>nobs</code> by <code>nvars</code>; each row is an observation vector.</p></td>
     </tr>
     <tr>
-      <th>features</th>
-      <td><p>A vector of indices (int) or names (char) that specify the parameters we will look at.
-By default all parameters are selected.</p></td>
-    </tr>
-    <tr>
-      <th>method</th>
-      <td><p>A function that is used to aggregate the MCMC samples. The default is <code>median</code>, 
-other built-in/customized statistical functions such as <code>mean</code>, <code>sd</code>, and <code>mad</code>
-can also be used.</p></td>
-    </tr>
-    <tr>
-      <th>usedmc</th>
-      <td><p>Indices of Markov chain iterations used for inference. By default all iterations are used.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Not used.</p></td>
+      <th>y</th>
+      <td><p>Vector of response variables.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A point summary of MCMC samples.</p>
+    <p>Sequence starting from 1 to <code>nvars</code>.</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>12345</span>)
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"colon"</span>)
-
-<span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='htlr.html'>htlr</a></span>(<span class='kw'>X</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>X</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>y</span>, <span class='kw'>fsel</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>100</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>20</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='no'>fit</span>, <span class='kw'>features</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>16</span>)</div><div class='output co'>#&gt;                class 1
-#&gt; Intercept  1.335669935
-#&gt; V1         0.000000000
-#&gt; V2         0.000000000
-#&gt; V3         0.000000000
-#&gt; V4         0.000000000
-#&gt; V5         0.000000000
-#&gt; V6         0.000000000
-#&gt; V7         0.000000000
-#&gt; V8         0.000000000
-#&gt; V9         0.000000000
-#&gt; V10        0.000000000
-#&gt; V11        0.000000000
-#&gt; V12        0.000000000
-#&gt; V13        0.000000000
-#&gt; V14       -1.697594259
-#&gt; V15        0.006178324
-#&gt; V16       -0.325748938
-#&gt; attr(,"stats")
-#&gt; [1] "median"</div><div class='input'>  
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
-      <li><a href="#examples">Examples</a></li>
     </ul>
 
   </div>

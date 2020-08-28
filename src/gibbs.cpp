@@ -1,39 +1,39 @@
 #include <string>
 #include "gibbs.h"
 
-Fit::Fit(int p, int K, int n,
-         const arma::mat &X, const arma::mat &ymat, const arma::uvec &ybase,
+Fit::Fit(int p, int K, int n, const arma::mat &X, const arma::mat &ymat, const arma::uvec &ybase,
          std::string ptype, double alpha, double s, double eta,
          int iters_rmc, int iters_h, int thin,
          int leap_L, int leap_L_h, double leap_step,
-         double hmc_sgmcut, const arma::mat &deltas, 
-         const arma::vec &sigmasbt, int silence, bool legacy)
+         double hmc_sgmcut, const arma::mat &deltas, const arma::vec &sigmasbt,
+         bool keep_warmup_hist, int silence, bool legacy)
     : p_(p), K_(K), C_(K + 1), n_(n), X_(X), ymat_(ymat), ybase_(ybase),
       ptype_(ptype), alpha_(alpha), s_(s), eta_(eta),
       iters_rmc_(iters_rmc), iters_h_(iters_h), thin_(thin),
       leap_L_(leap_L), leap_L_h_(leap_L_h), leap_step_(leap_step),
       sgmsq_cut_(hmc_sgmcut > 0 ? R_pow_di(hmc_sgmcut, 2) : hmc_sgmcut),
-      DDNloglike_(col_sum(arma::square(X)) / 4), 
-      silence_(silence), legacy_(legacy), nvar_(p + 1), logw_(s)
+      DDNloglike_(col_sum(arma::square(X)) / 4), keep_warmup_hist_(keep_warmup_hist),
+      silence_(silence), legacy_(legacy), nvar_(p + 1), logw_(s), sigmasbt_(sigmasbt)
 {
   ids_update_ = arma::uvec(nvar_, arma::fill::zeros);
   ids_fix_ = arma::uvec(nvar_, arma::fill::zeros);
 
-  mc_logw_ = arma::vec(iters_rmc + 1, arma::fill::zeros);
+  int hist_len = keep_warmup_hist_ ? (iters_rmc_ + iters_h_ + 1) : (iters_rmc_ + 1);
+
+  mc_logw_ = arma::vec(hist_len, arma::fill::zeros);
   mc_logw_[0] = logw_;
   
-  sigmasbt_ = sigmasbt;
-  mc_sigmasbt_ = arma::mat(nvar_, iters_rmc + 1, arma::fill::zeros);
-  mc_sigmasbt_.col(0) = sigmasbt;
+  mc_sigmasbt_ = arma::mat(nvar_, hist_len, arma::fill::zeros);
+  mc_sigmasbt_.col(0) = sigmasbt_;
 
   deltas_ = deltas;
-  mc_deltas_ = arma::cube(nvar_, K, iters_rmc + 1, arma::fill::zeros);
+  mc_deltas_ = arma::cube(nvar_, K, hist_len, arma::fill::zeros);
   mc_deltas_.slice(0) = deltas;
 
-  mc_var_deltas_ = arma::mat(nvar_, iters_rmc + 1, arma::fill::zeros);
-  mc_loglike_ = arma::vec(iters_rmc + 1, arma::fill::zeros);
-  mc_uvar_ = arma::vec(iters_rmc + 1, arma::fill::zeros);
-  mc_hmcrej_ = arma::vec(iters_rmc + 1, arma::fill::zeros);
+  mc_var_deltas_ = arma::mat(nvar_, hist_len, arma::fill::zeros);
+  mc_loglike_ = arma::vec(hist_len, arma::fill::zeros);
+  mc_uvar_ = arma::vec(hist_len, arma::fill::zeros);
+  mc_hmcrej_ = arma::vec(hist_len, arma::fill::zeros);
 
   lv_ = arma::mat(n, C_, arma::fill::zeros);
   lv_fix_ = arma::mat(n, C_, arma::fill::zeros);
@@ -56,8 +56,6 @@ void Fit::StartSampling()
   /************************ start gibbs sampling **************************/
   for (int i_mc = 0; i_mc < iters_h_ + iters_rmc_; i_mc++)
   {
-    int i_rmc = i_mc - iters_h_;
-
     /***************** thin iterations of Gibbs sampling ******************/
     double no_uvar = 0;
     double rej = 0;
@@ -103,15 +101,16 @@ void Fit::StartSampling()
     rej /= thin_;
 
     /****************** record the markov chain state ********************/
-    if (i_rmc >= 0)
+    int i_rmc = keep_warmup_hist_ ? (i_mc + 1) : (i_mc - iters_h_ + 1);
+    if (i_rmc > 0)
     {
-      mc_deltas_.slice(i_rmc + 1) = deltas_;
-      mc_sigmasbt_.col(i_rmc + 1) = sigmasbt_;
-      mc_var_deltas_.col(i_rmc + 1) = var_deltas_;
-      mc_logw_(i_rmc + 1) = logw_;
-      mc_loglike_(i_rmc + 1) = loglike_;
-      mc_uvar_(i_rmc + 1) = no_uvar;
-      mc_hmcrej_(i_rmc + 1) = rej;
+      mc_deltas_.slice(i_rmc) = deltas_;
+      mc_sigmasbt_.col(i_rmc) = sigmasbt_;
+      mc_var_deltas_.col(i_rmc) = var_deltas_;
+      mc_logw_[i_rmc] = logw_;
+      mc_loglike_[i_rmc] = loglike_;
+      mc_uvar_[i_rmc] = no_uvar;
+      mc_hmcrej_[i_rmc] = rej;
     }
 
     // print some results on screen
@@ -119,9 +118,10 @@ void Fit::StartSampling()
     {
       Rprintf(
           "Iter%4d: deviance=%5.3f, logw=%6.2f, nuvar=%3.0f, hmcrej=%4.2f\n",
-          i_rmc, -loglike_ / n_, logw_, no_uvar, rej);
+          i_mc - iters_h_, -loglike_ / n_, logw_, no_uvar, rej);
     }
-    if (i_rmc % 256 == 0) R_CheckUserInterrupt();
+
+    if (i_mc % 256 == 0) R_CheckUserInterrupt();
   }
 }
 

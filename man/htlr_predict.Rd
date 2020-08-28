@@ -9,8 +9,9 @@ htlr_predict(
   fithtlr = NULL,
   deltas = NULL,
   burn = NULL,
-  thin = NULL,
-  usedmc = NULL
+  thin = 1,
+  usedmc = NULL,
+  rep.legacy = TRUE
 )
 }
 \arguments{
@@ -26,6 +27,9 @@ and only every \code{thin} are used.}
 
 \item{usedmc}{Indices of Markov chain iterations used for inference. 
 If supplied, \code{burn} and \code{thin} will be ignored.}
+
+\item{rep.legacy}{To reproduce (actually incorrect) results in legacy version.
+See \url{https://github.com/longhaiSK/HTLR/issues/7}.}
 }
 \value{
 A matrix of predictive probabilities, with rows for cases, cols for classes.

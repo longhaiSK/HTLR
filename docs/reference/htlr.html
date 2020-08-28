@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">HTLR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.3</span>
       </span>
     </div>
 
@@ -140,7 +140,8 @@
   <span class='kw'>leap.stepsize</span> <span class='kw'>=</span> <span class='fl'>0.3</span>,
   <span class='kw'>cut</span> <span class='kw'>=</span> <span class='fl'>0.05</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>pre.legacy</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>rep.legacy</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>keep.warmup.hist</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='no'>...</span>
 )</pre>
 
@@ -229,17 +230,21 @@ The number of warmup iterations should not be larger than iter and the default i
       <td><p>Logical; setting it to <code>TRUE</code> for tracking MCMC sampling iterations.</p></td>
     </tr>
     <tr>
-      <th>pre.legacy</th>
+      <th>rep.legacy</th>
       <td><p>Logical; if <code>TRUE</code>, the output produced in <code>HTLR</code> versions up to 
 legacy-3.1-1 is reproduced. The speed will be typically slower than non-legacy mode on
 multi-core machine. Default is <code>FALSE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>keep.warmup.hist</th>
+      <td><p>Warmup iterations are not recorded by default, set <code>TRUE</code> to enable it.</p></td>
     </tr>
     <tr>
       <th>...</th>
       <td><p>Other optional parameters:</p><ul>
 <li><p>rda.alpha - A user supplied alpha value for <code><a href='bcbcsf_deltas.html'>bcbcsf_deltas</a></code>. Default: 0.2.</p></li>
 <li><p>lasso.lambda - A user supplied lambda sequence for <code><a href='lasso_deltas.html'>lasso_deltas</a></code>. 
-  Default: {.01, .02, ..., .05}. Will be ignored if <code>pre.legacy</code> is set to <code>TRUE</code>.</p></li>
+  Default: {.01, .02, ..., .05}. Will be ignored if <code>rep.legacy</code> is set to <code>TRUE</code>.</p></li>
 </ul></td>
     </tr>
     </table>
@@ -267,12 +272,12 @@ with Hyper-Lasso Priors for High-dimensional Feature Selection.
 <span class='co'>## using NEG prior with 1 df and log-scale fixed to -10 </span>
 <span class='no'>fit.neg</span> <span class='kw'>&lt;-</span> <span class='fu'>htlr</span>(<span class='kw'>X</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>X</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>y</span>, <span class='kw'>fsel</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>100</span>,
                 <span class='kw'>prior</span> <span class='kw'>=</span> <span class='fu'><a href='htlr_prior.html'>htlr_prior</a></span>(<span class='st'>"neg"</span>, <span class='kw'>df</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>logw</span> <span class='kw'>=</span> -<span class='fl'>10</span>),
-                <span class='kw'>init</span> <span class='kw'>=</span> <span class='st'>"bcbc"</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>1</span>)
-
+                <span class='kw'>init</span> <span class='kw'>=</span> <span class='st'>"bcbc"</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: random logw currently only supports t prior</span></div><div class='input'>
 <span class='co'>## using horseshoe prior with 1 df and auto-selected log-scale   </span>
 <span class='no'>fit.ghs</span> <span class='kw'>&lt;-</span> <span class='fu'>htlr</span>(<span class='kw'>X</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>X</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>colon</span>$<span class='no'>y</span>, <span class='kw'>fsel</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>100</span>,
                 <span class='kw'>prior</span> <span class='kw'>=</span> <span class='st'>"ghs"</span>, <span class='kw'>df</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>init</span> <span class='kw'>=</span> <span class='st'>"bcbc"</span>,
-                <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div></pre>
+                <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>thin</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: random logw currently only supports t prior</span></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

@@ -52,15 +52,17 @@
 #' 
 #' @param verbose Logical; setting it to \code{TRUE} for tracking MCMC sampling iterations.  
 #' 
-#' @param pre.legacy Logical; if \code{TRUE}, the output produced in \code{HTLR} versions up to 
+#' @param rep.legacy Logical; if \code{TRUE}, the output produced in \code{HTLR} versions up to 
 #' legacy-3.1-1 is reproduced. The speed will be typically slower than non-legacy mode on
 #' multi-core machine. Default is \code{FALSE}.
+#' 
+#' @param keep.warmup.hist Warmup iterations are not recorded by default, set \code{TRUE} to enable it. 
 #' 
 #' @param ... Other optional parameters:
 #' \itemize{
 #'   \item rda.alpha - A user supplied alpha value for \code{\link{bcbcsf_deltas}}. Default: 0.2.
 #'   \item lasso.lambda - A user supplied lambda sequence for \code{\link{lasso_deltas}}. 
-#'   Default: \{.01, .02, \ldots, .05\}. Will be ignored if \code{pre.legacy} is set to \code{TRUE}.
+#'   Default: \{.01, .02, \ldots, .05\}. Will be ignored if \code{rep.legacy} is set to \code{TRUE}.
 #' } 
 #' 
 #' @return An object with S3 class \code{htlr.fit}.  
@@ -108,7 +110,8 @@ htlr <-
             leap.stepsize = 0.3,
             cut = 0.05,
             verbose = FALSE,
-            pre.legacy = FALSE,
+            rep.legacy = FALSE,
+            keep.warmup.hist = FALSE,
             ...
   )
 {
@@ -124,8 +127,8 @@ htlr <-
   if (exists("lasso.lambda")) {
     if (init != "lasso")
       warning("not using 'LASSO' init, input 'lasso.lambda' will be ignored")
-    else if (pre.legacy)
-      warning("pre.legacy == TRUE, input 'lasso.lambda' will be ignored")
+    else if (rep.legacy)
+      warning("rep.legacy == TRUE, input 'lasso.lambda' will be ignored")
   } else {
     lasso.lambda <- seq(.05, .01, by = -.01)
   }
@@ -141,6 +144,6 @@ htlr <-
            iters_h = warmup, iters_rmc = (iter - warmup), thin = thin, 
            leap_L = leap, leap_L_h = leap.warm, leap_step = leap.stepsize, 
            hmc_sgmcut = cut, initial_state = init, 
-           silence = !verbose, pre.legacy = pre.legacy)
+           silence = !verbose, rep.legacy = rep.legacy, keep.warmup.hist = keep.warmup.hist)
 
 }

@@ -8,6 +8,8 @@
 #' 1,2,\ldots,C-1 for C-class traning labels (base class 0 can not be chosen). By default the last class
 #' is selected. For binary logistic model this argument can be ignored.
 #' 
+#' @param include.warmup Whether or not to include warmup samples 
+#' 
 #' @param ... Not used.
 #' 
 #' @return A matrix with \code{(p + 1)} columns and \code{i} rows, where \code{p} is the number of features 
@@ -21,7 +23,7 @@
 #' 
 #' dim(as.matrix(fit))
 #'   
-as.matrix.htlr.fit <- function(x, k = NULL, ...)
+as.matrix.htlr.fit <- function(x, k = NULL, include.warmup = FALSE, ...)
 {
   if (is.null(k))
   {
@@ -31,7 +33,10 @@ as.matrix.htlr.fit <- function(x, k = NULL, ...)
         "'k' was not specified, coefficients associated with the last class will be drawn"
       )
   }
-  mcdeltas <- t(x$mcdeltas[ , k, -1])
+  if (include.warmup)
+    mcdeltas <- t(x$mcdeltas[ , k, -1])
+  else
+    mcdeltas <- t(x$mcdeltas[ , k, get_sample_indice(dim(x$mcdeltas)[3], x$mc.param$iter.rmc)]) 
   colnames(mcdeltas) <- colnames(x$feature$X)
   mcdeltas
 }
@@ -70,12 +75,9 @@ summary.htlr.fit <-
   function (object,
             features = 1L:object$p,
             method = median,
-            usedmc = NULL,
+            usedmc = get_sample_indice(dim(object$mcdeltas)[3], object$mc.param$iter.rmc),
             ...)
 {
-  if (is.null(usedmc))
-    usedmc <- 2L:dim(object$mcdeltas)[3]
-  
   ix.f <- object$feature$fsel[features] %>% na.omit()
   
   mddeltas <- object$mcdeltas[c(1, ix.f + 1), , usedmc, drop = FALSE] %>%
@@ -94,109 +96,38 @@ summary.htlr.fit <-
   return(mddeltas)
 }
 
-# Plots Markov chain trace or scatterplot
-# 
-# This function plots Markov chain samples of 1 or 2 features. In plotting for 2 features, 
-# gray lines show Markov chain transitions.
-# 
-# @param fithtlr A list containing fitting results by \code{\link{htlr_fit}}.
-# @param features A vector of 1 or 2 numbers representing 1 or 2 features one wishes to look.
-# @param class Coefficients associated with \code{class} will be drawn. Must be a positive integer in 
-# 1,2,\ldots,C for C-class traning labels.
-# @param usedmc Indices of Markov chain iterations used in plottings; one can set it to the 
-# indices of Markov chain iterations belonging to the ith feature subset, \code{mcids[[i]]}, 
-# found by \code{\link{htlr_fss}}.
-# 
-# @return A vector of Markov chain sample of 1 coefficient, 
-# or an array of Markov chain samples of 2 coefficients.
-# 
-# @export
-# 
-htlr_mccoef <-  function (
-    fithtlr, features = 1, class = 2,  usedmc = "all", 
-    symlim = FALSE, drawq = c(0,1), truedeltas = NULL)
+# @param p.burn.extra Percentage of iterations to be burned out after known warmup iterations
+# @param n.burn.extra Number of iterations to be burned out after known warmup iterations,
+# will overwrite p.burn.extra if specified
+# @param ignore.first First entry should be ignored because it is supposed to be the initial state,
+# in rare cases you may want it be FALSE
+get_sample_indice <- function(n.sample,
+                              iter.rmc,
+                              thin = 1,
+                              p.burn.extra = 0,
+                              n.burn.extra = floor(iter.rmc * p.burn.extra),
+                              ignore.first = TRUE)
 {
-    mcdims <- dim (fithtlr$mcdeltas)
-    p <- mcdims [1] - 1
-    K <- mcdims [2]
-    no_mcspl <- mcdims[3]
-    features <- features [!is.na (features)]
-    if (usedmc [1] == "all") usedmc <- 2:no_mcspl
-    
-    if (length (features) == 1)
-    {
-        if (features == 0) j <- 1
-        else  j <- which(fithtlr$feature$fsel == features) + 1
-        k <- class - 1
-        deltas <- fithtlr$mcdeltas[j, k,usedmc, drop = FALSE]
-        
-        plot (deltas, pch = 20, 
-              xlab = "Markov Chain Index (after burning and thinning)", 
-              ylab = sprintf ("Coef. Value of Feature %d",  features),
-              main = sprintf("MC Coefficients for Feature %d (Class %d)",
-                             features, class)
-        )
-        qdeltas <- quantile (deltas, probs = c(0.025,0.5,0.975))
-        abline (h = qdeltas[2], lwd = 2)
-        abline (h = qdeltas[1], lty = 2, lwd = 2)
-        abline (h = qdeltas[3], lty = 2, lwd = 2)
-        
-        if (!is.null (truedeltas))
-        {   
-            abline (h = truedeltas [j,k], lwd = 2, col = "red")
-        }
-    }
-    else
-    {
-        j <- 1:2
-        if (features[1] == 0) j[1] <- 1 else
-            j[1] <- which (fithtlr$feature$fsel == features[1]) + 1
-        if (features[2] == 0) j[2] <- 1 else        
-            j[2] <- which (fithtlr$feature$fsel == features[2]) + 1
-        k <- class - 1
-        deltas <- fithtlr$mcdeltas[j, k,usedmc, drop = TRUE]
-        
-        if (symlim)
-        {
-            lim <- quantile (deltas, probs = drawq)
-            xlim <- lim 
-            ylim <- lim
-        }
-        else
-        {
-            xlim <- quantile (deltas[1,], probs = drawq)
-            ylim <- quantile (deltas[2,], probs = drawq)
-        }
-        
-        plot (t(deltas), 
-              xlab = sprintf ("feature %d",  features[1]),
-              ylab = sprintf ("feature %d",  features[2]),
-              xlim = xlim,
-              ylim = ylim,
-              type = "l", col = "grey", 
-              main = sprintf("MC Coef. for Features %d and %d (Class %d)",
-                             features[1], features[2], class) )
-        points (t(deltas), pch = 20) 
-    }
-    out <- deltas
+  stopifnot(p.burn.extra >= 0, p.burn.extra < 1)
+  n.warmup <- n.sample - iter.rmc
+  seq((n.warmup + n.burn.extra + ignore.first), n.sample, thin)
 }
 
 # @export
 htlr_sdb <- function(fit,
-                     usedmc = NULL,
                      burn = NULL,
+                     usedmc = NULL,
                      thin = 1)
 {
-  no_mcspl <- dim(fit$mcdeltas)[3]
-  
-  ## index of mc iters used for inference
-  if (is.null(burn))
-    burn <- floor(no_mcspl * 0.2)
   if (is.null(usedmc))
-    usedmc <- seq(burn + 1, no_mcspl, by = thin)
-  
+  {
+    if (is.null(burn))
+      usedmc <- get_sample_indice(dim(fit$mcdeltas)[3], fit$mc.param$iter.rmc, p.burn.extra = 0.2, thin = thin)
+    else
+      usedmc <- get_sample_indice(dim(fit$mcdeltas)[3], fit$mc.param$iter.rmc, n.burn.extra = burn, thin = thin)
+  }
   deltas <- summary(fit, usedmc = usedmc, method = mean)
-  comp_sdb(deltas, removeint = T, normalize = F)
+  comp_sdb(deltas, removeint = TRUE, normalize = FALSE)
 }
 
 #' Get Indices of Non-Zero Coefficients
@@ -222,4 +153,94 @@ nzero_idx <- function(fit, cut = 0.1)
 {
   sdb <- htlr_sdb(fit)
   which(sdb > cut * max(sdb))
+}
+
+# Plots Markov chain trace or scatterplot
+# 
+# This function plots Markov chain samples of 1 or 2 features. In plotting for 2 features, 
+# gray lines show Markov chain transitions.
+# 
+# @param fithtlr A list containing fitting results by \code{\link{htlr_fit}}.
+# @param features A vector of 1 or 2 numbers representing 1 or 2 features one wishes to look.
+# @param class Coefficients associated with \code{class} will be drawn. Must be a positive integer in 
+# 1,2,\ldots,C for C-class traning labels.
+# @param usedmc Indices of Markov chain iterations used in plottings; one can set it to the 
+# indices of Markov chain iterations belonging to the ith feature subset, \code{mcids[[i]]}, 
+# found by \code{\link{htlr_fss}}.
+# 
+# @return A vector of Markov chain sample of 1 coefficient, 
+# or an array of Markov chain samples of 2 coefficients.
+# 
+# @export
+# 
+htlr_mccoef <-  function (fithtlr,
+                          features = 1,
+                          class = 2,
+                          usedmc = get_sample_indice(dim(fithtlr$mcdeltas)[3], fithtlr$mc.param$iter.rmc),
+                          symlim = FALSE,
+                          drawq = c(0, 1),
+                          truedeltas = NULL
+)
+{
+  mcdims <- dim (fithtlr$mcdeltas)
+  p <- mcdims [1] - 1
+  K <- mcdims [2]
+  features <- features [!is.na (features)]
+  
+  if (length (features) == 1)
+  {
+    if (features == 0) j <- 1
+    else  j <- which(fithtlr$feature$fsel == features) + 1
+    k <- class - 1
+    deltas <- fithtlr$mcdeltas[j, k,usedmc, drop = FALSE]
+    
+    plot (deltas, pch = 20, 
+          xlab = "Markov Chain Index (after burning and thinning)", 
+          ylab = sprintf ("Coef. Value of Feature %d",  features),
+          main = sprintf("MC Coefficients for Feature %d (Class %d)",
+                         features, class)
+    )
+    qdeltas <- quantile (deltas, probs = c(0.025,0.5,0.975))
+    abline (h = qdeltas[2], lwd = 2)
+    abline (h = qdeltas[1], lty = 2, lwd = 2)
+    abline (h = qdeltas[3], lty = 2, lwd = 2)
+    
+    if (!is.null (truedeltas))
+    {   
+      abline (h = truedeltas [j,k], lwd = 2, col = "red")
+    }
+  }
+  else
+  {
+    j <- 1:2
+    if (features[1] == 0) j[1] <- 1 else
+      j[1] <- which (fithtlr$feature$fsel == features[1]) + 1
+    if (features[2] == 0) j[2] <- 1 else        
+      j[2] <- which (fithtlr$feature$fsel == features[2]) + 1
+    k <- class - 1
+    deltas <- fithtlr$mcdeltas[j, k,usedmc, drop = TRUE]
+    
+    if (symlim)
+    {
+      lim <- quantile (deltas, probs = drawq)
+      xlim <- lim 
+      ylim <- lim
+    }
+    else
+    {
+      xlim <- quantile (deltas[1,], probs = drawq)
+      ylim <- quantile (deltas[2,], probs = drawq)
+    }
+    
+    plot (t(deltas), 
+          xlab = sprintf ("feature %d",  features[1]),
+          ylab = sprintf ("feature %d",  features[2]),
+          xlim = xlim,
+          ylim = ylim,
+          type = "l", col = "grey", 
+          main = sprintf("MC Coef. for Features %d and %d (Class %d)",
+                         features[1], features[2], class) )
+    points (t(deltas), pch = 20) 
+  }
+  out <- deltas
 }

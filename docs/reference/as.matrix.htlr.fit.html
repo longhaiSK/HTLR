@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">HTLR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.3</span>
       </span>
     </div>
 
@@ -125,7 +125,7 @@
     </div>
 
     <pre class="usage"><span class='co'># S3 method for htlr.fit</span>
-<span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span>(<span class='no'>x</span>, <span class='kw'>k</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+<span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span>(<span class='no'>x</span>, <span class='kw'>k</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>include.warmup</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -139,6 +139,10 @@
       <td><p>Coefficients associated with class <code>k</code> will be drawn. Must be a positive integer in 
 1,2,...,C-1 for C-class traning labels (base class 0 can not be chosen). By default the last class
 is selected. For binary logistic model this argument can be ignored.</p></td>
+    </tr>
+    <tr>
+      <th>include.warmup</th>
+      <td><p>Whether or not to include warmup samples</p></td>
     </tr>
     <tr>
       <th>...</th>

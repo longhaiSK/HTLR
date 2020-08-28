@@ -4,7 +4,13 @@
 \alias{summary.htlr.fit}
 \title{Posterior Summaries}
 \usage{
-\method{summary}{htlr.fit}(object, features = 1L:object$p, method = median, usedmc = NULL, ...)
+\method{summary}{htlr.fit}(
+  object,
+  features = 1L:object$p,
+  method = median,
+  usedmc = get_sample_indice(dim(object$mcdeltas)[3], object$mc.param$iter.rmc),
+  ...
+)
 }
 \arguments{
 \item{object}{An object of S3 class \code{htlr.fit}.}
