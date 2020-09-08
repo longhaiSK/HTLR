@@ -10,7 +10,7 @@ lasso_deltas(
   lambda = NULL,
   verbose = FALSE,
   alpha = 1,
-  rank_fn = rank_plain,
+  rank_fn = order_plain,
   k = ncol(X)
 )
 }
