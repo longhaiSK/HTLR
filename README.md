@@ -48,7 +48,7 @@ carrying out most of matrix operations, you may get speed benefits from
 using an alternative BLAS library such as
 [ATLAS](http://math-atlas.sourceforge.net/),
 [OpenBLAS](http://www.openblas.net/) or [Intel
-MKL](https://software.intel.com/en-us/mkl). Check this
+MKL](https://software.intel.com/en-us/mkl). Check out this
 [post](http://brettklamer.com/diversions/statistical/faster-blas-in-r/)
 for the comparision and the installation guide. Windows users may
 consider installing [Microsoft R Open](https://mran.microsoft.com/open).

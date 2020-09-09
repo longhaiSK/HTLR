@@ -26,7 +26,7 @@
 #' @keywords internal
 #' 
 #' @seealso \code{\link{bcbcsf_deltas}}
-lasso_deltas <- function(X, y, lambda = NULL, verbose = FALSE, alpha = 1, rank_fn = rank_plain, k = ncol(X))
+lasso_deltas <- function(X, y, lambda = NULL, verbose = FALSE, alpha = 1, rank_fn = order_plain, k = ncol(X))
 {
   #try_require("glmnet")
 

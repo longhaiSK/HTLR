@@ -4,6 +4,12 @@ cache:
   apt: true
   ccache: true
   packages: true
+
+r_packages:
+  - covr
+
+after_success:
+  - Rscript -e 'library(covr); codecov(token = Sys.getenv("CODE_COV_TOKEN"))'
   
 matrix:
   include:
