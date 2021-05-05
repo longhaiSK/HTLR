@@ -1,6 +1,6 @@
 # Default NAMESPACE created by R
 # Remove the previous line if you edit this file
-useDynLib("HTLR")
+useDynLib("HTLR.old")
 # Export all names
 exportPattern("htlr")
 export("probs_attrue_bplr", "evaluate_pred","gendata_fam",
