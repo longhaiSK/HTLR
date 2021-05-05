@@ -9,7 +9,7 @@ r_packages:
   - covr
 
 before_install:
-  - bash inst/install_old_htlr.sh
+  - Rscript inst/install_old_htlr.R
 
 after_success:
   - Rscript -e 'library(covr); codecov(token = Sys.getenv("CODE_COV_TOKEN"))'
