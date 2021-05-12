@@ -1,9 +1,10 @@
 skip_on_travis()
 skip_on_cran()
 
-load("bplrhmc_expect.rda")
+SEED <- 1001
 
 set.seed(SEED)
+
 data("colon")
 dat <- split_data(colon$X, colon$y, p.train = 0.9)
 
@@ -28,35 +29,63 @@ expect_equal_htlr <- function(actual, expected)
 }
 
 test_that("colon500_t1_s10_eta10_bcbc_bi", {
+  
   set.seed(SEED)
   fit <- htlr_fit(X_tr = dat$x.tr, y_tr = dat$y.tr, X_ts = dat$x.te,
                   fsel = 1L:500, ptype = "t", alpha = 1, s = -10, eta = 10,
                   initial_state = "bcbcsfrda", iters_h = 5, iters_rmc = 5, thin = 1)
-  expect_equal_htlr(fit, colon500_t1_s10_eta10_bcbc_bi)
+  
+  set.seed(SEED)
+  expected <- HTLR.old::htlr_fit(X_tr = dat$x.tr, y_tr = dat$y.tr, X_ts = dat$x.te,
+                               fsel = 1L:500, ptype = "t", alpha = 1, s = -10, eta = 10,
+                               initial_state = "bcbcsfrda", iters_h = 5, iters_rmc = 5, thin = 1) 
+    
+  expect_equal_htlr(fit, expected)
 })
 
 test_that("sim_t1_s10_eta10_bcbc_mul", {
+  
   set.seed(SEED)
   fit <- htlr_fit(X_tr = dat3$x.tr, y_tr = dat3$y.tr, X_ts = dat3$x.te,
                   ptype = "t", alpha = 1, s = -10, eta = 10,
                   initial_state = "bcbcsfrda", iters_h = 5, iters_rmc = 5, thin = 1)
-  expect_equal_htlr(fit, sim_t1_s10_eta10_bcbc_mul)
+  
+  set.seed(SEED)
+  expected <- HTLR.old::htlr_fit(X_tr = dat3$x.tr, y_tr = dat3$y.tr, X_ts = dat3$x.te,
+                                 ptype = "t", alpha = 1, s = -10, eta = 10,
+                                 initial_state = "bcbcsfrda", iters_h = 5, iters_rmc = 5, thin = 1)
+  
+  expect_equal_htlr(fit, expected)
 })
 
 test_that("colon500_neg1_s10_eta0_bcbc_bi", {
+  
   set.seed(SEED)
   fit <- htlr_fit(X_tr = dat$x.tr, y_tr = dat$y.tr, X_ts = dat$x.te,
                   fsel = 1L:500, ptype = "neg", alpha = 1, s = -10,
                   initial_state = "bcbcsfrda", iters_h = 5, iters_rmc = 5, thin = 1)
-  expect_equal_htlr(fit, colon500_neg1_s10_eta0_bcbc_bi)
+  
+  set.seed(SEED)
+  expected <- HTLR.old::htlr_fit(X_tr = dat$x.tr, y_tr = dat$y.tr, X_ts = dat$x.te,
+                                 fsel = 1L:500, ptype = "neg", alpha = 1, s = -10,
+                                 initial_state = "bcbcsfrda", iters_h = 5, iters_rmc = 5, thin = 1)
+  
+  expect_equal_htlr(fit, expected)
 })
 
 test_that("colon500_ghs1_s10_eta0_bcbc_bi", {
+  
   set.seed(SEED)
   fit <- htlr_fit(X_tr = dat$x.tr, y_tr = dat$y.tr, X_ts = dat$x.te,
                   fsel = 1L:500, ptype = "ghs", alpha = 1, s = -10,
                   initial_state = "bcbcsfrda", iters_h = 5, iters_rmc = 5, thin = 1)
-  expect_equal_htlr(fit, colon500_ghs1_s10_eta0_bcbc_bi)
+  
+  set.seed(SEED)
+  expected <- HTLR.old::htlr_fit(X_tr = dat$x.tr, y_tr = dat$y.tr, X_ts = dat$x.te,
+                                 fsel = 1L:500, ptype = "ghs", alpha = 1, s = -10,
+                                 initial_state = "bcbcsfrda", iters_h = 5, iters_rmc = 5, thin = 1)
+  
+  expect_equal_htlr(fit, expected)
 })
 
 # test_that("colon500_t1_s10_eta10_lasso_bi", {
@@ -64,21 +93,26 @@ test_that("colon500_ghs1_s10_eta0_bcbc_bi", {
 #   fit <- htlr_fit(X_tr = dat$x.tr, y_tr = dat$y.tr, X_ts = dat$x.te,
 #                   fsel = 1L:500, ptype = "t", alpha = 1, s = -10, eta = 10,
 #                   initial_state = "lasso", iters_h = 0, iters_rmc = 1, thin = 1)
-#   expect_equal_htlr(fit, colon500_t1_s10_eta10_lasso_bi)
+#   
+#   set.seed(SEED)
+#   expected <- HTLR.old::htlr_fit(X_tr = dat$x.tr, y_tr = dat$y.tr, X_ts = dat$x.te,
+#                                  fsel = 1L:500, ptype = "t", alpha = 1, s = -10, eta = 10,
+#                                  initial_state = "lasso", iters_h = 0, iters_rmc = 1, thin = 1)
+#   expect_equal_htlr(fit, expected)
 # })
 
-# HoSC <- list("x.train" = read.csv("../../data-raw/HoCS_train_data.csv", header = F),
-#              "x.test" = read.csv("../../data-raw/HoCS_test_data.csv", header = F),
-#              "y.train" = rep(1:3, each = 10),
-#              "y.test" = c(rep(1, 50), rep(2, 27), rep(3, 52)))
-# 
-# test_that("data_with_singular_col", {
-#   fit.1 <- htlr(X = HoSC$x.train, y = HoSC$y.train, init = "bcbc", iter = 10)
-#   fit.2 <- htlr_fit(X_tr = HoSC$x.train, y_tr = HoSC$y.train, ptype = "t",
-#                     initial_state = "lasso", iters_h = 5, iters_rmc = 5, thin = 1)
-#   
-#   expect_equal(length(fit.1$featur$fsel), 86)
-#   expect_equal(length(fit.2$featur$fsel), 86)
-#   
-#   pred <- predict(fit.1, HoSC$x.test)
-# })
+HoSC <- list("x.train" = read.csv("../../data-raw/HoCS_train_data.csv", header = F),
+             "x.test" = read.csv("../../data-raw/HoCS_test_data.csv", header = F),
+             "y.train" = rep(1:3, each = 10),
+             "y.test" = c(rep(1, 50), rep(2, 27), rep(3, 52)))
+
+test_that("data_with_singular_col", {
+  fit.1 <- htlr(X = HoSC$x.train, y = HoSC$y.train, init = "bcbc", iter = 10)
+  fit.2 <- htlr_fit(X_tr = HoSC$x.train, y_tr = HoSC$y.train, ptype = "t",
+                    initial_state = "lasso", iters_h = 5, iters_rmc = 5, thin = 1)
+
+  expect_equal(length(fit.1$featur$fsel), 86)
+  expect_equal(length(fit.2$featur$fsel), 86)
+
+  pred <- predict(fit.1, HoSC$x.test)
+})
