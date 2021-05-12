@@ -8,9 +8,6 @@ cache:
 r_packages:
   - covr
 
-before_install:
-  - Rscript inst/install_old_htlr.R
-
 after_success:
   - Rscript -e 'library(covr); codecov(token = Sys.getenv("CODE_COV_TOKEN"))'
   
@@ -24,10 +21,10 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            # - clang-6.0
-            # - libgfortran3
-            - gcc-8 
-            - g++-8
+            - clang-6.0
+            - libgfortran3
+            # - gcc-8 
+            # - g++-8
       env:
-        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
-        # - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
+        # - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
+        - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
