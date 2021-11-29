@@ -143,4 +143,4 @@ htlr <-
            hmc_sgmcut = cut, initial_state = init, 
            silence = !verbose, pre.legacy = pre.legacy)
 
-}
+  }
