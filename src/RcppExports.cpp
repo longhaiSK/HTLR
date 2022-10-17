@@ -6,6 +6,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // sample_trunc_norm
 Rcpp::NumericVector sample_trunc_norm(const int n, const double lb, const double ub, const bool verbose);
 RcppExport SEXP _HTLR_sample_trunc_norm(SEXP nSEXP, SEXP lbSEXP, SEXP ubSEXP, SEXP verboseSEXP) {
