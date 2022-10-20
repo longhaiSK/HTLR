@@ -19,8 +19,6 @@
 #' 
 #' @usage data("colon")
 #' 
-#' @source \url{ftp://stat.ethz.ch/Manuscripts/dettling/bagboost.pdf}
-#' 
 #' @references Dettling Marcel, and Peter Bühlmann (2002). Supervised clustering of genes.
 #' \emph{Genome biology}, 3(12), research0069-1.
 #' 
