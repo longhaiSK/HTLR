@@ -44,13 +44,13 @@ Development version on [GitHub](https://github.com/):
 devtools::install_github("longhaiSK/HTLR")
 ```
 
-This package uses library [Armadillo](http://arma.sourceforge.net/) for
+This package uses library [Armadillo](https://arma.sourceforge.net/) for
 carrying out most of matrix operations, you may get speed benefits from
 using an alternative BLAS library such as
-[ATLAS](http://math-atlas.sourceforge.net/),
-[OpenBLAS](http://www.openblas.net/) or [Intel
+[ATLAS](https://math-atlas.sourceforge.net/),
+[OpenBLAS](https://www.openblas.net/) or [Intel
 MKL](https://software.intel.com/en-us/mkl). Check out this
-[post](http://brettklamer.com/diversions/statistical/faster-blas-in-r/)
+[post](https://brettklamer.com/diversions/statistical/faster-blas-in-r/)
 for the comparision and the installation guide. Windows users may
 consider installing [Microsoft R Open](https://mran.microsoft.com/open).
 
