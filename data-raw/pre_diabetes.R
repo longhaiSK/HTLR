@@ -21,7 +21,7 @@ names(diabetes) <- tolower(names(diabetes))
 
 str(diabetes)
 
-corrplot(cor(diabetes[, c(9,1:8)]))
+corrplot(cor(diabetes[, c(9, 1:8)]))
 
 # preparing the dataset
 diabetes392 <- list("X" = model.matrix(outcome ~ . - 1, data = diabetes),
