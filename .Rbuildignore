@@ -11,3 +11,4 @@
 ^LICENSE$
 ^.github$
 ^tests/testthat\.rda$
+^\.github$
