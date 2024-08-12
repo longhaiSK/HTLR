@@ -17,6 +17,6 @@
 #'
 #' @name HTLR-package
 #' 
-#' @docType _PACKAGE
+#' @docType package
 #' 
 NULL
