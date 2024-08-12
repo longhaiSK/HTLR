@@ -1,4 +1,4 @@
-skip_on_travis()
+skip_on_ci()
 skip_on_cran()
 
 SEED <- 1001
