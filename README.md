@@ -7,10 +7,10 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/HTLR)](https://CRAN.R-project.org/package=HTLR)
-[![R-CMD-check](https://github.com/longhaiSK/HTLR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/longhaiSK/HTLR/actions/workflows/R-CMD-check.yaml)
+[![build](https://github.com/longhaiSK/HTLR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/longhaiSK/HTLR/actions/workflows/R-CMD-check.yaml)
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
-[![](https://cranlogs.r-pkg.org/badges/HTLR)](https://cran.r-project.org/package=HTLR)
+[![downloads](https://cranlogs.r-pkg.org/badges/grand-total/HTLR)](https://cran.r-project.org/package=HTLR)
 
 <!-- badges: end -->
 
