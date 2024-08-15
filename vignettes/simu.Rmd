@@ -44,7 +44,7 @@ There are 4 groups of features:
 * feature #11 - #2000: noise features without relationship with the y
 
 ```{r}
-SEED <- 1234
+SEED <- 123
 
 n <- 510
 p <- 2000
@@ -162,4 +162,3 @@ More details about the prediction result:
 predict(fit.t, dat$x.te, type = "response") %>%
   evaluate_pred(y.true = dat$y.te)
 ```
-
