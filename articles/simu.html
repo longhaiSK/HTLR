@@ -92,7 +92,7 @@ correlated</p></li>
 y</p></li>
 </ul>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">SEED</span> <span class="op">&lt;-</span> <span class="fl">1234</span></span>
+<code class="sourceCode R"><span><span class="va">SEED</span> <span class="op">&lt;-</span> <span class="fl">123</span></span>
 <span></span>
 <span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">510</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">2000</span></span>
@@ -132,7 +132,7 @@ y</p></li>
 <span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gendata_FAM.html">gendata_FAM</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">means</span>, <span class="va">A</span>, sd_g <span class="op">=</span> <span class="fl">0.5</span>, stdx <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 4</span></span>
-<span><span class="co">#&gt;  $ X  : num [1:510, 1:2000] -1.423 -0.358 -1.204 -0.556 0.83 ...</span></span>
+<span><span class="co">#&gt;  $ X  : num [1:510, 1:2000] -0.684 0.912 -0.997 -1.262 0.613 ...</span></span>
 <span><span class="co">#&gt;   ..- attr(*, "dimnames")=List of 2</span></span>
 <span><span class="co">#&gt;   .. ..$ : NULL</span></span>
 <span><span class="co">#&gt;   .. ..$ : chr [1:2000] "V1" "V2" "V3" "V4" ...</span></span>
@@ -150,16 +150,16 @@ y</p></li>
 <span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/split_data.html">split_data</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">X</span>, <span class="va">dat</span><span class="op">$</span><span class="va">y</span>, n.train <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 4</span></span>
-<span><span class="co">#&gt;  $ x.tr: num [1:500, 1:2000] 0.889 -0.329 1.58 0.213 0.214 ...</span></span>
+<span><span class="co">#&gt;  $ x.tr: num [1:500, 1:2000] -0.903 -0.632 1.111 1.446 -0.43 ...</span></span>
 <span><span class="co">#&gt;   ..- attr(*, "dimnames")=List of 2</span></span>
 <span><span class="co">#&gt;   .. ..$ : NULL</span></span>
 <span><span class="co">#&gt;   .. ..$ : chr [1:2000] "V1" "V2" "V3" "V4" ...</span></span>
-<span><span class="co">#&gt;  $ y.tr: int [1:500] 2 3 2 1 2 3 3 3 1 2 ...</span></span>
-<span><span class="co">#&gt;  $ x.te: num [1:10, 1:2000] 0.83 -0.555 1.041 -1.267 1.15 ...</span></span>
+<span><span class="co">#&gt;  $ y.tr: int [1:500] 1 1 2 2 3 3 3 1 2 1 ...</span></span>
+<span><span class="co">#&gt;  $ x.te: num [1:10, 1:2000] 1.955 1.188 -0.942 -1.387 0.879 ...</span></span>
 <span><span class="co">#&gt;   ..- attr(*, "dimnames")=List of 2</span></span>
 <span><span class="co">#&gt;   .. ..$ : NULL</span></span>
 <span><span class="co">#&gt;   .. ..$ : chr [1:2000] "V1" "V2" "V3" "V4" ...</span></span>
-<span><span class="co">#&gt;  $ y.te: int [1:10] 2 3 2 1 2 2 2 1 2 3</span></span></code></pre></div>
+<span><span class="co">#&gt;  $ y.te: int [1:10] 2 2 3 3 2 3 1 2 2 2</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="model-fitting">Model Fitting<a class="anchor" aria-label="anchor" href="#model-fitting"></a>
@@ -171,7 +171,7 @@ y</p></li>
 <span>  <span class="va">fit.t</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/htlr.html">htlr</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">x.tr</span>, <span class="va">dat</span><span class="op">$</span><span class="va">y.tr</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt; 222.312   0.106  56.576</span></span>
+<span><span class="co">#&gt; 232.183   0.151  58.964</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">fit.t</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Fitted HTLR model </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -202,7 +202,7 @@ y</p></li>
 <span>                 iter <span class="op">=</span> <span class="fl">4000</span>, init <span class="op">=</span> <span class="st">"bcbc"</span>, keep.warmup.hist <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt; 358.195   0.531  91.496</span></span>
+<span><span class="co">#&gt; 357.332   0.555  91.496</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">fit.t2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Fitted HTLR model </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -232,21 +232,21 @@ y</p></li>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit.t2</span>, features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">100</span>, <span class="fl">200</span>, <span class="fl">1000</span>, <span class="fl">2000</span><span class="op">)</span>, method <span class="op">=</span> <span class="va">median</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                 class 2       class 3</span></span>
-<span><span class="co">#&gt; Intercept -3.4152441685 -0.9029461257</span></span>
-<span><span class="co">#&gt; V1        10.9550978781  0.1139902897</span></span>
-<span><span class="co">#&gt; V2        -6.8077131737 -0.0722711733</span></span>
-<span><span class="co">#&gt; V3         0.0378395213  3.4469321695</span></span>
-<span><span class="co">#&gt; V4         0.0132365292 -0.0003944103</span></span>
-<span><span class="co">#&gt; V5        -0.0059859587  0.0089446064</span></span>
-<span><span class="co">#&gt; V6         0.0004462757 -0.0007938343</span></span>
-<span><span class="co">#&gt; V7        -0.0012941611  0.4338033125</span></span>
-<span><span class="co">#&gt; V8         0.0025413224  0.0003075648</span></span>
-<span><span class="co">#&gt; V9        -0.0092135141 -0.0108003250</span></span>
-<span><span class="co">#&gt; V10        0.0045097384  0.0092975612</span></span>
-<span><span class="co">#&gt; V100       0.0033002759 -0.0017995756</span></span>
-<span><span class="co">#&gt; V200       0.0060097424 -0.0036481106</span></span>
-<span><span class="co">#&gt; V1000      0.0035715341  0.0121408681</span></span>
-<span><span class="co">#&gt; V2000     -0.0056809289 -0.0004195035</span></span>
+<span><span class="co">#&gt; Intercept -2.7354013973 -1.119076e+00</span></span>
+<span><span class="co">#&gt; V1         8.2082272603 -6.028105e-01</span></span>
+<span><span class="co">#&gt; V2        -4.5701096071  2.313064e-01</span></span>
+<span><span class="co">#&gt; V3        -0.9363523582  3.214379e+00</span></span>
+<span><span class="co">#&gt; V4         0.0009046690 -2.152431e-03</span></span>
+<span><span class="co">#&gt; V5        -0.0051665924 -5.631749e-05</span></span>
+<span><span class="co">#&gt; V6        -0.0072774286  1.654051e-03</span></span>
+<span><span class="co">#&gt; V7        -0.0013794333 -2.153372e-03</span></span>
+<span><span class="co">#&gt; V8        -0.0047661861 -7.569987e-03</span></span>
+<span><span class="co">#&gt; V9        -0.0060317708  2.927544e-04</span></span>
+<span><span class="co">#&gt; V10       -0.0005934682  1.050192e-02</span></span>
+<span><span class="co">#&gt; V100      -0.0039015133  1.115288e-02</span></span>
+<span><span class="co">#&gt; V200      -0.0066909487  6.128469e-04</span></span>
+<span><span class="co">#&gt; V1000      0.0051105291  6.717532e-03</span></span>
+<span><span class="co">#&gt; V2000     -0.0058668522 -7.001962e-03</span></span>
 <span><span class="co">#&gt; attr(,"stats")</span></span>
 <span><span class="co">#&gt; [1] "median"</span></span></code></pre></div>
 <p>Plot interval estimates from posterior draws using <a href="https://mc-stan.org/bayesplot/index.html" class="external-link">bayesplot</a>:</p>
@@ -274,52 +274,52 @@ is greatly reduced.</p>
 <span><span class="co">#&gt;       y.pred</span></span>
 <span><span class="co">#&gt;  [1,]      2</span></span>
 <span><span class="co">#&gt;  [2,]      2</span></span>
-<span><span class="co">#&gt;  [3,]      2</span></span>
+<span><span class="co">#&gt;  [3,]      3</span></span>
 <span><span class="co">#&gt;  [4,]      3</span></span>
 <span><span class="co">#&gt;  [5,]      2</span></span>
-<span><span class="co">#&gt;  [6,]      2</span></span>
-<span><span class="co">#&gt;  [7,]      2</span></span>
-<span><span class="co">#&gt;  [8,]      3</span></span>
+<span><span class="co">#&gt;  [6,]      3</span></span>
+<span><span class="co">#&gt;  [7,]      3</span></span>
+<span><span class="co">#&gt;  [8,]      2</span></span>
 <span><span class="co">#&gt;  [9,]      2</span></span>
-<span><span class="co">#&gt; [10,]      3</span></span>
+<span><span class="co">#&gt; [10,]      2</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"prediction accuracy of model 1 = "</span>, </span>
 <span>             <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">y.class</span> <span class="op">==</span> <span class="va">dat</span><span class="op">$</span><span class="va">y.te</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">y.class</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "prediction accuracy of model 1 = 0.7"</span></span>
+<span><span class="co">#&gt; [1] "prediction accuracy of model 1 = 0.9"</span></span>
 <span></span>
 <span><span class="va">y.class2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fit.t2</span>, <span class="va">dat</span><span class="op">$</span><span class="va">x.te</span>, type <span class="op">=</span> <span class="st">"class"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"prediction accuracy of model 2 = "</span>, </span>
 <span>             <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">y.class2</span> <span class="op">==</span> <span class="va">dat</span><span class="op">$</span><span class="va">y.te</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">y.class</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "prediction accuracy of model 2 = 0.7"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "prediction accuracy of model 2 = 0.9"</span></span></code></pre></div>
 <p>More details about the prediction result:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fit.t</span>, <span class="va">dat</span><span class="op">$</span><span class="va">x.te</span>, type <span class="op">=</span> <span class="st">"response"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/evaluate_pred.html">evaluate_pred</a></span><span class="op">(</span>y.true <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">y.te</span><span class="op">)</span></span></code></pre></div>
 <p><img src="simu_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
 <pre><code><span><span class="co">#&gt; $prob_at_truelabels</span></span>
-<span><span class="co">#&gt;  [1] 0.98881252 0.32727524 0.98210498 0.03068972 0.99976125 0.70578256</span></span>
-<span><span class="co">#&gt;  [7] 0.99982799 0.07120373 0.98702519 0.97246844</span></span>
+<span><span class="co">#&gt;  [1] 0.9993980 0.9996598 0.9960531 0.9146809 0.5601952 0.4681349 0.1604013</span></span>
+<span><span class="co">#&gt;  [8] 0.9999976 0.9986511 0.9655200</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $table_eval</span></span>
 <span><span class="co">#&gt;    Case ID True Label Pred. Prob 1 Pred. Prob 2 Pred. Prob 3 Wrong?</span></span>
-<span><span class="co">#&gt; 1        1          2 1.116066e-02 9.888125e-01 2.682052e-05      0</span></span>
-<span><span class="co">#&gt; 2        2          3 1.342592e-01 5.384656e-01 3.272752e-01      1</span></span>
-<span><span class="co">#&gt; 3        3          2 1.789154e-02 9.821050e-01 3.476804e-06      0</span></span>
-<span><span class="co">#&gt; 4        4          1 3.068972e-02 2.751081e-10 9.693103e-01      1</span></span>
-<span><span class="co">#&gt; 5        5          2 3.283030e-05 9.997613e-01 2.059150e-04      0</span></span>
-<span><span class="co">#&gt; 6        6          2 2.309747e-01 7.057826e-01 6.324276e-02      0</span></span>
-<span><span class="co">#&gt; 7        7          2 1.953297e-05 9.998280e-01 1.524749e-04      0</span></span>
-<span><span class="co">#&gt; 8        8          1 7.120373e-02 2.890835e-04 9.285072e-01      1</span></span>
-<span><span class="co">#&gt; 9        9          2 1.286960e-02 9.870252e-01 1.052145e-04      0</span></span>
-<span><span class="co">#&gt; 10      10          3 2.752929e-02 2.271286e-06 9.724684e-01      0</span></span>
+<span><span class="co">#&gt; 1        1          2 2.230163e-04 9.993980e-01 3.789681e-04      0</span></span>
+<span><span class="co">#&gt; 2        2          2 3.397451e-04 9.996598e-01 4.055238e-07      0</span></span>
+<span><span class="co">#&gt; 3        3          3 3.946910e-03 3.274933e-09 9.960531e-01      0</span></span>
+<span><span class="co">#&gt; 4        4          3 8.531913e-02 1.201749e-08 9.146809e-01      0</span></span>
+<span><span class="co">#&gt; 5        5          2 4.363766e-01 5.601952e-01 3.428135e-03      0</span></span>
+<span><span class="co">#&gt; 6        6          3 1.231557e-01 4.087093e-01 4.681349e-01      0</span></span>
+<span><span class="co">#&gt; 7        7          1 1.604013e-01 9.352412e-04 8.386635e-01      1</span></span>
+<span><span class="co">#&gt; 8        8          2 2.383022e-06 9.999976e-01 3.584158e-08      0</span></span>
+<span><span class="co">#&gt; 9        9          2 1.339940e-03 9.986511e-01 8.967895e-06      0</span></span>
+<span><span class="co">#&gt; 10      10          2 3.263762e-02 9.655200e-01 1.842378e-03      0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $amlp</span></span>
-<span><span class="co">#&gt; [1] 0.7662135</span></span>
+<span><span class="co">#&gt; [1] 0.3299063</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $err_rate</span></span>
-<span><span class="co">#&gt; [1] 0.3</span></span>
+<span><span class="co">#&gt; [1] 0.1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $which.wrong</span></span>
-<span><span class="co">#&gt; [1] 2 4 8</span></span></code></pre>
+<span><span class="co">#&gt; [1] 7</span></span></code></pre>
 <div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-li2018fully" class="csl-entry">
 Li, Longhai, and Weixin Yao. 2018. <span>“Fully Bayesian Logistic
