@@ -20,7 +20,8 @@ htlr(
   leap.stepsize = 0.3,
   cut = 0.05,
   verbose = FALSE,
-  pre.legacy = FALSE,
+  rep.legacy = FALSE,
+  keep.warmup.hist = FALSE,
   ...
 )
 }
@@ -79,15 +80,17 @@ The number of warmup iterations should not be larger than iter and the default i
 
 \item{verbose}{Logical; setting it to \code{TRUE} for tracking MCMC sampling iterations.}
 
-\item{pre.legacy}{Logical; if \code{TRUE}, the output produced in \code{HTLR} versions up to 
+\item{rep.legacy}{Logical; if \code{TRUE}, the output produced in \code{HTLR} versions up to 
 legacy-3.1-1 is reproduced. The speed will be typically slower than non-legacy mode on
 multi-core machine. Default is \code{FALSE}.}
+
+\item{keep.warmup.hist}{Warmup iterations are not recorded by default, set \code{TRUE} to enable it.}
 
 \item{...}{Other optional parameters:
 \itemize{
   \item rda.alpha - A user supplied alpha value for \code{\link{bcbcsf_deltas}}. Default: 0.2.
   \item lasso.lambda - A user supplied lambda sequence for \code{\link{lasso_deltas}}. 
-  Default: \{.01, .02, \ldots, .05\}. Will be ignored if \code{pre.legacy} is set to \code{TRUE}.
+  Default: \{.01, .02, \ldots, .05\}. Will be ignored if \code{rep.legacy} is set to \code{TRUE}.
 }}
 }
 \value{

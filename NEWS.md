@@ -1,3 +1,13 @@
+# HTLR 0.4-3
+
+## New Features
+
+* Added option for users to keep samples of warmup iterations.
+
+## Improvements
+
+* Bug fix [[#7](https://github.com/longhaiSK/HTLR/issues/7)].
+
 # HTLR 0.4-2
 
 ## New Features
@@ -40,7 +50,7 @@
 
 * Added new dataset `colon`. 
 
-# HTLR 0.3-1
+# HTLR 0.3
 
 ## Note
 

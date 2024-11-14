@@ -1,3 +1,9 @@
+url: https://longhaisk.github.io/HTLR/
+
+template:
+  bootstrap: 5
+  bootswatch: sandstone
+
 reference:
 - title: Model fitting
   contents:
@@ -14,6 +20,10 @@ reference:
   contents:
   - gendata_FAM
   - gendata_MLR 
+#- title: Feature screening
+#  contents:
+#  - order_ftest
+#  - order_kruskal
 - title: Utility functions 
   contents:
   - std

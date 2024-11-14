@@ -2,6 +2,7 @@
 % Please edit documentation in R/HTLR-package.R
 \docType{package}
 \name{HTLR-package}
+\alias{HTLR}
 \alias{HTLR-package}
 \title{Bayesian Logistic Regression with Heavy-Tailed Priors}
 \description{
@@ -20,3 +21,21 @@ Longhai Li and Weixin Yao (2018). Fully Bayesian Logistic Regression
 with Hyper-Lasso Priors for High-dimensional Feature Selection.
 \emph{Journal of Statistical Computation and Simulation} 2018, 88:14, 2827-2851.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://longhaisk.github.io/HTLR/}
+  \item Report bugs at \url{https://github.com/longhaiSK/HTLR/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Longhai Li \email{longhai@math.usask.ca} (\href{https://orcid.org/0000-0002-3074-8584}{ORCID})
+
+Authors:
+\itemize{
+  \item Steven Liu \email{xil865@usask.ca}
+}
+
+}
+\keyword{internal}

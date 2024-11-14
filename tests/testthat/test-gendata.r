@@ -1,11 +1,18 @@
-load("gendata_expect.rda")
+skip_on_ci()
+skip_on_cran()
+
+SEED <- 1001
 
 test_that("sim MLR works", {
   set.seed(SEED)
+  expect <- HTLR.old::htlr_gendata(n = 50, p = 10)
+  
+  set.seed(SEED)
   actual <- gendata_MLR(n = 50, p = 10)
-  expect_equal(unname(actual$X), dat.mlr$X)
-  expect_equal(actual$y, dat.mlr$y)
-  expect_equal(actual$deltas, dat.mlr$deltas)
+  
+  expect_equal(unname(actual$X), expect$X)
+  expect_equal(actual$y, expect$y)
+  expect_equal(actual$deltas, expect$deltas)
 })
 
 test_that("sim FAM works", {
@@ -29,11 +36,15 @@ test_that("sim FAM works", {
     c(0, 0, 1),
     c(0, 0, 1)
   )
+  
+  set.seed(SEED)
+  expect <- HTLR.old::gendata_fam(n, means, A, sd_g = 0.5, stdx = TRUE)
+  
   set.seed(SEED)
   actual <- gendata_FAM(n, means, A, sd_g = 0.5, stdx = TRUE)
   
-  expect_equal(unname(actual$X), dat.fam$X)
-  expect_equal(actual$y, dat.fam$y)
-  expect_equal(actual$muj, dat.fam$muj)
-  expect_equal(actual$SGM, dat.fam$SGM)
+  expect_equal(unname(actual$X), expect$X)
+  expect_equal(actual$y, expect$y)
+  expect_equal(actual$muj, expect$muj)
+  expect_equal(actual$SGM, expect$SGM)
 })

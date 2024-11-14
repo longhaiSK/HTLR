@@ -11,7 +11,7 @@
 #' or "neg" (normal-exponential-gamma).
 #' @param df The degree freedom (aka alpha) of t/ghs/neg prior for coefficients.
 #' @param logw The log scale of priors for coefficients.
-# @param eta The \code{sd} of the normal prior for logw. When it is set to 0, logw is fixed. 
+#' @param eta The \code{sd} of the normal prior for logw. When it is set to 0, logw is fixed. 
 #' Otherwise, logw is assigned with a normal prior and it will be updated during sampling.
 #' @param sigmab0 The \code{sd} of the normal prior for the intercept.
 #' 
@@ -27,17 +27,17 @@
 htlr_prior <- function(ptype = c("t", "ghs", "neg"), 
                        df = 1,
                        logw = -(1 / df) * 10,
-                       #eta = (df > 2) * 100,
+                       eta = ifelse(df > 1, 3, 0),
                        sigmab0 = 2000)
 {
   ptype <- match.arg(ptype)
-  #if (ptype != "t" & eta != 0)
-  #  warning("random logw currently only supports t prior")
+  if (ptype != "t" & eta != 0)
+    warning("random logw currently only supports t prior")
   list(
     "ptype" = ptype,
     "alpha" = df,
     "logw" = logw,
-    #"eta" = eta,
+    "eta" = eta,
     "sigmab0" = sigmab0
   )
 }
@@ -69,7 +69,7 @@ split_data <- function(X,
                        p.train = 0.7,
                        n.train = round(nrow(X) * p.train))
 {
-  stopifnot(nrow(X) == length(y))
+  stopifnot(nrow(X) == length(y), p.train > 0, p.train < 1)
   
   tr.row <- sample(1L:nrow(X), n.train, replace = FALSE)
   
@@ -86,7 +86,7 @@ split_data <- function(X,
   )
 }
 
-## compute sd of betas
+# compute sd of betas
 # @export
 comp_sdb <- function (deltas, removeint = TRUE, normalize = FALSE)
 {
@@ -123,9 +123,10 @@ print.htlr.fit <- function(x, ...)
   info.model <- sprintf("Model:\n
   prior dist:\t%s (df = %d, log(w) = %.1f)
   init state:\t%s 
+  burn-in:\t%d
   sample:\t%d (posterior sample size)",
   x$prior$ptype, x$prior$alpha, x$prior$logw, 
-  x$mc.param$init, x$mc.param$iter.rmc)
+  x$mc.param$init, x$mc.param$iter.warm, x$mc.param$iter.rmc)
   
   info.est <- sprintf("Estimates:\n
   model size:\t%d (w/ intercept)
@@ -135,17 +136,17 @@ print.htlr.fit <- function(x, ...)
   cat("Fitted HTLR model", "\n\n", info.data, "\n\n", info.model, "\n\n", info.est)
 }
 
-## try to install suggested packages when needed
-## author: Michael W. Kearney
-## source: https://github.com/ropensci/rtweet/blob/master/R/utils.R
+# try to install suggested packages when needed
+# @author: Michael W. Kearney
+# @source: https://github.com/ropensci/rtweet/blob/master/R/utils.R
 try_require <- function(pkg, f = NULL) {
-  if (is.null(f)) {
+  if (is.null(f))
     f <- "this action"
-  } else {
+  else
     f <- paste0("`", f, "`")
-  }
   
-  if (requireNamespace(pkg, quietly = TRUE)) {
+  if (requireNamespace(pkg, quietly = TRUE)) 
+  {
     library(pkg, character.only = TRUE)
     return(invisible())
   }
@@ -153,6 +154,14 @@ try_require <- function(pkg, f = NULL) {
   stop(paste0("Package `", pkg, "` required for ", f , ".\n",
               "Please install and try again."), call. = FALSE)
 }
+
+# @param rstudio launch in rstudio viewer instead of web browser? 
+# @param ... passed to shiny::runApp
+# launch_shiny <- function(launch.browser = TRUE, ...) {
+#   try_require("shiny", f = "launch_shiny()")
+#   shiny::runApp(system.file("app", package = "HTLR"), 
+#                 launch.browser = launch.browser, ...)
+# }
 
 #' Pipe operator
 #'

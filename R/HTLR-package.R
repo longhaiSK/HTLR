@@ -19,4 +19,6 @@
 #' 
 #' @docType package
 #' 
+#' @keywords internal
+#' 
 NULL

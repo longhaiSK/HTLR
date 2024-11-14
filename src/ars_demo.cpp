@@ -30,13 +30,13 @@ Rcpp::NumericVector sample_trunc_norm(
   };
 
   double init_tpoint = 0;
-  if (R_FINITE(lb) & R_FINITE(ub))
+  if (R_FINITE(lb) && R_FINITE(ub))
     init_tpoint = (lb + ub) / 2;
-  if (R_FINITE(lb) & (!R_FINITE(ub)))
+  if (R_FINITE(lb) && (!R_FINITE(ub)))
     init_tpoint = lb + 1;
-  if ((!R_FINITE(lb)) & R_FINITE(ub))
+  if ((!R_FINITE(lb)) && R_FINITE(ub))
     init_tpoint = ub - 1;
-  if ((!R_FINITE(lb)) & (!R_FINITE(ub)))
+  if ((!R_FINITE(lb)) && (!R_FINITE(ub)))
     init_tpoint = 0;
 
   // Do adaptive rejection sampling here

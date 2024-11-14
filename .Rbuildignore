@@ -10,3 +10,5 @@
 ^data-raw$
 ^LICENSE$
 ^.github$
+^tests/testthat\.rda$
+^\.github$

@@ -47,9 +47,11 @@
 #' each HMC updating step.
 #' 
 #' @param silence Setting it to \code{FALSE} for tracking MCMC sampling iterations. 
-#' @param pre.legacy Logical; if \code{TRUE}, the output produced in \code{HTLR} versions up to 
+#' @param rep.legacy Logical; if \code{TRUE}, the output produced in \code{HTLR} versions up to 
 #' legacy-3.1-1 is reproduced. The speed would be typically slower than non-legacy mode on
 #' multi-core machine.  
+#' 
+#' @param keep.warmup.hist Warmup iterations are not recorded by default, set \code{TRUE} to enable it. 
 #' 
 #' @param X_ts Test data which predictions are to be made.
 #' @param predburn,predthin For prediction base on \code{X_ts} (when supplied), \code{predburn} of 
@@ -59,7 +61,7 @@
 #' setting up BCBCSF initial state. Default: 0.2. 
 #' @param lasso.lambda - A user supplied lambda sequence for \code{\link{lasso_deltas}} when 
 #' setting up Lasso initial state. Default: \{.01, .02, \ldots, .05\}. Will be ignored if 
-#' \code{pre.legacy} is set to \code{TRUE}. 
+#' \code{rep.legacy} is set to \code{TRUE}. 
 #' 
 #' @return A list of fitting results. If \code{X_ts} is not provided, the list is an object 
 #' with S3 class \code{htlr.fit}.  
@@ -80,12 +82,11 @@ htlr_fit <- function (
     ptype = c("t", "ghs", "neg"), sigmab0 = 2000, alpha = 1, s = -10, eta = 0,  ## prior
     iters_h = 1000, iters_rmc = 1000, thin = 1,  ## mc iterations
     leap_L = 50, leap_L_h = 5, leap_step = 0.3,  hmc_sgmcut = 0.05, ## hmc
-    initial_state = "lasso", silence = TRUE, pre.legacy = TRUE, 
+    initial_state = "lasso", keep.warmup.hist = FALSE, silence = TRUE, rep.legacy = TRUE,
     alpha.rda = 0.2, lasso.lambda = seq(.05, .01, by = -.01),
     X_ts = NULL, predburn = NULL, predthin = 1)
 {
   #------------------------------- Input Checking -------------------------------#
-  
   stopifnot(iters_rmc > 0, iters_h >= 0, thin > 0, leap_L > 0, leap_L_h > 0,
             alpha > 0, eta >= 0, sigmab0 >= 0,
             ptype %in% c("t", "ghs", "neg"))
@@ -171,7 +172,7 @@ htlr_fit <- function (
     }
     else if (initial_state == "lasso")
     {
-      if (pre.legacy) 
+      if (rep.legacy) 
         lasso.lambda <- NULL # will be chosen by CV
       deltas <- lasso_deltas(X_tr, y1, lambda = lasso.lambda, verbose = !silence)
       init.type <- "lasso"
@@ -209,7 +210,7 @@ htlr_fit <- function (
       ## init state
       deltas = deltas, sigmasbt = sigmasbt,
       ## other control
-      silence = as.integer(silence), legacy = pre.legacy)
+      keep_warmup_hist = keep.warmup.hist, silence = as.integer(silence), legacy = rep.legacy)
   
   # add prior hyperparameter info
   fit$prior <- htlr_prior(ptype, alpha, s, sigmab0)

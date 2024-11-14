@@ -14,7 +14,10 @@
 #' and only every \code{thin} are used.
 #' 
 #' @param usedmc Indices of Markov chain iterations used for inference. 
-#' If supplied, \code{burn} and \code{thin} will be ignored.  
+#' If supplied, \code{burn} and \code{thin} will be ignored.
+#' 
+#' @param rep.legacy To reproduce (actually incorrect) results in legacy version.
+#' See \url{https://github.com/longhaiSK/HTLR/issues/7}. 
 #' 
 #' @return A matrix of predictive probabilities, with rows for cases, cols for classes.
 #' 
@@ -22,7 +25,7 @@
 #' 
 #' @keywords internal
 #' 
-htlr_predict <- function(X_ts, fithtlr = NULL, deltas = NULL, burn = NULL, thin = NULL, usedmc = NULL)
+htlr_predict <- function(X_ts, fithtlr = NULL, deltas = NULL, burn = NULL, thin = 1, usedmc = NULL, rep.legacy = TRUE)
 {
   if (is.vector(X_ts))
     X_ts <- matrix(X_ts, 1)
@@ -41,17 +44,16 @@ htlr_predict <- function(X_ts, fithtlr = NULL, deltas = NULL, burn = NULL, thin 
     if (is.null(usedmc))
     {
       if (is.null(burn))
-        burn <- floor(no_mcspl * 0.1)
-      if (is.null(thin))
-        thin <- 1
-      usedmc <- seq(burn + 1, no_mcspl, by = thin)
+        usedmc <- get_sample_indice(no_mcspl, fithtlr$mc.param$iter.rmc, p.burn.extra = 0.1, thin = thin, ignore.first = !rep.legacy)
+      else
+        usedmc <- get_sample_indice(no_mcspl, fithtlr$mc.param$iter.rmc, n.burn.extra = burn, thin = thin, ignore.first = !rep.legacy)
     }
     
     no_used <- length(usedmc)
     
     ## read deltas for prediction
     longdeltas <- matrix(fithtlr$mcdeltas[, , usedmc], nrow = p + 1)
-    
+
     ## selecting features and standardizing
     fsel <- fithtlr$feature$fsel
     X_ts <- X_ts[, fsel, drop = FALSE]
@@ -110,10 +112,10 @@ htlr_predict <- function(X_ts, fithtlr = NULL, deltas = NULL, burn = NULL, thin 
 predict.htlr.fit <- function(object, newx, type = c("response", "class"), ...)
 {
   if (!exists("burn")) burn <- NULL
-  if (!exists("thin")) thin <- NULL
   if (!exists("usedmc")) usedmc <- NULL
+  if (!exists("thin")) thin <- 1
   
-  pred.prob <- htlr_predict(X_ts = newx, fithtlr = object, burn = burn, thin = thin, usedmc = usedmc)
+  pred.prob <- htlr_predict(X_ts = newx, fithtlr = object, burn = burn, thin = thin, usedmc = usedmc, rep.legacy = FALSE)
   
   type <- match.arg(type)
   if (type == "response")

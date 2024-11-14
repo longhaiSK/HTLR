@@ -7,11 +7,11 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/HTLR)](https://CRAN.R-project.org/package=HTLR)
+[![build](https://github.com/longhaiSK/HTLR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/longhaiSK/HTLR/actions/workflows/R-CMD-check.yaml)
 [![Lifecycle:
-maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
-[![](https://cranlogs.r-pkg.org/badges/HTLR)](https://cran.r-project.org/package=HTLR)
-[![Build
-Status](https://travis-ci.org/longhaiSK/HTLR.svg?branch=master)](https://travis-ci.org/longhaiSK/HTLR)
+stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![downloads](https://cranlogs.r-pkg.org/badges/grand-total/HTLR)](https://cran.r-project.org/package=HTLR)
+
 <!-- badges: end -->
 
 *HTLR* performs classification and feature selection by fitting Bayesian
@@ -43,20 +43,19 @@ Development version on [GitHub](https://github.com/):
 devtools::install_github("longhaiSK/HTLR")
 ```
 
-This package uses library [Armadillo](http://arma.sourceforge.net/) for
+This package uses library [Armadillo](https://arma.sourceforge.net/) for
 carrying out most of matrix operations, you may get speed benefits from
 using an alternative BLAS library such as
-[ATLAS](http://math-atlas.sourceforge.net/),
-[OpenBLAS](http://www.openblas.net/) or [Intel
-MKL](https://software.intel.com/en-us/mkl). Check this
-[post](http://brettklamer.com/diversions/statistical/faster-blas-in-r/)
-for the comparision and the installation guide. Windows users may
+[ATLAS](https://math-atlas.sourceforge.net/),
+[OpenBLAS](https://www.openblas.net/) or Intel MKL. Check out this
+[post](https://brettklamer.com/diversions/statistical/faster-blas-in-r/)
+for the comparison and the installation guide. Windows users may
 consider installing [Microsoft R Open](https://mran.microsoft.com/open).
 
 ## Reference
 
 Longhai Li and Weixin Yao (2018). Fully Bayesian Logistic Regression
-with Hyper-Lasso Priors for High-dimensional Feature Selection.  2018,
+with Hyper-Lasso Priors for High-dimensional Feature Selection. 2018,
 88:14, 2827-2851, [the published
 version](https://www.tandfonline.com/doi/full/10.1080/00949655.2018.1490418),
 or [arXiv version](https://arxiv.org/pdf/1405.3319.pdf).
