@@ -1,5 +1,5 @@
 Package: HTLR
-Version: 0.4-4
+Version: 0.5
 Title: Bayesian Logistic Regression with Heavy-Tailed Priors
 Authors@R: c(person(given = "Longhai", family = "Li", role = c("aut", "cre"), email = "longhai@math.usask.ca",
     comment=c(ORCID="0000-0002-3074-8584")), person(given = "Steven", family = "Liu", role = c("aut"), 
@@ -13,22 +13,21 @@ Description: Efficient Bayesian multinomial logistic regression based on heavy-t
 License: GPL-3
 URL: https://longhaisk.github.io/HTLR/
 BugReports: https://github.com/longhaiSK/HTLR/issues
-Depends: R (>= 3.1.0)
+Depends: R (>= 3.6.2)
 Suggests: 
     ggplot2,
     corrplot,
-    testthat (>= 2.1.0),
+    testthat,
     bayesplot,
     knitr,
     rmarkdown
 Imports: 
-    Rcpp (>= 0.12.0),
+    Rcpp (>= 1.0.0),
     BCBCSF,
     glmnet,
     magrittr
-LinkingTo: Rcpp (>= 0.12.0), RcppArmadillo
+LinkingTo: Rcpp (>= 1.0.0), RcppArmadillo
 NeedsCompilation: yes
-SystemRequirements: C++11
 LazyData: true
 Encoding: UTF-8
 RoxygenNote: 7.3.2

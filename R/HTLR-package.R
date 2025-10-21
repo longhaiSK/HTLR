@@ -14,11 +14,7 @@
 #' Longhai Li and Weixin Yao (2018). Fully Bayesian Logistic Regression 
 #' with Hyper-Lasso Priors for High-dimensional Feature Selection.
 #' \emph{Journal of Statistical Computation and Simulation} 2018, 88:14, 2827-2851.
-#'
-#' @name HTLR-package
-#' 
-#' @docType package
 #' 
 #' @keywords internal
 #' 
-NULL
+"_PACKAGE"
