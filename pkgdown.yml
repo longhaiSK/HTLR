@@ -1,9 +1,9 @@
 pandoc: 3.1.11
-pkgdown: 2.1.1
+pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   simu: simu.html
-last_built: 2024-11-14T20:05Z
+last_built: 2025-10-28T03:15Z
 urls:
   reference: https://longhaisk.github.io/HTLR/reference
   article: https://longhaisk.github.io/HTLR/articles
