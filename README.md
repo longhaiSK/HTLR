@@ -3,8 +3,6 @@
 
 ## HTLR: Bayesian Logistic Regression with Heavy-tailed Priors
 
-### a test
-
 <!-- badges: start -->
 
 [![CRAN

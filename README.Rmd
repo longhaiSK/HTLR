@@ -14,7 +14,6 @@ knitr::opts_chunk$set(
 ```
 ## HTLR: Bayesian Logistic Regression with Heavy-tailed Priors
 
-### a test
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/HTLR)](https://CRAN.R-project.org/package=HTLR)
 [![build](https://github.com/longhaiSK/HTLR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/longhaiSK/HTLR/actions/workflows/R-CMD-check.yaml)
