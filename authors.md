@@ -9,7 +9,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/longhaiSK/HTLR/blob/master/inst/CITATION)
+[`inst/CITATION`](https://github.com/longhaiSK/HTLR/blob/v1.0/inst/CITATION)
 
 Li, L., & Yao, W. (2018). Fully Bayesian logistic regression with
 hyper-LASSO priors for high-dimensional feature selection. Journal of

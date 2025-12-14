@@ -117,7 +117,7 @@ system.time(
   fit.t <- htlr(dat$x.tr, dat$y.tr)
 )
 #>    user  system elapsed 
-#> 239.338   0.143  60.465
+#> 240.234   0.164  60.703
 print(fit.t)
 #> Fitted HTLR model 
 #> 
@@ -151,7 +151,7 @@ system.time(
                  iter = 4000, init = "bcbc", keep.warmup.hist = T)
 )
 #>    user  system elapsed 
-#> 370.079   0.854  94.326
+#> 371.925   0.849  94.654
 print(fit.t2)
 #> Fitted HTLR model 
 #> 
