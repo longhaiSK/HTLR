@@ -9,7 +9,7 @@ Description: Efficient Bayesian multinomial logistic regression based on heavy-t
   is sampled with restricted Gibbs sampling for leveraging the high-dimensionality and
   Hamiltonian Monte Carlo for handling the high-correlation among coefficients. A detailed
   description of the method: Li and Yao (2018), 
-  Journal of Statistical Computation and Simulation, 88:14, 2827-2851, <arXiv:1405.3319>.
+  Journal of Statistical Computation and Simulation, 88:14, 2827-2851, <doi:10.48550/arXiv.1405.3319>.
 License: GPL-3
 URL: https://longhaisk.github.io/HTLR/
 BugReports: https://github.com/longhaiSK/HTLR/issues
