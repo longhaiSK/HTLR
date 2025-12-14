@@ -14,7 +14,6 @@ knitr::opts_chunk$set(
 ```
 ## HTLR: Bayesian Logistic Regression with Heavy-tailed Priors
 
-### a test
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/HTLR)](https://CRAN.R-project.org/package=HTLR)
 [![build](https://github.com/longhaiSK/HTLR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/longhaiSK/HTLR/actions/workflows/R-CMD-check.yaml)
@@ -41,7 +40,7 @@ devtools::install_github("longhaiSK/HTLR")
 
 ```
 
-This package uses library [Armadillo](https://arma.sourceforge.net/) for carrying out most of matrix operations, you may get speed benefits from using an alternative BLAS library such as [ATLAS](https://math-atlas.sourceforge.net/), [OpenBLAS](https://www.openblas.net/) or Intel MKL. Check out this [post](https://brettklamer.com/diversions/statistical/faster-blas-in-r/) for the comparison and the installation guide. Windows users may consider installing [Microsoft R Open](https://mran.microsoft.com/open).
+This package uses library [Armadillo](https://arma.sourceforge.net/) for carrying out most of matrix operations, you may get speed benefits from using an alternative BLAS library such as [ATLAS](https://math-atlas.sourceforge.net/), [OpenBLAS](https://www.openblas.net/) or Intel MKL. Check out this [post](https://brettklamer.com/diversions/statistical/faster-blas-in-r/) for the comparison and the installation guide.
 
 ## Reference
 

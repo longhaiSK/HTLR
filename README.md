@@ -49,8 +49,7 @@ using an alternative BLAS library such as
 [ATLAS](https://math-atlas.sourceforge.net/),
 [OpenBLAS](https://www.openblas.net/) or Intel MKL. Check out this
 [post](https://brettklamer.com/diversions/statistical/faster-blas-in-r/)
-for the comparison and the installation guide. Windows users may
-consider installing [Microsoft R Open](https://mran.microsoft.com/open).
+for the comparison and the installation guide.
 
 ## Reference
 
