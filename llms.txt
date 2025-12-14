@@ -1,0 +1,96 @@
+## HTLR: Bayesian Logistic Regression with Heavy-tailed Priors
+
+*HTLR* performs classification and feature selection by fitting Bayesian
+polychotomous (multiclass, multinomial) logistic regression models based
+on heavy-tailed priors with small degree freedom. This package is
+suitable for classification with high-dimensional features, such as gene
+expression profiles. Heavy-tailed priors can impose stronger shrinkage
+(compared to Guassian and Laplace priors) to the coefficients associated
+with a large number of useless features, but still allow coefficients of
+a small number of useful features to stand out with little punishment.
+Heavy-tailed priors can also automatically make selection within a large
+number of correlated features. The posterior of coefficients and
+hyperparameters is sampled with resitricted Gibbs sampling for
+leveraging high-dimensionality and Hamiltonian Monte Carlo for handling
+high-correlations among coefficients.
+
+## Installation
+
+[CRAN](https://CRAN.R-project.org) version (recommended):
+
+``` r
+install.packages("HTLR")
+```
+
+Development version on [GitHub](https://github.com/):
+
+``` r
+# install.packages("devtools")
+devtools::install_github("longhaiSK/HTLR")
+```
+
+This package uses library [Armadillo](https://arma.sourceforge.net/) for
+carrying out most of matrix operations, you may get speed benefits from
+using an alternative BLAS library such as
+[ATLAS](https://math-atlas.sourceforge.net/),
+[OpenBLAS](https://www.openblas.net/) or Intel MKL. Check out this
+[post](https://brettklamer.com/diversions/statistical/faster-blas-in-r/)
+for the comparison and the installation guide.
+
+## Reference
+
+Longhai Li and Weixin Yao (2018). Fully Bayesian Logistic Regression
+with Hyper-Lasso Priors for High-dimensional Feature Selection. 2018,
+88:14, 2827-2851, [the published
+version](https://www.tandfonline.com/doi/full/10.1080/00949655.2018.1490418),
+or [arXiv version](https://arxiv.org/pdf/1405.3319.pdf).
+
+# Package index
+
+## Model fitting
+
+- [`htlr()`](https://longhaisk.github.io/HTLR/reference/htlr.md) : Fit a
+  HTLR Model
+- [`htlr_prior()`](https://longhaisk.github.io/HTLR/reference/htlr_prior.md)
+  : Generate Prior Configuration
+
+## Prediction and inference
+
+- [`predict(`*`<htlr.fit>`*`)`](https://longhaisk.github.io/HTLR/reference/predict.htlr.fit.md)
+  : Make Prediction on New Data
+- [`as.matrix(`*`<htlr.fit>`*`)`](https://longhaisk.github.io/HTLR/reference/as.matrix.htlr.fit.md)
+  : Create a Matrix of Markov Chain Samples
+- [`nzero_idx()`](https://longhaisk.github.io/HTLR/reference/nzero_idx.md)
+  : Get Indices of Non-Zero Coefficients
+- [`summary(`*`<htlr.fit>`*`)`](https://longhaisk.github.io/HTLR/reference/summary.htlr.fit.md)
+  : Posterior Summaries
+- [`evaluate_pred()`](https://longhaisk.github.io/HTLR/reference/evaluate_pred.md)
+  : Evaluate Prediction Results
+
+## Generating simulation data
+
+- [`gendata_FAM()`](https://longhaisk.github.io/HTLR/reference/gendata_FAM.md)
+  : Generate Simulated Data with Factor Analysis Model
+- [`gendata_MLR()`](https://longhaisk.github.io/HTLR/reference/gendata_MLR.md)
+  : Generate Simulated Data with Multinomial Logistic Regression Model
+
+## Utility functions
+
+- [`std()`](https://longhaisk.github.io/HTLR/reference/std.md) :
+  Standardizes a Design Matrix
+- [`split_data()`](https://longhaisk.github.io/HTLR/reference/split_data.md)
+  : Split Data into Train and Test Partitions
+
+## Data sets
+
+- [`colon`](https://longhaisk.github.io/HTLR/reference/colon.md) : Colon
+  Tissues
+- [`diabetes392`](https://longhaisk.github.io/HTLR/reference/diabetes392.md)
+  : Pima Indians Diabetes
+
+# Articles
+
+### All vignettes
+
+- [Multinomial Logistic Regression with Heavy-Tailed
+  Priors](https://longhaisk.github.io/HTLR/articles/simu.md):
