@@ -1,3 +1,7 @@
+^renv$
+^renv\.lock$
+^src/symbols\.rds$
+^\.Rprofile$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^docs$

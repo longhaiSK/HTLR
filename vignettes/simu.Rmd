@@ -88,7 +88,7 @@ str(dat)
 Look at the correlation between features:
 ```{r}
 # require(corrplot)
-cor(dat$X[ , 1:11]) %>% corrplot::corrplot(tl.pos = "n")
+cor(dat$X[ , 1:11]) |> corrplot::corrplot(tl.pos = "n")
 ```
 
 Split the data into training and testing sets:
@@ -136,7 +136,7 @@ mcmc_intervals(post.t, pars = c("Intercept", "V1", "V2", "V3", "V1000"))
 
 Trace plot of MCMC draws:
 ```{r}
-as.matrix(fit.t2, k = 2, include.warmup = T) %>%
+as.matrix(fit.t2, k = 2, include.warmup = T) |>
   mcmc_trace(c("V1", "V1000"), facet_args = list("nrow" = 2), n_warmup = 2000)
 ```
 
@@ -159,6 +159,6 @@ print(paste0("prediction accuracy of model 2 = ",
 
 More details about the prediction result: 
 ```{r}
-predict(fit.t, dat$x.te, type = "response") %>%
+predict(fit.t, dat$x.te, type = "response") |>
   evaluate_pred(y.true = dat$y.te)
 ```

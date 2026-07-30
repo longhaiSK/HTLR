@@ -60,7 +60,6 @@ as.matrix.htlr.fit <- function(x, k = NULL, include.warmup = FALSE, ...)
 #' 
 #' @return A point summary of MCMC samples. 
 #' 
-#' @importFrom magrittr extract2
 #' 
 #' @export
 #' 
@@ -78,16 +77,13 @@ summary.htlr.fit <-
             usedmc = get_sample_indice(dim(object$mcdeltas)[3], object$mc.param$iter.rmc),
             ...)
 {
-  ix.f <- object$feature$fsel[features] %>% na.omit()
+  ix.f <- object$feature$fsel[features] |> na.omit()
   
-  mddeltas <- object$mcdeltas[c(1, ix.f + 1), , usedmc, drop = FALSE] %>%
+  mddeltas <- object$mcdeltas[c(1, ix.f + 1), , usedmc, drop = FALSE] |>
     apply(MARGIN = c(1, 2), FUN = method)
   
   attr(mddeltas, "stats") <- 
-    match.call() %>% 
-    as.list() %>% 
-    extract2("method") %>%
-    as.character()
+    as.character(as.list(match.call())$method)
   if (is.null(colnames(mddeltas)))
     attr(mddeltas, "stats") <- "median"
   rownames(mddeltas) <- c("Intercept", names(ix.f))

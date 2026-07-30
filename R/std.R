@@ -35,8 +35,8 @@
 #' @examples 
 #' set.seed(123)
 #' mat <- matrix(rnorm(n = 80 * 90, mean = 100, sd = 50), 80, 90)
-#' mat %>% as.numeric() %>% ggplot2::qplot(bins = 30, xlab = '')
-#' mat %>% std() %>% as.numeric() %>% ggplot2::qplot(bins = 30, xlab = '')
+#' mat |> as.numeric() |> ggplot2::qplot(bins = 30, xlab = '')
+#' mat |> std() |> as.numeric() |> ggplot2::qplot(bins = 30, xlab = '')
 #'  
 std <- function(X, tol = 1e-6)
 {

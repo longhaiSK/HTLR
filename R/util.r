@@ -163,18 +163,6 @@ try_require <- function(pkg, f = NULL) {
 #                 launch.browser = launch.browser, ...)
 # }
 
-#' Pipe operator
-#'
-#' See \code{magrittr::\link[magrittr]{\%>\%}} for details.
-#'
-#' @name %>%
-#' @rdname pipe
-#' @keywords internal
-#' @export
-#' @importFrom magrittr %>%
-#' @usage lhs \%>\% rhs
-NULL
-
 #Plots feature importance scores
 # 
 #This function plots feature importance scores or coefficients using histogram line. 

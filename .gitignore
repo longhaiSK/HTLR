@@ -6,6 +6,8 @@
 src/*.o
 src/*.so
 src/*.dll
+src/symbols.rds
+..Rcheck/
 tmp/
 .vscode/
 docs/
