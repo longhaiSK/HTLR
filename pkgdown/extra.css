@@ -1,0 +1,41 @@
+/* University of Saskatchewan-inspired light-mode styling. */
+.navbar {
+  background-color: #0b6a41 !important;
+}
+
+.navbar .navbar-brand,
+.navbar .nav-link {
+  color: #ffffff !important;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:focus,
+.navbar .navbar-brand:hover,
+.navbar .navbar-brand:focus {
+  color: #f1c730 !important;
+}
+
+.navbar .form-control,
+.navbar .form-control:focus {
+  background-color: #ffffff;
+  color: #212529;
+  border-color: #dee2e6;
+}
+
+.navbar .form-control::placeholder {
+  color: #6c757d;
+}
+
+.navbar .dropdown-menu {
+  background-color: #ffffff;
+}
+
+.navbar .dropdown-item {
+  color: #212529;
+}
+
+.navbar .dropdown-item:hover,
+.navbar .dropdown-item:focus {
+  background-color: #e9f3ee;
+  color: #084b2e;
+}

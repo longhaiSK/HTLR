@@ -2,7 +2,13 @@ url: https://longhaisk.github.io/HTLR/
 
 template:
   bootstrap: 5
-  bootswatch: sandstone
+  bslib:
+    primary: "#0b6a41"
+    secondary: "#f1c730"
+    link-color: "#0b6a41"
+    link-hover-color: "#084b2e"
+    navbar-bg: "#0b6a41"
+    navbar-fg: "#ffffff"
 
 reference:
 - title: Model fitting
