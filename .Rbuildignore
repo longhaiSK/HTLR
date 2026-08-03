@@ -1,6 +1,8 @@
 ^renv$
 ^renv\.lock$
 ^src/symbols\.rds$
+^src/[^/]+\.(o|so|dll)$
+^\.\.Rcheck$
 ^\.Rprofile$
 ^.*\.Rproj$
 ^\.Rproj\.user$
