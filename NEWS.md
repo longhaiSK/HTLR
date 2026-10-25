@@ -1,22 +1,30 @@
+# HTLR 1.0
+
+* Changed the package maintainer.
+
+* Changed the arXiv reference in the package description to DOI format.
+
+# HTLR 0.5
+
+* Set the minimum R version to 3.6.2 and the minimum Rcpp version to 1.0.0.
+
+* Removed the explicit C++11 build setting and system requirement.
+
+# HTLR 0.4-4
+
+* Corrected the default ranking function in `lasso_deltas()` to `order_plain`.
+
 # HTLR 0.4-3
 
-## New Features
-
 * Added option for users to keep samples of warmup iterations.
-
-## Improvements
 
 * Bug fix [[#7](https://github.com/longhaiSK/HTLR/issues/7)].
 
 # HTLR 0.4-2
 
-## New Features
-
 * Added new function `std()` for feature standardization. 
 
 * Added new dataset `diabetes392`.
-
-## Improvements
 
 * `htlr()` and `predict.htlr.fit()` now handles non-matrix input, i.e. data.frame.
 
@@ -30,13 +38,9 @@
 
 # HTLR 0.4-1
 
-## Bug Fixes
-
 * Fixed potential memory leak issue in ARS module. 
 
 # HTLR 0.4
-
-## New Features
 
 * This is the first released version of revamped HTLR.
 

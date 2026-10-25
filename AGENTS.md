@@ -9,3 +9,4 @@ HTLR is an R package for Bayesian logistic regression, with Rcpp/RcppArmadillo C
 - Run tests from the repository root: `Rscript -e 'devtools::test()'`.
 - For package-wide validation, run `Rscript -e 'devtools::check()'`.
 - Add regression tests for bug fixes; use fixed seeds for stochastic tests.
+- Use ASD-STE100 (Simplified Technical English) for documentation and code comments.
