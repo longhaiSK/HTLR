@@ -11,3 +11,4 @@ src/symbols.rds
 tmp/
 .vscode/
 docs/
+.positai

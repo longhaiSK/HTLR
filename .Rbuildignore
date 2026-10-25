@@ -18,3 +18,6 @@
 ^.github$
 ^tests/testthat\.rda$
 ^\.github$
+^\.positai$
+^\.claude$
+^AGENTS\.md$
