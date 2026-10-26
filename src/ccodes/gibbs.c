@@ -13,34 +13,96 @@ void testdiv (char *a[])
     
 }
 
+/* Each callback uses the state from one sampling call. */
+struct sigma_context {
+    int j;
+    double *vardeltas;
+    int *K;
+    double *alpha;
+    double *log_aw;
+};
+
+struct scale_context {
+    int *p;
+    int *K;
+    double *vardeltas;
+    double *nu;
+    double *s;
+    double *eta;
+};
+
+static void logpost_xi_neg (double xi, double logf[1], double dlogf[1], void *context)
+{
+    const struct sigma_context *ctx = context;
+    double vexi, eximinlogaw;
+
+    logf[0]  = - (ctx->K[0] / 2.0 - 1.0) * xi;
+    dlogf[0] = - (ctx->K[0] / 2.0 - 1.0);
+
+    vexi = ctx->vardeltas [ctx->j] / 2.0 / exp (xi);
+    logf[0]  -= vexi;
+    dlogf[0] += vexi;
+
+    eximinlogaw = exp(xi - ctx->log_aw[0]);
+    logf[0] -= (ctx->alpha[0]/2.0 + 1.0) * log (1.0 + 2.0 * eximinlogaw);
+    dlogf[0] -= (ctx->alpha[0] + 2.0) * eximinlogaw / (1.0 + 2.0 * eximinlogaw);
+}
+
+static void logpost_xi_ghs (double xi, double logf[1], double dlogf[1], void *context)
+{
+    const struct sigma_context *ctx = context;
+    double vexi, eximinlogaw;
+
+    logf[0]  = - (ctx->K[0]  - 1.0) / 2.0 * xi ;
+    dlogf[0] = - (ctx->K[0]  - 1.0) / 2.0 ;
+
+    vexi = ctx->vardeltas [ctx->j] / 2.0 / exp (xi);
+    logf[0]  -= vexi;
+    dlogf[0] += vexi;
+
+    eximinlogaw = exp(xi - ctx->log_aw[0]);
+    logf[0]  -= (ctx->alpha[0] + 1.0) / 2.0 * log (1.0 + eximinlogaw);
+    dlogf[0] -= (ctx->alpha[0] + 1.0) / 2.0 * eximinlogaw / (1.0 + eximinlogaw);
+}
+
+static void logpost_logw (double u, double logf[1], double dlogf[1], void *context)
+{
+    const struct scale_context *ctx = context;
+    double w, sdu, wnu;
+    int j;
+
+    w = exp (u);
+    sdu = (u - ctx->s[0])/ctx->eta[0];
+    wnu = w * ctx->nu[0];
+    // loglikelihood
+    dlogf [0] = 0;
+    logf[0] = 0;
+    for (j = 0; j < ctx->p[0]; j++)
+    {
+      logf [0] += log (ctx->vardeltas[j] + wnu);
+      dlogf[0] += wnu / (ctx->vardeltas[j] + wnu);
+    }
+    logf [0] *= (- (ctx->nu[0] + ctx->K[0]) / 2);
+    dlogf[0] *= (- (ctx->nu[0] + ctx->K[0]) / 2);
+    logf [0] += ctx->p[0] * ctx->nu[0] / 2 * u ;
+    dlogf[0] += ctx->p[0] * ctx->nu[0] / 2;
+    logf [0] += - R_pow_di (sdu,2) / 2 - log (ctx->eta[0]);
+    dlogf[0] += - sdu / ctx->eta[0];
+}
+
 /********* sampling from posterior of sigma given var and prior ************/
 void spl_sgm_neg (int p[1], double sigmasbt[p[0]], double vardeltas[p[0]], 
 				  int K[1], double alpha[1], double log_aw [1])
 {
   int j;
-  
-  //define the function computing logf and dlogf for ars
-  void logpost_xi (double xi, double logf[1], double dlogf[1])
-  {
-	double vexi, eximinlogaw;
-	
-	logf[0]  = - (K[0] / 2.0 - 1.0) * xi;
-	dlogf[0] = - (K[0] / 2.0 - 1.0);
-	
-	vexi = vardeltas [j] / 2.0 / exp (xi);
-	logf[0]  -= vexi;
-	dlogf[0] += vexi;
-	
-	eximinlogaw = exp(xi - log_aw[0]);
-	logf[0] -= (alpha[0]/2.0 + 1.0) * log (1.0 + 2.0 * eximinlogaw);
-	dlogf[0] -= (alpha[0] + 2.0) * eximinlogaw / (1.0 + 2.0 * eximinlogaw);
-  }
+  struct sigma_context context = {0, vardeltas, K, alpha, log_aw};
   
   for (j = 0; j < p[0]; j++)
   {
+    context.j = j;
 	//performa ars on log(sigma_j), which is still saved in sigma_j	
 // 	if (log(vardeltas[j]) > -20)	  
-	  sample_ars (1, &sigmasbt[j], logpost_xi, -INFINITY, +INFINITY, 
+	  sample_ars (1, &sigmasbt[j], logpost_xi_neg, &context, -INFINITY, +INFINITY,
 				  log(vardeltas [j]/K[0]), 0);
 	//convert xi to sigma_j
 	sigmasbt [j] = exp (sigmasbt [j]); 
@@ -52,28 +114,13 @@ void spl_sgm_ghs (int p[1], double sigmasbt[p[0]], double vardeltas[p[0]],
 				  int K[1], double alpha[1], double log_aw [1])
 {
   int j;
-  
-  //define the function computing logf and dlogf for ars
-  void logpost_xi (double xi, double logf[1], double dlogf[1])
-  {
-	double vexi, eximinlogaw;
-	
-	logf[0]  = - (K[0]  - 1.0) / 2.0 * xi ;
-	dlogf[0] = - (K[0]  - 1.0) / 2.0 ;
-	
-	vexi = vardeltas [j] / 2.0 / exp (xi);
-	logf[0]  -= vexi;
-	dlogf[0] += vexi;
-	
-	eximinlogaw = exp(xi - log_aw[0]);
-	logf[0]  -= (alpha[0] + 1.0) / 2.0 * log (1.0 + eximinlogaw);
-	dlogf[0] -= (alpha[0] + 1.0) / 2.0 * eximinlogaw / (1.0 + eximinlogaw);
-  }
+  struct sigma_context context = {0, vardeltas, K, alpha, log_aw};
   
   for (j = 0; j < p[0]; j++)
   {
+    context.j = j;
 	//performa ars on log(sigma_j), which is still saved in sigma_j
-	sample_ars (1, &sigmasbt[j], logpost_xi, -INFINITY, +INFINITY, 
+	sample_ars (1, &sigmasbt[j], logpost_xi_ghs, &context, -INFINITY, +INFINITY,
 				log(vardeltas [j]/K[0]), 0);
 	//convert xi to sigma_j
 	sigmasbt [j] = exp (sigmasbt [j]); 
@@ -84,29 +131,8 @@ void spl_sgm_ghs (int p[1], double sigmasbt[p[0]], double vardeltas[p[0]],
 void samplew (double logw[1], int K[1], int p[1], double vardeltas[p[0]],
               double nu[1], double s[1], double eta[1])
 {
-    void logpost_logw (double u, double logf[1], double dlogf[1])
-    {
-        double w, sdu, wnu;
-        int j;
+    struct scale_context context = {p, K, vardeltas, nu, s, eta};
 
-        w = exp (u);
-        sdu = (u - s[0])/eta[0];
-        wnu = w * nu[0];
-        // loglikelihood
-        dlogf [0] = 0;
-        logf[0] = 0;
-        for (j = 0; j < p[0]; j++)
-        {
-          logf [0] += log (vardeltas[j] + wnu);
-          dlogf[0] += wnu / (vardeltas[j] + wnu);
-        }
-        logf [0] *= (- (nu[0] + K[0]) / 2);
-        dlogf[0] *= (- (nu[0] + K[0]) / 2);
-        logf [0] += p[0] * nu[0] / 2 * u ;
-        dlogf[0] += p[0] * nu[0] / 2;    
-        logf [0] += - R_pow_di (sdu,2) / 2 - log (eta[0]);
-        dlogf[0] += - sdu / eta[0];
-    }
     
     if (eta[0] < 0.01)
     {
@@ -114,7 +140,7 @@ void samplew (double logw[1], int K[1], int p[1], double vardeltas[p[0]],
     }
     else
     {
-        sample_ars (1, logw, logpost_logw, -INFINITY, +INFINITY, logw[0], 0);
+        sample_ars (1, logw, logpost_logw, &context, -INFINITY, +INFINITY, logw[0], 0);
     }
 }
 

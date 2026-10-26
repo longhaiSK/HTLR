@@ -25,7 +25,8 @@ double interc (double t1[1], double t2[1],
 void sample_ars
     (int n, // number of samples
      double rn[n],  // sampling output
-     void (*eval_logf) (double x, double logf[1], double dlogf[1]),
+     void (*eval_logf) (double x, double logf[1], double dlogf[1], void *context),
+     void *context,
      // pointer to another function for evaluating logf and dlogf
      double lb, double ub, // lower and upper bounds of logf
      double ini_tpoint, //initial tangent point
@@ -57,7 +58,7 @@ void sample_ars
 
   //construct the first hull
   tpoints [0] = ini_tpoint; //the tangent point
-  eval_logf (tpoints[0], &logfvs[0], &dlogfvs[0]);
+  eval_logf (tpoints[0], &logfvs[0], &dlogfvs[0], context);
   if (!isfinite (logfvs[0]))
   {
     printf ("Error in adaptive rejection sampling:\n");
@@ -197,7 +198,7 @@ void sample_ars
   {
     h = 0;
     newx = lb;
-    eval_logf (newx, &newlogf, &newdlogf);
+    eval_logf (newx, &newlogf, &newdlogf, context);
     update_hulls (h, newx, newlogf, newdlogf);
   }
   //expanding at the left until reaching a bound or integral to finite
@@ -214,7 +215,7 @@ void sample_ars
         printf ("'max_nhull' is set too small, or your log-PDF NOT concave\n");
         exit (1);
       }
-      eval_logf (newx, &newlogf, &newdlogf);
+      eval_logf (newx, &newlogf, &newdlogf, context);
       update_hulls (h, newx, newlogf, newdlogf);
       // finding a new leftbound quite expanding
       if (newlogf == - INFINITY) break;
@@ -230,7 +231,7 @@ void sample_ars
   {
     h = 0;
     newx = ub;
-    eval_logf (newx, &newlogf, &newdlogf);
+    eval_logf (newx, &newlogf, &newdlogf, context);
     update_hulls (h, newx, newlogf, newdlogf);
   }
   else // expanding at the right until reaching a bound or integral to finite
@@ -246,7 +247,7 @@ void sample_ars
         exit (1);
       }
 
-      eval_logf (newx, &newlogf, &newdlogf);
+      eval_logf (newx, &newlogf, &newdlogf, context);
       update_hulls (h, newx, newlogf, newdlogf);
       if (!isfinite (newlogf)) break;
       newx += stepout;
@@ -305,7 +306,7 @@ void sample_ars
       {
         // check acceptance with logf
         // eval logf at newx and insert a new hull
-        eval_logf (newx, &newlogf, &newdlogf);
+        eval_logf (newx, &newlogf, &newdlogf, context);
         update_hulls (h, newx, newlogf, newdlogf);
         if (logacceptv <= newlogf)
         {
