@@ -1,50 +1,69 @@
-skip_on_ci()
-skip_on_cran()
-
-SEED <- 1001
-
-test_that("sim MLR works", {
-  set.seed(SEED)
-  expect <- HTLR.old::htlr_gendata(n = 50, p = 10)
-  
-  set.seed(SEED)
-  actual <- gendata_MLR(n = 50, p = 10)
-  
-  expect_equal(unname(actual$X), expect$X)
-  expect_equal(actual$y, expect$y)
-  expect_equal(actual$deltas, expect$deltas)
+test_that("MLR generator matches the legacy reference", {
+  fixture <- readRDS(test_path("fixtures", "legacy-3.1-1.rds"))
+  old_kind <- RNGkind()
+  on.exit(do.call(RNGkind, as.list(old_kind)), add = TRUE)
+  do.call(RNGkind, as.list(fixture$metadata$rng_kind))
+  set.seed(fixture$metadata$seed)
+  reference <- fixture$generators$mlr
+  actual <- do.call(gendata_MLR, reference$args)
+  expect_equal(unname(actual$X), reference$expected$X)
+  expect_equal(actual$y, reference$expected$y)
+  expect_equal(actual$deltas, reference$expected$deltas)
 })
 
-test_that("sim FAM works", {
-  n <- 100
-  p <- 10
-  
-  means <- rbind(
-    c(0, 1, 0),
-    c(0, 0, 0),
-    c(0, 0, 1),
-    c(0, 0, 1),
-    c(0, 0, 1)
-  ) * 2
-  means <- rbind(means, matrix(0, p - 5, 3))
-  
-  A <- diag(1, p)
-  A[1:5, 1:3] <- rbind(
-    c(1, 0, 0),
-    c(2, 1, 0),
-    c(0, 0, 1),
-    c(0, 0, 1),
-    c(0, 0, 1)
-  )
-  
-  set.seed(SEED)
-  expect <- HTLR.old::gendata_fam(n, means, A, sd_g = 0.5, stdx = TRUE)
-  
-  set.seed(SEED)
-  actual <- gendata_FAM(n, means, A, sd_g = 0.5, stdx = TRUE)
-  
-  expect_equal(unname(actual$X), expect$X)
-  expect_equal(actual$y, expect$y)
-  expect_equal(actual$muj, expect$muj)
-  expect_equal(actual$SGM, expect$SGM)
+test_that("FAM generator matches the legacy reference", {
+  fixture <- readRDS(test_path("fixtures", "legacy-3.1-1.rds"))
+  old_kind <- RNGkind()
+  on.exit(do.call(RNGkind, as.list(old_kind)), add = TRUE)
+  do.call(RNGkind, as.list(fixture$metadata$rng_kind))
+  set.seed(fixture$metadata$seed)
+  reference <- fixture$generators$fam
+  actual <- do.call(gendata_FAM, reference$args)
+  expect_equal(unname(actual$X), reference$expected$X, tolerance = 1e-10)
+  expect_equal(actual$y, reference$expected$y)
+  expect_equal(actual$muj, reference$expected$muj, tolerance = 1e-10)
+  expect_equal(actual$SGM, reference$expected$SGM, tolerance = 1e-10)
+})
+
+test_that("MLR uses supplied predictors and class coefficient contrasts", {
+  X <- cbind(a = c(-1, 0, 1, 2), b = c(1, -1, 0, 1))
+  betas <- matrix(c(0.2, 0.3, -0.1, -0.4, 0.1, 0.5, 0.1, -0.2, 0.4), 3, 3)
+  weights <- exp(cbind(1, X) %*% betas)
+  probabilities <- weights / rowSums(weights)
+  set.seed(1001)
+  expected_y <- apply(probabilities, 1, function(p) sample(1:3, 1, prob = p))
+  set.seed(1001)
+  actual <- gendata_MLR(nrow(X), ncol(X), X = X, betas = betas)
+  expect_identical(actual$X, X)
+  expect_equal(actual$deltas, betas[, -1] - betas[, 1])
+  expect_identical(actual$y, expected_y)
+
+  set.seed(1001)
+  binary <- gendata_MLR(n = 20, p = 2, NC = 2)
+  expect_equal(dim(binary$X), c(20L, 2L))
+  expect_equal(colnames(binary$X), c("V1", "V2"))
+  expect_equal(dim(binary$deltas), c(3L, 1L))
+  expect_true(all(binary$y %in% 1:2))
+})
+
+test_that("FAM returns model covariance and applies population standardization", {
+  means <- rbind(c(-1, 0, 2), c(1, 3, -1))
+  A <- rbind(c(1, 0.5), c(-0.2, 2))
+  covariance <- tcrossprod(A) + diag(0.5^2, 2)
+  centers <- rowMeans(means)
+  scales <- sqrt(diag(covariance) + rowMeans((means - centers)^2))
+  # Use a separate matrix for each native call.
+  set.seed(1001)
+  raw <- gendata_FAM(12, means + 0, A, sd_g = 0.5)
+  set.seed(1001)
+  standardized <- gendata_FAM(12, means + 0, A, sd_g = 0.5, stdx = TRUE)
+  expect_equal(raw$y, rep(1:3, 4))
+  expect_equal(raw$muj, means)
+  expect_equal(raw$SGM, covariance)
+  expect_equal(dim(raw$X), c(12L, 2L))
+  expect_equal(colnames(raw$X), c("V1", "V2"))
+  expect_equal(standardized$y, raw$y)
+  expect_equal(standardized$X, sweep(sweep(raw$X, 2, centers, "-"), 2, scales, "/"))
+  expect_equal(standardized$muj, (means - centers) / scales)
+  expect_equal(standardized$SGM, covariance / outer(scales, scales))
 })

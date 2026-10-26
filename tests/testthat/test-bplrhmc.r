@@ -1,118 +1,75 @@
-skip_on_ci()
-skip_on_cran()
+legacy_fixture <- readRDS(test_path("fixtures", "legacy-3.1-1.rds"))
 
-SEED <- 1001
-
-set.seed(SEED)
-
-data("colon")
-dat <- split_data(colon$X, colon$y, p.train = 0.9)
-
-set.seed(SEED)
-mlr <- gendata_MLR(n = 50, p = 10)
-dat3 <- split_data(mlr$X, mlr$y, p.train = 0.8)
-
-expect_equal_predict <- function(actual, expected) {
-  expect_equal(unname(actual$probs_pred), unname(expected$probs_pred))
+for (case_name in names(legacy_fixture$cases)) {
+  test_that(paste("sampler matches legacy reference for", case_name), {
+    fixture <- legacy_fixture
+    case <- fixture$cases[[case_name]]
+    dat <- fixture$inputs[[case$input]]
+    old_kind <- RNGkind()
+    on.exit(do.call(RNGkind, as.list(old_kind)), add = TRUE)
+    do.call(RNGkind, as.list(fixture$metadata$rng_kind))
+    set.seed(fixture$metadata$seed)
+    fit_case <- function() do.call(htlr_fit,
+      c(list(X_tr = dat$x.tr, y_tr = dat$y.tr, X_ts = dat$x.te), case$args))
+    if (case$args$ptype == "t") {
+      fit <- fit_case()
+    } else {
+      expect_warning(fit <- fit_case(), "random logw currently only supports t prior",
+                     fixed = TRUE)
+    }
+    for (field in names(case$expected)) {
+      actual <- fit[[field]]
+      expected <- case$expected[[field]]
+      if (field %in% c("mclogw", "mcloglike", "mcuvar", "mchmcrej")) {
+        actual <- as.vector(actual)
+        expected <- as.vector(expected)
+      }
+      if (field == "probs_pred") {
+        actual <- unname(actual)
+        expected <- unname(expected)
+      }
+      # Allow small differences in floating-point results between platforms.
+      expect_equal(actual, expected, tolerance = 1e-7, info = field)
+    }
+  })
 }
 
-expect_equal_htlr <- function(actual, expected)
-{
-  expect_equal(actual$mcdeltas, expected$mcdeltas)
-  expect_equal(as.vector(actual$mclogw), expected$mclogw)
-  expect_equal(as.vector(actual$mcloglike), expected$mcloglike)
-  expect_equal(as.vector(actual$mcuvar), expected$mcuvar)
-  expect_equal(as.vector(actual$mchmcrej), expected$mchmcrej)
-  expect_equal(actual$mcsigmasbt, expected$mcsigmasbt)
-  expect_equal(actual$mcvardeltas, expected$mcvardeltas)
-  expect_equal_predict(actual, expected)
+for (ptype in c("t", "neg", "ghs")) {
+  for (classes in c(2L, 3L)) {
+    test_that(paste(ptype, "sampler has valid traces for", classes, "classes"), {
+      X <- cbind(a = seq(-1, 1, length.out = 18), b = rep(c(-1, 0, 1), 6))
+      y <- rep(seq_len(classes), length.out = nrow(X))
+      set.seed(1001)
+      fit_case <- function() htlr_fit(X, y, ptype = ptype, eta = 0,
+        initial_state = "random", iters_h = 2, iters_rmc = 4,
+        leap_L = 2, leap_L_h = 2, rep.legacy = FALSE)
+      if (ptype == "t") {
+        fit <- fit_case()
+      } else {
+        expect_warning(fit <- fit_case(), "random logw currently only supports t prior",
+                       fixed = TRUE)
+      }
+      expect_equal(dim(fit$mcdeltas), c(3L, classes - 1L, 5L))
+      for (field in c("mcdeltas", "mclogw", "mcloglike", "mcsigmasbt",
+                      "mcvardeltas", "mcuvar", "mchmcrej"))
+        expect_true(all(is.finite(fit[[field]])), info = field)
+      expect_true(all(fit$mcsigmasbt > 0))
+      expect_true(all(fit$mcvardeltas >= 0))
+      expect_true(all(fit$mchmcrej >= 0 & fit$mchmcrej <= 1))
+      probs <- predict(fit, X)
+      expect_equal(dim(probs), c(nrow(X), classes))
+      expect_true(all(is.finite(probs) & probs >= 0 & probs <= 1))
+      expect_equal(rowSums(probs), rep(1, nrow(X)))
+
+      # Check the saved log likelihood against the multinomial model.
+      for (i in seq_len(dim(fit$mcdeltas)[3])) {
+        deltas <- matrix(fit$mcdeltas[, , i], nrow = ncol(X) + 1)
+        logits <- cbind(0, fit$feature$X %*% deltas)
+        weights <- exp(logits - apply(logits, 1, max))
+        probabilities <- weights / rowSums(weights)
+        expected <- sum(log(probabilities[cbind(seq_along(y), y)]))
+        expect_equal(as.vector(fit$mcloglike)[i], expected, tolerance = 1e-10)
+      }
+    })
+  }
 }
-
-test_that("colon500_t1_s10_eta10_bcbc_bi", {
-  
-  set.seed(SEED)
-  fit <- htlr_fit(X_tr = dat$x.tr, y_tr = dat$y.tr, X_ts = dat$x.te,
-                  fsel = 1L:500, ptype = "t", alpha = 1, s = -10, eta = 10,
-                  initial_state = "bcbcsfrda", iters_h = 5, iters_rmc = 5, thin = 1)
-  
-  set.seed(SEED)
-  expected <- HTLR.old::htlr_fit(X_tr = dat$x.tr, y_tr = dat$y.tr, X_ts = dat$x.te,
-                               fsel = 1L:500, ptype = "t", alpha = 1, s = -10, eta = 10,
-                               initial_state = "bcbcsfrda", iters_h = 5, iters_rmc = 5, thin = 1) 
-    
-  expect_equal_htlr(fit, expected)
-})
-
-test_that("sim_t1_s10_eta10_bcbc_mul", {
-  
-  set.seed(SEED)
-  fit <- htlr_fit(X_tr = dat3$x.tr, y_tr = dat3$y.tr, X_ts = dat3$x.te,
-                  ptype = "t", alpha = 1, s = -10, eta = 10,
-                  initial_state = "bcbcsfrda", iters_h = 5, iters_rmc = 5, thin = 1)
-  
-  set.seed(SEED)
-  expected <- HTLR.old::htlr_fit(X_tr = dat3$x.tr, y_tr = dat3$y.tr, X_ts = dat3$x.te,
-                                 ptype = "t", alpha = 1, s = -10, eta = 10,
-                                 initial_state = "bcbcsfrda", iters_h = 5, iters_rmc = 5, thin = 1)
-  
-  expect_equal_htlr(fit, expected)
-})
-
-test_that("colon500_neg1_s10_eta0_bcbc_bi", {
-  
-  set.seed(SEED)
-  fit <- htlr_fit(X_tr = dat$x.tr, y_tr = dat$y.tr, X_ts = dat$x.te,
-                  fsel = 1L:500, ptype = "neg", alpha = 1, s = -10,
-                  initial_state = "bcbcsfrda", iters_h = 5, iters_rmc = 5, thin = 1)
-  
-  set.seed(SEED)
-  expected <- HTLR.old::htlr_fit(X_tr = dat$x.tr, y_tr = dat$y.tr, X_ts = dat$x.te,
-                                 fsel = 1L:500, ptype = "neg", alpha = 1, s = -10,
-                                 initial_state = "bcbcsfrda", iters_h = 5, iters_rmc = 5, thin = 1)
-  
-  expect_equal_htlr(fit, expected)
-})
-
-test_that("colon500_ghs1_s10_eta0_bcbc_bi", {
-  
-  set.seed(SEED)
-  fit <- htlr_fit(X_tr = dat$x.tr, y_tr = dat$y.tr, X_ts = dat$x.te,
-                  fsel = 1L:500, ptype = "ghs", alpha = 1, s = -10,
-                  initial_state = "bcbcsfrda", iters_h = 5, iters_rmc = 5, thin = 1)
-  
-  set.seed(SEED)
-  expected <- HTLR.old::htlr_fit(X_tr = dat$x.tr, y_tr = dat$y.tr, X_ts = dat$x.te,
-                                 fsel = 1L:500, ptype = "ghs", alpha = 1, s = -10,
-                                 initial_state = "bcbcsfrda", iters_h = 5, iters_rmc = 5, thin = 1)
-  
-  expect_equal_htlr(fit, expected)
-})
-
-# test_that("colon500_t1_s10_eta10_lasso_bi", {
-#   set.seed(SEED)
-#   fit <- htlr_fit(X_tr = dat$x.tr, y_tr = dat$y.tr, X_ts = dat$x.te,
-#                   fsel = 1L:500, ptype = "t", alpha = 1, s = -10, eta = 10,
-#                   initial_state = "lasso", iters_h = 0, iters_rmc = 1, thin = 1)
-#   
-#   set.seed(SEED)
-#   expected <- HTLR.old::htlr_fit(X_tr = dat$x.tr, y_tr = dat$y.tr, X_ts = dat$x.te,
-#                                  fsel = 1L:500, ptype = "t", alpha = 1, s = -10, eta = 10,
-#                                  initial_state = "lasso", iters_h = 0, iters_rmc = 1, thin = 1)
-#   expect_equal_htlr(fit, expected)
-# })
-
-# HoSC <- list("x.train" = read.csv("../../data-raw/HoCS_train_data.csv", header = F),
-#              "x.test" = read.csv("../../data-raw/HoCS_test_data.csv", header = F),
-#              "y.train" = rep(1:3, each = 10),
-#              "y.test" = c(rep(1, 50), rep(2, 27), rep(3, 52)))
-# 
-# test_that("data_with_singular_col", {
-#   fit.1 <- htlr(X = HoSC$x.train, y = HoSC$y.train, init = "bcbc", iter = 10)
-#   fit.2 <- htlr_fit(X_tr = HoSC$x.train, y_tr = HoSC$y.train, ptype = "t",
-#                     initial_state = "lasso", iters_h = 5, iters_rmc = 5, thin = 1)
-# 
-#   expect_equal(length(fit.1$featur$fsel), 86)
-#   expect_equal(length(fit.2$featur$fsel), 86)
-# 
-#   pred <- predict(fit.1, HoSC$x.test)
-# })
