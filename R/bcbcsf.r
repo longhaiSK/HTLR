@@ -16,7 +16,16 @@
 #' training samples. The default is 0, the covariance matrix is assumed to be diagonal, 
 #' which is the most robust.
 #' 
-#' @return A matrix - the initial state of Markov Chain for HTLR model fitting.
+#' @return A numeric coefficient matrix with \code{ncol(X) + 1} rows,
+#' intercept first, followed by every input feature in its original order.
+#' Feature row names are retained when \code{X} has column names; class columns
+#' use \code{levels(factor(y))[-1]}.
+#' @details This helper initializes coefficients on the supplied predictor
+#' scale and does not select the final fitted features. Use a ranking helper
+#' such as \code{order_ftest()} separately and pass selected indices to
+#' \code{htlr(..., fsel = ...)} to screen the final model. To initialize only
+#' a subset, compute coefficients on those columns and wrap them in
+#' \code{htlr_init()} with explicit feature metadata.
 #' 
 #' @references Longhai Li (2012). Bias-corrected hierarchical Bayesian classification 
 #' with a selected subset of high-dimensional features. 
@@ -32,6 +41,7 @@
 #' 
 bcbcsf_deltas <- function(X, y, alpha = 0)
 {
+  feature_names <- colnames(X)
   n <- nrow(X)
   p <- ncol(X)
   G <- length(unique(y))
@@ -74,7 +84,11 @@ bcbcsf_deltas <- function(X, y, alpha = 0)
   inv_SGM <- 1 / (1 - alpha) * 
     (diag(1, p) - lambda * tX_tr %*% solve(diag(1, n) + lambda * X %*% tX_tr) %*% X)
   
-  deltas_bc_inv(muj = muj, inv_SGM = inv_SGM, gprior = gprior)
+  deltas <- deltas_bc_inv(muj = muj, inv_SGM = inv_SGM, gprior = gprior)
+  if (!is.null(feature_names))
+    rownames(deltas) <- c("(Intercept)", feature_names)
+  colnames(deltas) <- levels(factor(y))[-1]
+  deltas
 }
 
 deltas_bc_inv <- function (muj, inv_SGM, gprior = rep(1, ncol (muj)))

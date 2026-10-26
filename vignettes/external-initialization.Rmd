@@ -1,0 +1,181 @@
+---
+title: "External coefficients and feature selection"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{External coefficients and feature selection}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(HTLR)
+```
+
+## Coefficient conventions
+
+`fsel` describes the features in the final fitted model. Initializer metadata
+identifies the features whose coefficients are supplied. These sets may differ:
+`htlr_init()` can describe a subset of `fsel`, and coefficients for omitted
+features start at zero in every class. Initializer features outside `fsel` are
+rejected. The intercept is always supplied and retained.
+
+With `p` initialized features and `C` response classes, supply a finite numeric
+matrix with `p + 1` rows and `C - 1` columns. Coefficients encode log odds relative
+to the first level of `factor(y)`. For a factor response, choose the reference
+class explicitly by setting its levels. The reference class has no coefficient
+column. Binary responses also accept a numeric vector of length `p + 1`, with
+the intercept first and remaining coefficients in final `fsel` order.
+
+If an external multinomial method returns coefficients for all `C` classes,
+subtract its reference-class column from each other column, including the
+intercept row. For example, if `betas` already has columns in response-level
+order, use `sweep(betas[, -1, drop = FALSE], 1, betas[, 1], "-")` and name the
+resulting columns `levels(factor(y))[-1]`. Check the external estimator's response
+and predictor scales before importing its coefficients.
+
+## Align a named matrix safely
+
+This example uses `stats::glm()` to obtain binary coefficients on the supplied
+predictor scale. The short HTLR chains illustrate the API; use suitable chain
+lengths and convergence checks for inference.
+
+```{r external-coefficients}
+set.seed(42)
+X <- cbind(gene_a = rnorm(60), gene_b = rnorm(60), gene_c = rnorm(60))
+y <- factor(rep(c("control", "case"), 30), levels = c("control", "case"))
+external <- glm(y ~ gene_a + gene_b + gene_c,
+                data = data.frame(y, X), family = binomial())
+deltas <- matrix(coef(external), ncol = 1,
+                 dimnames = list(names(coef(external)), "case"))
+rownames(deltas)
+colnames(deltas)
+```
+
+Direct matrix row names must identify exactly one `Intercept` or `(Intercept)`
+row and every final fitted feature. Row order may differ from predictor order;
+the intercept may appear anywhere. Column names identify the non-reference
+classes and may be reordered too. Each named axis must have unique, nonmissing,
+nonempty names that match the data. Feature alignment requires unique, valid
+`colnames(X)`.
+
+```{r named-alignment}
+X_reordered <- X[, c("gene_c", "gene_a", "gene_b")]
+set.seed(43)
+fit <- htlr(X_reordered, y, init = deltas, stdx = FALSE,
+            iter = 4, warmup = 2, leap = 1, leap.warm = 1)
+stopifnot(identical(names(fit$feature$fsel), colnames(X_reordered)))
+fit
+```
+
+An unnamed matrix axis remains positional: feature rows follow `fsel`, and
+class columns follow `levels(factor(y))[-1]`. Unnamed rows with non-default
+`fsel` warn because feature identity cannot be checked. Prefer names or explicit
+metadata over this compatibility mode.
+
+Prediction matrices retain the original column positions used to train that
+fit. Names used for initialization or `fsel` do not enable prediction-time
+column reordering.
+
+```{r prediction-order}
+probabilities <- predict(fit, X_reordered)
+stopifnot(nrow(probabilities) == nrow(X_reordered))
+head(probabilities)
+```
+
+## Initialize fewer features than the final model
+
+Fit the external estimator on a subset, then use `htlr_init()` to identify its
+feature and class coefficients. The first row of its matrix must be the
+intercept; subsequent rows correspond to `features` in the supplied order.
+Optional `classes` identifies non-reference columns; without class metadata or
+column names, class columns remain positional. Matrix dimnames, if present,
+must agree with explicit metadata.
+
+```{r subset-initialization}
+external_subset <- glm(y ~ gene_b, data = data.frame(y, X), family = binomial())
+subset_deltas <- matrix(coef(external_subset), ncol = 1)
+init <- htlr_init(subset_deltas, features = "gene_b", classes = "case")
+set.seed(44)
+fit_subset <- htlr(X_reordered, y, fsel = NULL, init = init, stdx = FALSE,
+                   iter = 4, warmup = 2, leap = 1, leap.warm = 1)
+stopifnot(length(fit_subset$feature$fsel) == ncol(X_reordered))
+fit_subset
+```
+
+`gene_a` and `gene_c` start at zero but remain in the fitted model and can change
+during sampling. To use original column indices instead, construct
+`htlr_init(subset_deltas, features = 3L, classes = "case")` for this reordered
+matrix, where `gene_b` is column 3. Indices always refer to the `X` passed to
+`htlr()`, before `fsel`; they do not refer to the external estimator's column
+positions. When using index metadata, remove coefficient row names or set them
+to the corresponding index strings, keeping the intercept name first.
+
+## Screen final features separately
+
+`order_ftest()`, `order_kruskal()`, and `order_plain()` return rankings of the input
+columns. They do not generate coefficients or determine a model size. `fsel`
+accepts unique positive source-column indices or names, preserving supplied
+order; omitted or `NULL` selects all columns. Invalid or repeated selections
+error. Standardization may subsequently remove singular columns.
+
+```{r final-screening}
+ranked <- order_ftest(X, y)
+selected <- head(ranked, 2)
+set.seed(45)
+fit_screened <- htlr(X, y, fsel = selected, init = "random",
+                     iter = 4, warmup = 2, leap = 1, leap.warm = 1)
+stopifnot(identical(unname(fit_screened$feature$fsel), selected))
+fit_screened
+```
+
+`lasso_deltas()` and `bcbcsf_deltas()` generate coefficients for every supplied
+input column in its original order. To initialize a subset without screening
+the final model, call either helper on that subset and wrap its coefficients
+in `htlr_init()` with feature names, or with source indices after removing
+coefficient row names. The deprecated `rank_fn` and `k` arguments of
+`lasso_deltas()` now warn and return all input rows, with zeros for coefficients
+omitted from initialization; they do not choose the final model's feature set.
+
+## Match the predictor scale
+
+With generated initializers (`"lasso"`, `"bcbc"`, or `"random"`), the default
+standardization subtracts each selected feature's **median** and divides by its
+sample standard deviation. Singular columns are dropped. The fit retains centers
+and scales for prediction.
+
+Custom matrices, binary vectors, and `htlr_init()` objects skip standardization,
+even when `stdx = TRUE`, and report that it was skipped. The stored
+`fit$feature$stdx` is then `FALSE`, with zero centers and unit scales. Supply
+coefficients on the scale of the predictors passed to HTLR; `stdx = FALSE`
+makes this choice explicit.
+
+For coefficients estimated on standardized predictors, transform the predictors
+before fitting HTLR and transform new observations with the same training
+statistics. HTLR will not automatically recover the earlier transformation.
+For example, this workflow uses median centering consistently:
+
+```{r standardized-coefficients}
+centers <- apply(X, 2, median)
+scales <- apply(X, 2, sd)
+transform_X <- function(new_X) {
+  sweep(sweep(new_X, 2, centers, "-"), 2, scales, "/")
+}
+Z <- transform_X(X)
+external_std <- glm(y ~ ., data = data.frame(y, Z), family = binomial())
+std_deltas <- matrix(coef(external_std), ncol = 1,
+                     dimnames = list(names(coef(external_std)), "case"))
+set.seed(46)
+fit_std <- htlr(Z, y, init = std_deltas, stdx = FALSE,
+                iter = 4, warmup = 2, leap = 1, leap.warm = 1)
+predict(fit_std, transform_X(X[1:3, , drop = FALSE]))
+```
+
+## Memory limits
+
+External initialization can avoid the cost of computing Lasso initial values,
+but the HTLR sampler and stored coefficient draws remain dense. Memory use grows
+with observations, final fitted features, response classes, and saved draws.
+This API does not establish sparse sampling or support for million-feature data
+sets. Screen the final model when appropriate and assess memory requirements
+separately from choosing an initializer.

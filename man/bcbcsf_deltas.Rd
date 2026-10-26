@@ -19,7 +19,10 @@ training samples. The default is 0, the covariance matrix is assumed to be diago
 which is the most robust.}
 }
 \value{
-A matrix - the initial state of Markov Chain for HTLR model fitting.
+A numeric coefficient matrix with \code{ncol(X) + 1} rows,
+intercept first, followed by every input feature in its original order.
+Feature row names are retained when \code{X} has column names; class columns
+use \code{levels(factor(y))[-1]}.
 }
 \description{
 Generate initial Markov chain state with Bias-corrected Bayesian classification.
@@ -27,6 +30,13 @@ Generate initial Markov chain state with Bias-corrected Bayesian classification.
 \details{
 Caveat: This method can be used only for continuous predictors such as gene expression profiles, 
 and it does not make sense for categorical predictors such as SNP profiles.
+
+This helper initializes coefficients on the supplied predictor
+scale and does not select the final fitted features. Use a ranking helper
+such as \code{order_ftest()} separately and pass selected indices to
+\code{htlr(..., fsel = ...)} to screen the final model. To initialize only
+a subset, compute coefficients on those columns and wrap them in
+\code{htlr_init()} with explicit feature metadata.
 }
 \references{
 Longhai Li (2012). Bias-corrected hierarchical Bayesian classification 

@@ -16,5 +16,7 @@ Sequence starting from 1 to \code{nvars}.
 }
 \description{
 A placeholder order function that returns the original order of given features.
+Ranking is separate from coefficient initialization. Pass selected indices
+to \code{htlr(..., fsel = ...)} to choose final fitted features.
 }
 \keyword{internal}

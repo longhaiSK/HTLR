@@ -5,11 +5,19 @@
 #' @param X Input matrix, of dimension nobs by nvars; each row is an observation vector.
 #' 
 #' @param y Vector of response variables. Must be coded as non-negative integers, 
-#' e.g., 1,2,\ldots,C for C classes, label 0 is also allowed.
-#' 
-#' @param fsel Subsets of features selected before fitting, such as by univariate screening.
-#' @param stdx Logical; if \code{TRUE}, the original feature values are standardized to have \code{mean = 0} 
-#' and \code{sd = 1}.
+#' e.g., 1,2,\ldots,C for C classes, label 0 is also allowed. A factor is also
+#' accepted; its first level is the reference class.
+#'
+#' @param fsel Final fitted features, in the supplied order: unique positive
+#' column indices or column names. Omitted or \code{NULL} selects all columns.
+#' Name selection requires unique, nonmissing, nonempty \code{colnames(X)}.
+#' Singular columns are dropped when standardizing.
+#' @param stdx Logical; if \code{TRUE}, subtract each selected feature's median
+#' and divide by its sample standard deviation, dropping singular columns.
+#' Custom matrices, binary vectors, and \code{htlr_init()} objects skip this
+#' transformation and use coefficients on the supplied predictor scale.
+#' To use external standardized coefficients, standardize predictors yourself
+#' and set \code{stdx = FALSE}; transform prediction data in the same way.
 #' 
 #' @param iter A positive integer specifying the number of iterations (including warmup).
 #' @param warmup A positive integer specifying the number of warmup (aka burnin). 
@@ -23,10 +31,16 @@
 #' 
 #' @param cut The coefficients smaller than this criteria will be fixed in each HMC updating step.
 #' 
-#' @param init The initial state of Markov Chain; it accepts three forms:
+#' @param init The initial state of Markov Chain; it accepts:
 #' \itemize{ 
 #' \item a previously fitted \code{fithtlr} object, 
-#' \item  a user supplied initial coeficient matrix of (p+1)*K, where p is the number of features, K is the number of classes in y minus 1, 
+#' \item a user supplied numeric coefficient matrix with \code{p + 1} rows
+#' and \code{K} columns, where \code{p} is the number of selected features and
+#' \code{K} is the number of classes in \code{y} minus one. For binary responses,
+#' a numeric vector of length \code{p + 1} is also accepted and converted to a
+#' one-column matrix. The first row or vector entry is the intercept, followed
+#' by coefficients in \code{fsel} order. Custom coefficients skip feature
+#' standardization and must be on the scale of the supplied features.
 #' \item a character string matches the following:  
 #' \itemize{
 #'   \item "lasso" - (Default) Use Lasso initial state with \code{lambda} chosen by 
@@ -42,6 +56,17 @@
 #' }
 #' 
 #' }
+#' Named custom matrices align feature rows and class columns by name. Row
+#' names must include exactly one \code{Intercept} or \code{(Intercept)};
+#' other rows must match the selected feature names. Column names, when
+#' supplied, must match \code{levels(factor(y))[-1]} (the non-reference classes).
+#' Each named axis must have unique, nonempty names. Unnamed axes use positional
+#' order; unnamed rows with non-default \code{fsel} warn. A
+#' \code{\link{htlr_init}} object supplies explicit feature names or original
+#' column indices and optional class names. These may describe a subset of
+#' \code{fsel}; omitted feature coefficients start at zero in every class, and
+#' the supplied intercept is retained. Initializer features outside \code{fsel}
+#' error. Direct matrices must still supply every final fitted feature.
 #' 
 #' @param prior The prior to be applied to the model. Either a list of hyperparameter settings 
 #' returned by \code{\link{htlr_prior}} or a character string from "t" (student-t), "ghs" (horseshoe), 
@@ -66,6 +91,25 @@
 #' } 
 #' 
 #' @return An object with S3 class \code{htlr.fit}.  
+#'
+#' @details External coefficients must be finite and represent log odds against
+#' the first response class. For \code{C} classes, column \code{k} corresponds
+#' to \code{levels(factor(y))[k + 1]}, with the reference coefficients fixed
+#' at zero. Convert a full \code{C}-column coefficient matrix by subtracting
+#' the reference column from each other column, including the intercept row.
+#' Named direct matrices may have their intercept row anywhere; unnamed
+#' matrices and \code{htlr_init()} objects require the intercept first.
+#'
+#' \code{fsel} chooses final model features; initializer metadata only identifies
+#' supplied coefficients. Use ranking helpers separately for screening. For
+#' examples of external coefficients and name alignment, see the
+#' \code{external-initialization} vignette. Prediction matrices must retain the
+#' original training column positions, including when \code{fsel} used names.
+#'
+#' Custom initialization avoids fitting an initializer such as Lasso, but the
+#' sampler and stored coefficient draws remain dense. Memory use can still
+#' limit ultra-high-dimensional data; custom initialization alone does not
+#' establish support for million-feature data sets.
 #' 
 #' @references
 #' Longhai Li and Weixin Yao (2018). Fully Bayesian Logistic Regression 
@@ -75,6 +119,17 @@
 #' @export
 #' 
 #' @examples
+#' # External binary coefficients, aligned after reordering predictor columns.
+#' set.seed(42)
+#' X <- cbind(gene_a = rnorm(40), gene_b = rnorm(40))
+#' y <- factor(rep(c("control", "case"), 20), levels = c("control", "case"))
+#' external <- glm(y ~ gene_a + gene_b, data = data.frame(y, X), family = binomial())
+#' deltas <- matrix(coef(external), ncol = 1,
+#'                  dimnames = list(names(coef(external)), "case"))
+#' # Short chain for demonstration only.
+#' fit <- htlr(X[, c("gene_b", "gene_a")], y, init = deltas,
+#'             stdx = FALSE, iter = 4, warmup = 2, leap = 1, leap.warm = 1)
+#'
 #' set.seed(12345)
 #' data("colon")
 #' 
@@ -97,7 +152,7 @@
 #' 
 htlr <-
   function (X, y,
-            fsel = 1:ncol(X),
+            fsel = seq_len(ncol(X)),
             stdx = TRUE,
             prior = "t",
             df = 1,

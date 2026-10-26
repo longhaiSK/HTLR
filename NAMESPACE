@@ -12,6 +12,7 @@ export(gendata_FAM)
 export(gendata_MLR)
 export(htlr)
 export(htlr_fit)
+export(htlr_init)
 export(htlr_predict)
 export(htlr_prior)
 export(lasso_deltas)
@@ -25,9 +26,13 @@ import(Rcpp)
 import(grDevices)
 import(graphics)
 import(stats)
-importFrom(BCBCSF,bcbcsf_fitpred)
-importFrom(BCBCSF,bcbcsf_sumfit)
-importFrom(glmnet,cv.glmnet)
-importFrom(glmnet,glmnet)
+importFrom(BCBCSF,
+  bcbcsf_fitpred,
+  bcbcsf_sumfit
+)
+importFrom(glmnet,
+  cv.glmnet,
+  glmnet
+)
 importFrom(utils,read.table)
 useDynLib(HTLR)

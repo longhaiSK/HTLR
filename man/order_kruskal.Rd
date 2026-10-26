@@ -16,6 +16,8 @@ Order of all features of length \code{nvars}.
 }
 \description{
 This function orders all features in terms of Kruskal-Wallis test p-value.
+Ranking does not fit coefficients or choose a model size. Pass a subset of
+the returned indices to \code{htlr(..., fsel = ...)} to select final features.
 }
 \examples{
 data("diabetes392")

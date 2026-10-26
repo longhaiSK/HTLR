@@ -31,6 +31,6 @@ LinkingTo: Rcpp (>= 1.0.0), RcppArmadillo
 NeedsCompilation: yes
 LazyData: true
 Encoding: UTF-8
-RoxygenNote: 7.3.2
 VignetteBuilder: knitr
 Config/Needs/website: pkgdown
+Config/roxygen2/version: 8.1.1

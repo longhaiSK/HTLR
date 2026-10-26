@@ -7,7 +7,7 @@
 htlr_fit(
   X_tr,
   y_tr,
-  fsel = 1:ncol(X_tr),
+  fsel = seq_len(ncol(X_tr)),
   stdzx = TRUE,
   ptype = c("t", "ghs", "neg"),
   sigmab0 = 2000,
@@ -36,12 +36,20 @@ htlr_fit(
 \item{X_tr}{Input matrix, of dimension nobs by nvars; each row is an observation vector.}
 
 \item{y_tr}{Vector of response variables. Must be coded as non-negative integers, 
-e.g., 1,2,\ldots,C for C classes, label 0 is also allowed.}
+e.g., 1,2,\ldots,C for C classes, label 0 is also allowed. A factor is also
+accepted; its first level is the reference class.}
 
-\item{fsel}{Subsets of features selected before fitting, such as by univariate screening.}
+\item{fsel}{Final fitted features, in the supplied order: unique positive
+column indices or column names. Omitted or \code{NULL} selects all columns.
+Name selection requires unique, nonmissing, nonempty \code{colnames(X_tr)}.
+Singular columns are dropped when standardizing.}
 
-\item{stdzx}{Logical; if \code{TRUE}, the original feature values are standardized to have \code{mean = 0} 
-and \code{sd = 1}.}
+\item{stdzx}{Logical; if \code{TRUE}, subtract each selected feature's median
+and divide by its sample standard deviation, dropping singular columns.
+Custom matrices, binary vectors, and \code{htlr_init()} objects skip this
+transformation and use coefficients on the supplied predictor scale.
+To use external standardized coefficients, standardize predictors yourself
+and set \code{stdzx = FALSE}; transform prediction data in the same way.}
 
 \item{ptype}{The prior to be applied to the model. Either "t" (student-t, default), 
 "ghs" (horseshoe), or "neg" (normal-exponential-gamma).}
@@ -71,7 +79,13 @@ Otherwise, logw is assigned with a normal prior and it will be updated during sa
 each HMC updating step.}
 
 \item{initial_state}{The initial state of Markov Chain; can be a previously 
-fitted \code{fithtlr} object, or a user supplied initial state vector, or 
+fitted \code{fithtlr} object, a numeric coefficient matrix with
+\code{p + 1} rows and \code{C - 1} columns, or a numeric vector of length
+\code{p + 1} for binary responses only. Here \code{p} is the number of
+selected features and \code{C} is the number of response classes. The first
+row or vector entry is the intercept; remaining entries follow \code{fsel}
+order. Custom coefficients skip feature standardization and must be on the
+scale of the supplied features. Alternatively, supply
 a character string matches the following:  
 \itemize{
   \item "lasso" - (Default) Use Lasso initial state with \code{lambda} chosen by 
@@ -84,7 +98,17 @@ a character string matches the following:
   initial states can be used for continuous features such as gene expression profiles, 
   but it should not be used for categorical features such as SNP profiles.
   \item "random" - Use random initial values sampled from N(0, 1).     
-}}
+}
+Named matrices are aligned by feature row names and non-reference class
+column names. A named row axis must include exactly one \code{Intercept}
+or \code{(Intercept)} row. Names must be unique and match the selected
+features and \code{levels(factor(y_tr))[-1]}, respectively. Unnamed axes
+remain positional; unnamed rows with non-default \code{fsel} warn.
+Use \code{\link{htlr_init}} to supply explicit feature indices or names and
+optional non-reference class names. The object may initialize a subset of
+\code{fsel}: omitted feature coefficients start at zero in every class,
+while the supplied intercept is retained. Features outside \code{fsel} error.
+Direct matrices must still supply every final fitted feature.}
 
 \item{keep.warmup.hist}{Warmup iterations are not recorded by default, set \code{TRUE} to enable it.}
 
@@ -113,6 +137,20 @@ with S3 class \code{htlr.fit}.
 \description{
 This function trains linear logistic regression models with HMC in restricted Gibbs sampling.
 It also makes predictions for test cases if \code{X_ts} are provided.
+}
+\details{
+External coefficients must be finite and encode log odds relative
+to the first response class. Coefficient column \code{k} is for
+\code{levels(factor(y_tr))[k + 1]}. To convert full class-specific
+coefficients, subtract the reference column from every other column,
+including the intercept. Named direct matrices allow the intercept row
+anywhere; positional matrices and \code{htlr_init()} require it first.
+Prediction matrices must retain the original training column positions.
+
+See \code{\link{htlr_init}} and the \code{external-initialization} vignette
+for safe external initialization. The sampler and stored coefficient draws
+remain dense; custom initialization alone does not establish support for
+million-feature data sets.
 }
 \references{
 Longhai Li and Weixin Yao (2018). Fully Bayesian Logistic Regression 

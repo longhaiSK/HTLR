@@ -1,14 +1,40 @@
+# Validate positional custom coefficients before preprocessing or sampling.
+validate_initial_matrix <- function(deltas, p, K)
+{
+  if (!is.numeric(deltas) || is.complex(deltas))
+    stop("Initial `deltas' must be a numeric matrix.", call. = FALSE)
+
+  if (nrow(deltas) != p + 1 || ncol(deltas) != K)
+    stop(sprintf(
+      "Initial `deltas' mismatch data. Expected: nrow=%d, ncol=%d; Actual: nrow=%d, ncol=%d.",
+      p + 1, K, nrow(deltas), ncol(deltas)), call. = FALSE)
+
+  if (any(!is.finite(deltas)))
+    stop("Initial `deltas' must contain only finite coefficients (no NA, NaN, or Inf).",
+         call. = FALSE)
+
+  deltas
+}
+
 #' Fit a HTLR Model (Internal API)
 #'
 #' This function trains linear logistic regression models with HMC in restricted Gibbs sampling.
 #' It also makes predictions for test cases if \code{X_ts} are provided.
 #'
 #' @param y_tr Vector of response variables. Must be coded as non-negative integers, 
-#' e.g., 1,2,\ldots,C for C classes, label 0 is also allowed.
+#' e.g., 1,2,\ldots,C for C classes, label 0 is also allowed. A factor is also
+#' accepted; its first level is the reference class.
 #' @param X_tr Input matrix, of dimension nobs by nvars; each row is an observation vector.
-#' @param fsel Subsets of features selected before fitting, such as by univariate screening.
-#' @param stdzx Logical; if \code{TRUE}, the original feature values are standardized to have \code{mean = 0} 
-#' and \code{sd = 1}.
+#' @param fsel Final fitted features, in the supplied order: unique positive
+#' column indices or column names. Omitted or \code{NULL} selects all columns.
+#' Name selection requires unique, nonmissing, nonempty \code{colnames(X_tr)}.
+#' Singular columns are dropped when standardizing.
+#' @param stdzx Logical; if \code{TRUE}, subtract each selected feature's median
+#' and divide by its sample standard deviation, dropping singular columns.
+#' Custom matrices, binary vectors, and \code{htlr_init()} objects skip this
+#' transformation and use coefficients on the supplied predictor scale.
+#' To use external standardized coefficients, standardize predictors yourself
+#' and set \code{stdzx = FALSE}; transform prediction data in the same way.
 #' 
 #' @param iters_h A positive integer specifying the number of warmup (aka burnin).
 #' @param iters_rmc A positive integer specifying the number of iterations after warmup.
@@ -19,7 +45,13 @@
 #' @param leap_step The stepsize adjustment multiplied to the second-order partial derivatives of log posterior.
 #' 
 #' @param initial_state The initial state of Markov Chain; can be a previously 
-#' fitted \code{fithtlr} object, or a user supplied initial state vector, or 
+#' fitted \code{fithtlr} object, a numeric coefficient matrix with
+#' \code{p + 1} rows and \code{C - 1} columns, or a numeric vector of length
+#' \code{p + 1} for binary responses only. Here \code{p} is the number of
+#' selected features and \code{C} is the number of response classes. The first
+#' row or vector entry is the intercept; remaining entries follow \code{fsel}
+#' order. Custom coefficients skip feature standardization and must be on the
+#' scale of the supplied features. Alternatively, supply
 #' a character string matches the following:  
 #' \itemize{
 #'   \item "lasso" - (Default) Use Lasso initial state with \code{lambda} chosen by 
@@ -32,7 +64,17 @@
 #'   initial states can be used for continuous features such as gene expression profiles, 
 #'   but it should not be used for categorical features such as SNP profiles.
 #'   \item "random" - Use random initial values sampled from N(0, 1).     
-#' } 
+#' }
+#' Named matrices are aligned by feature row names and non-reference class
+#' column names. A named row axis must include exactly one \code{Intercept}
+#' or \code{(Intercept)} row. Names must be unique and match the selected
+#' features and \code{levels(factor(y_tr))[-1]}, respectively. Unnamed axes
+#' remain positional; unnamed rows with non-default \code{fsel} warn.
+#' Use \code{\link{htlr_init}} to supply explicit feature indices or names and
+#' optional non-reference class names. The object may initialize a subset of
+#' \code{fsel}: omitted feature coefficients start at zero in every class,
+#' while the supplied intercept is retained. Features outside \code{fsel} error.
+#' Direct matrices must still supply every final fitted feature.
 #' 
 #' @param ptype The prior to be applied to the model. Either "t" (student-t, default), 
 #' "ghs" (horseshoe), or "neg" (normal-exponential-gamma).
@@ -65,6 +107,19 @@
 #' 
 #' @return A list of fitting results. If \code{X_ts} is not provided, the list is an object 
 #' with S3 class \code{htlr.fit}.  
+#'
+#' @details External coefficients must be finite and encode log odds relative
+#' to the first response class. Coefficient column \code{k} is for
+#' \code{levels(factor(y_tr))[k + 1]}. To convert full class-specific
+#' coefficients, subtract the reference column from every other column,
+#' including the intercept. Named direct matrices allow the intercept row
+#' anywhere; positional matrices and \code{htlr_init()} require it first.
+#' Prediction matrices must retain the original training column positions.
+#'
+#' See \code{\link{htlr_init}} and the \code{external-initialization} vignette
+#' for safe external initialization. The sampler and stored coefficient draws
+#' remain dense; custom initialization alone does not establish support for
+#' million-feature data sets.
 #' 
 #' @references
 #' Longhai Li and Weixin Yao (2018). Fully Bayesian Logistic Regression 
@@ -78,7 +133,7 @@
 #' @keywords internal
 #' 
 htlr_fit <- function (
-    X_tr, y_tr, fsel = 1:ncol(X_tr), stdzx = TRUE, ## data
+    X_tr, y_tr, fsel = seq_len(ncol(X_tr)), stdzx = TRUE, ## data
     ptype = c("t", "ghs", "neg"), sigmab0 = 2000, alpha = 1, s = -10, eta = 0,  ## prior
     iters_h = 1000, iters_rmc = 1000, thin = 1,  ## mc iterations
     leap_L = 50, leap_L_h = 5, leap_step = 0.3,  hmc_sgmcut = 0.05, ## hmc
@@ -99,6 +154,10 @@ htlr_fit <- function (
   if (any(yfreq < 2)) 
     stop("less than 2 cases in some group")
 
+  fsel <- resolve_fsel(fsel, X_tr)
+  if (!is.logical(stdzx) || length(stdzx) != 1L || is.na(stdzx))
+    stop("'stdzx' must be TRUE or FALSE.", call. = FALSE)
+
   #----------------------------- Data preprocessing -----------------------------#
   y1 <- as.numeric(y_tr)
   if (min(y1) == 0)
@@ -108,6 +167,17 @@ htlr_fit <- function (
   ymat <- model.matrix( ~ factor(y1) - 1)[, -1]
   C <- length(unique(ybase))
   K <- C - 1
+
+  if (is.numeric(initial_state) && is.null(dim(initial_state))) {
+    if (K != 1)
+      stop("A numeric initial-state vector is supported only for binary responses; use a coefficient matrix for multiclass responses.",
+           call. = FALSE)
+    initial_state <- matrix(initial_state, ncol = 1)
+  }
+
+  if (is.matrix(initial_state) || inherits(initial_state, "htlr.init"))
+    initial_state <- align_initial_state(initial_state, X_tr, fsel,
+                                         levels(factor(y_tr))[-1])
   
   ## feature selection
   X_tr <- X_tr[, fsel, drop = FALSE]
@@ -121,6 +191,7 @@ htlr_fit <- function (
     if (is.numeric(initial_state))
     {
       message("skip standardizing features because customized initial state is provided")
+      stdzx <- FALSE
     }
     else
     {
@@ -130,14 +201,13 @@ htlr_fit <- function (
       fsel <- fsel[attr(X_tr, "nonsingular")]
     }
   }
-  else
-  {
-    if (!is.matrix(X_tr)) {
-      message(sprintf("coercing %s 'X' to matrix", class(X_tr)))
-      X_tr <- as.matrix(X_tr) 
-    }
+  if (!is.matrix(X_tr)) {
+    message(sprintf("coercing %s 'X' to matrix", class(X_tr)))
+    X_tr <- as.matrix(X_tr)
   }
   p <- ncol(X_tr)
+  if (p == 0L)
+    stop("No nonsingular features remain after standardization.", call. = FALSE)
   n <- nrow(X_tr)
 
   ## add intercept
@@ -160,14 +230,6 @@ htlr_fit <- function (
     if (is.matrix(initial_state)) # user supplied deltas
     {
       deltas <- initial_state
-      if (nrow(deltas) != p + 1 || ncol(deltas) != K)
-      {
-        stop(
-          sprintf(
-            "Initial `deltas' mismatch data. Expected: nrow=%d, ncol=%d; Actual: nrow=%d, ncol=%d.",
-            p + 1, K, nrow(deltas), ncol(deltas))
-        )        
-      }
       init.type <- "customized"
     }
     else if (initial_state == "lasso")

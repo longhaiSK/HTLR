@@ -1,6 +1,8 @@
 #' Order features by Kruskal-Wallis test
 #'
 #' This function orders all features in terms of Kruskal-Wallis test p-value.
+#' Ranking does not fit coefficients or choose a model size. Pass a subset of
+#' the returned indices to \code{htlr(..., fsel = ...)} to select final features.
 #' 
 #' @param X Input matrix, of dimension \code{nobs} by \code{nvars}; each row is an observation vector.
 #' 
@@ -25,6 +27,8 @@ order_kruskal <- function(X, y)
 #' Plain order function
 #'
 #' A placeholder order function that returns the original order of given features.
+#' Ranking is separate from coefficient initialization. Pass selected indices
+#' to \code{htlr(..., fsel = ...)} to choose final fitted features.
 #' 
 #' @param X Input matrix, of dimension \code{nobs} by \code{nvars}; each row is an observation vector.
 #' 
@@ -36,11 +40,13 @@ order_kruskal <- function(X, y)
 #' 
 #' @keywords internal
 #' 
-order_plain <- function(X, y) { 1L:ncol(X) }
+order_plain <- function(X, y) { seq_len(ncol(X)) }
 
 #' Order features by F-statistic
 #'
 #' This function orders all features in terms of ANOVA F-statistic.
+#' Ranking does not fit coefficients or choose a model size. Pass a subset of
+#' the returned indices to \code{htlr(..., fsel = ...)} to select final features.
 #' 
 #' @param X Input matrix, of dimension \code{nobs} by \code{nvars}; each row is an observation vector.
 #' 

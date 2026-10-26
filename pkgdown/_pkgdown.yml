@@ -14,6 +14,7 @@ reference:
 - title: Model fitting
   contents:
   - htlr
+  - htlr_init
   - htlr_prior
 - title: Prediction and inference
   contents:
@@ -26,10 +27,13 @@ reference:
   contents:
   - gendata_FAM
   - gendata_MLR 
-#- title: Feature screening
-#  contents:
-#  - order_ftest
-#  - order_kruskal
+- title: Screening and initialization
+  contents:
+  - order_ftest
+  - order_kruskal
+  - order_plain
+  - lasso_deltas
+  - bcbcsf_deltas
 - title: Utility functions 
   contents:
   - std
